@@ -5,6 +5,40 @@ this first.
 
 ---
 
+## Session: standalone public repo setup
+
+**Did:**
+- Split the scaffold out of the private parent `hackathons/` monorepo into a
+  clean standalone repo (`rsync --exclude .git`), fresh `git init` so history
+  begins with the hackathon.
+- Renamed all references to the canonical repo name **`liminal-engine`** (kept
+  the "Liminal Engine — Agentic Work Governance MVP" hackathon framing and the
+  "what was built during the hackathon" README section).
+- Created the **public** repo `github.com/liminalshruti/liminal-engine` (MIT) and
+  pushed `main`.
+- Invited **`allsmog`** (Sean) as a collaborator with **push** access (pending
+  acceptance).
+- Verified: MIT copyright is `Shruti Rajagopal and contributors`; no
+  `Liminal, Inc.` ownership claim remains; entity stated as not yet incorporated.
+
+**Decided / confirmed:**
+- Canonical public repo name is `liminal-engine` (NOT the long folder name).
+- Private parent `hackathons/` repo is **staging only** — never pushed.
+
+**Did NOT do (by design):**
+- No app implementation. No real Gemini/LiveKit/Linear.
+
+**Next session should:**
+- Build the static clickable demo spine in `apps/desktop-demo/` (see
+  `.claude/commands/start-demo-spine.md`), backed by deterministic fixtures.
+- Extract persona from `liminal-prototype` (resolve the persona TODO).
+
+**Risks / watch:**
+- `allsmog` invite still pending Sean's acceptance.
+- Persona name must NOT be invented.
+
+---
+
 ## Session: scaffold / setup (this session)
 
 **Did:**
