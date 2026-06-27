@@ -1,0 +1,30 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+*secret*
+*credential*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Node / build
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+*.log
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Large demo media — keep curated assets, ignore raw captures
+demos/recordings/*.mov
+demos/recordings/*.mp4.raw
