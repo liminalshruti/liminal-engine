@@ -1,0 +1,26 @@
+{
+  "name": "liminal-engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.1.2",
+  "description": "Liminal Engine — agentic-work governance MVP. Control harness + spine packages.",
+  "engines": { "node": ">=22.6.0" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"packages/**/*.test.ts\"",
+    "lint:boundaries": "depcruise packages",
+    "regen:goldens": "node tools/regen-goldens.ts",
+    "check:matrix": "node tools/check-conformance-matrix.mjs",
+    "check:linear-id": "node tools/check-linear-id.mjs",
+    "verify": "pnpm typecheck && pnpm test && pnpm lint:boundaries",
+    "smoke": "./scripts/smoke.sh",
+    "prepare": "git config core.hooksPath .git/hooks 2>/dev/null; lefthook install || true"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "dependency-cruiser": "^16.4.0",
+    "lefthook": "^1.10.0",
+    "typescript": "^5.7.2"
+  }
+}

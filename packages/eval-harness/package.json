@@ -1,0 +1,10 @@
+{
+  "name": "@liminal-engine/eval-harness",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*"
+  }
+}

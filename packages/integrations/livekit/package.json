@@ -1,0 +1,8 @@
+{
+  "name": "@liminal-engine/integration-livekit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {}
+}

@@ -2,9 +2,15 @@
 
 Current state of the build, right now. Keep this short and true.
 
-## As of: standalone public repo setup (still setup only)
+## As of: control-harness session (2026-06-27)
 
-- **Phase:** Public repo published. No app implementation yet (by design).
+- **Phase:** Control harness in place + verified, reconciled to the 14-step / 7
+  must-not-cut demo contract. **No app/UI yet** (still LE-1).
+- **Harness:** pnpm/TS workspace; `packages/contracts` (7 locked primitives as
+  hashed contracts + golden tests + Acme fixtures asserting every must-not-cut);
+  boundary lint enforcing fixtures-on-spine; CI + hooks + PR template; AGENTS.md +
+  5 agent roles; Linear packets/issues in `ops/linear/`. `pnpm verify` green (43
+  tests). Commits = allsmog only (hook-enforced). **Local only — not pushed.**
 - **Scaffold:** All folders + docs + `.claude` dev env + `scripts/smoke.sh` created.
 - **Official repo name:** `liminal-engine`.
 - **Public repo:** ✅ Created and live — `github.com/liminalshruti/liminal-engine`
@@ -29,5 +35,6 @@ Current state of the build, right now. Keep this short and true.
 
 ## Next concrete step
 
-Stand up the static clickable demo skeleton in `apps/desktop-demo/` covering the
-full required demo path with hardcoded screens + deterministic fixtures.
+Decide the demo-app UI stack (LE-1), then stand up the static clickable demo in
+`apps/desktop-demo/` covering the full 14-step required demo path, rendering the
+deterministic Acme fixtures from `@liminal-engine/contracts/fixtures`.

@@ -1,0 +1,10 @@
+packages:
+  - "packages/*"
+  - "packages/integrations/*"
+  - "apps/*"
+
+# lefthook postinstall links its binary; approve so install doesn't hard-fail.
+allowBuilds:
+  lefthook: true
+
+verifyDepsBeforeRun: false

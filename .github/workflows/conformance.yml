@@ -1,0 +1,43 @@
+name: conformance
+
+# Mechanical merge gate (judgment-free). The reviewer agents are the second layer.
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 11 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Tests (contracts golden + fixtures + domain)
+        run: pnpm test
+      - name: Boundary lint (hexagonal + no live integrations on spine)
+        run: pnpm lint:boundaries
+      - name: Goldens committed & up to date
+        run: |
+          pnpm regen:goldens
+          if ! git diff --quiet -- packages/contracts; then
+            echo "::error::Contract goldens are stale — run 'pnpm regen:goldens' and commit (or you changed a contract unintentionally)."
+            git --no-pager diff -- packages/contracts
+            exit 1
+          fi
+      - name: Conformance matrix present & filled
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node tools/check-conformance-matrix.mjs
+      - name: Linear issue ID present
+        env:
+          BRANCH: ${{ github.head_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node tools/check-linear-id.mjs

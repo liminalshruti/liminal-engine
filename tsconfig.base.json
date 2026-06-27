@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@liminal-engine/contracts": ["packages/contracts/src/index.ts"],
+      "@liminal-engine/contracts/fixtures": ["packages/contracts/src/fixtures/acme.ts"],
+      "@liminal-engine/engine-core": ["packages/engine-core/src/index.ts"],
+      "@liminal-engine/governance": ["packages/governance/src/index.ts"],
+      "@liminal-engine/eval-harness": ["packages/eval-harness/src/index.ts"],
+      "@liminal-engine/ui-components": ["packages/ui-components/src/index.ts"],
+      "@liminal-engine/integration-gemini": ["packages/integrations/gemini/src/index.ts"],
+      "@liminal-engine/integration-linear": ["packages/integrations/linear/src/index.ts"],
+      "@liminal-engine/integration-livekit": ["packages/integrations/livekit/src/index.ts"]
+    }
+  }
+}
