@@ -1,4 +1,6 @@
-# SCOPE_SPEC.md — Liminal Engine Governance Hack 2026
+# SCOPE_SPEC.md — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 What is in scope for the hackathon build, and what is explicitly out.
 

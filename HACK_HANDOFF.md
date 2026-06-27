@@ -1,4 +1,6 @@
-# HACK_HANDOFF.md — Liminal Engine Governance Hack 2026
+# HACK_HANDOFF.md — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 The single-page orientation for anyone (human or agent) picking this up cold.
 

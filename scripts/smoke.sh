@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# smoke.sh — Liminal Engine Governance Hack 2026
+# smoke.sh — Liminal Engine — Agentic Work Governance MVP
+# Hackathon: Liminal Engine Governance Hack 2026
 #
 # Runs whatever build/test commands are available, then prints the manual demo
 # checklist a human walks before declaring the demo ready. Safe to run anytime;

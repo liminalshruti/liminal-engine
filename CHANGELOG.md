@@ -1,4 +1,6 @@
-# CHANGELOG — Liminal Engine Governance Hack 2026
+# CHANGELOG — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 All notable changes to scope, contract, and structure. Newest first.
 

@@ -16,8 +16,9 @@ Current state of the build, right now. Keep this short and true.
   until incorporation is complete.
 - **Collaborator:** `allsmog` (Sean) invited with **push** access (invitation
   pending acceptance).
-- **Staging:** The private parent `hackathons/` repo holds a staging copy only.
-  Do **not** push the parent. The public `liminal-engine` repo is source of truth.
+- **Source of truth:** This standalone public `liminal-engine` repo. (It was
+  split out of a private `hackathons/` monorepo at setup time; that copy is
+  historical only and must not be pushed — it is not the active version control.)
 - **Demo path:** Locked in `DEMO_CONTRACT.md`. Not yet implemented.
 - **Persona:** Not extracted. Using generic operator language. Do not invent a name.
 

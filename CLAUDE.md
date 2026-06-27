@@ -1,4 +1,6 @@
-# CLAUDE.md — Liminal Engine Governance Hack 2026
+# CLAUDE.md — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 Instructions for future Claude Code sessions working in this folder. Read this
 **and** `DEMO_CONTRACT.md` before writing any code.

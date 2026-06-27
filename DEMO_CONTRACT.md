@@ -1,4 +1,6 @@
-# DEMO CONTRACT — Liminal Engine Governance Hack 2026
+# DEMO CONTRACT — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 This contract **locks** the demo. Changes to anything below require an explicit
 decision logged in `CHANGELOG.md`. The implementation serves this contract; the
@@ -26,18 +28,24 @@ The core loop demonstrated: `observe → detect → correct → enforce → audi
 
 ## Required demo path (LOCKED)
 
-```text
-Initialize workspace
-→ Agent output            (agents report Acme "on track" — the false green)
-→ GovernanceCase          (Liminal flags the dropped EU data residency requirement)
-→ Approve + Enforce       (operator approves; status flips on-track → At Risk)
-→ AuditEvent              (correction + decision recorded as audit evidence)
-→ Blocked future action   (a customer-facing update is blocked until corrected)
-→ Second pass improves    (agents re-run with the requirement enforced)
-→ Eval shows Fail → Pass  (eval table proves the improvement)
-```
+The full 14-step path. Every step must be visible on screen in this order.
 
-Every step must be visible on screen in this order.
+1. **Initialize workspace.**
+2. **Show Acme business goal:** `Close Acme expansion by Friday — $1.2M ARR`.
+3. **Show agent output:** `Acme expansion appears on track` (the false green).
+4. **Reveal lost EU data residency requirement** (the silently dropped, load-bearing customer requirement).
+5. **Surface `GovernanceCase`** (Liminal flags the dropped EU data-residency requirement).
+6. **Operator clicks `Approve + Enforce`.**
+7. **Status changes `On Track → At Risk`.**
+8. **Simulated Linear workstream appears.**
+9. **Product / Security / Engineering owners required** (the workstream demands the right owners).
+10. **False customer-facing `on track` update is blocked** (the downstream action gate holds until corrected).
+11. **`AuditEvent` recorded** (correction + deciding actor captured as audit evidence).
+12. **`EvalCase` generated** (the case the second pass is graded against).
+13. **Second pass improves** (agents re-run with the requirement enforced).
+14. **Eval table shows `Fail → Pass`** (the `EvalCase` proves the improvement).
+
+Core loop demonstrated across these steps: `observe → detect → correct → enforce → audit → improve`.
 
 ---
 
@@ -46,11 +54,12 @@ Every step must be visible on screen in this order.
 These are the spine. If any of these is missing, the demo does not prove the thesis:
 
 1. **The false green** — agent output that visibly says Acme is on track.
-2. **Detection** — a GovernanceCase surfacing the dropped EU data-residency requirement.
-3. **Enforce** — Approve + Enforce visibly changes status (on-track → At Risk).
-4. **Audit evidence** — an AuditEvent recording the correction and who decided.
-5. **A blocked future action** — a downstream customer update blocked until corrected.
-6. **Fail → Pass** — an eval table showing the second pass improved.
+2. **`GovernanceCase`** — detection surfacing the dropped EU data-residency requirement.
+3. **`EnforcementAction`** — Approve + Enforce visibly changes status (On Track → At Risk).
+4. **Simulated Linear workstream** — appears on enforce, requiring Product / Security / Engineering owners.
+5. **Blocked future action** — a downstream customer-facing "on track" update blocked until corrected.
+6. **`AuditEvent`** — recording the correction and the deciding actor.
+7. **`EvalCase` + Fail → Pass** — an eval case generated and graded, with a table showing the second pass improved.
 
 ---
 
@@ -106,7 +115,8 @@ The demo is accepted when **all** of the following hold:
 - [ ] Each must-not-cut item is visibly present on screen.
 - [ ] The status visibly flips **on-track → At Risk** on Approve + Enforce.
 - [ ] A blocked downstream action is shown and explained.
-- [ ] The eval table shows **Fail → Pass** between pass 1 and pass 2.
+- [ ] An **`EvalCase`** is generated and the eval table shows **Fail → Pass**
+      between pass 1 and pass 2.
 - [ ] No invented persona name appears anywhere on screen or in narration.
 - [ ] The whole walkthrough completes in **under 3 minutes**.
 - [ ] Deterministic: re-running produces the same result (no live-call flakiness

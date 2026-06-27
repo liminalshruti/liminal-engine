@@ -1,4 +1,6 @@
-# SUBMISSION.md — Liminal Engine Governance Hack 2026
+# SUBMISSION.md — Liminal Engine — Agentic Work Governance MVP
+
+> Hackathon: Liminal Engine Governance Hack 2026
 
 The pre-submission checklist and the net-new claim judges will rely on.
 
