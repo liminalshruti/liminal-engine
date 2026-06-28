@@ -1,3 +1,13 @@
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- ⛔⛔⛔  NO DEMO FLOWS. BUILD A REAL PRODUCT.  ⛔⛔⛔                          -->
+<!-- READ `DIRECTIVE.md` FIRST. No scripted / guided / single-scenario          -->
+<!-- click-through "demo flows" — they will NOT win. Build a real product that   -->
+<!-- operates on arbitrary real data, continuously, with no narrator. This       -->
+<!-- overrides any demo-path / 14-step / DEMO_CONTRACT.md framing.               -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+
+> # ⛔ NO DEMO FLOWS — BUILD A REAL PRODUCT — see [`DIRECTIVE.md`](./DIRECTIVE.md) ⛔
+
 # AGENTS.md — Liminal Engine development control system
 
 This adds the **development-loop enforcement** on top of the product locks. It

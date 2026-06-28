@@ -1,0 +1,363 @@
+/**
+ * Correction Template Form Styling
+ *
+ * Structured form for the operator to correct a GovernanceCase by selecting
+ * correction templates, filling arguments, and previewing compiled rules.
+ * Uses canonical design tokens (design-tokens.css) — never hardcodes colors.
+ */
+
+/* ── form wrapper ── */
+.correction-form__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5, 20px);
+}
+
+/* ── error display ── */
+.correction-form__errors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  border-radius: var(--radius-2, 6px);
+  background: rgba(255, 154, 144, 0.15); /* demo-fail-text with transparency */
+  border: 1px solid var(--watch-edge, rgba(254, 193, 37, 0.30));
+  color: var(--demo-fail-text, #FF9A90);
+}
+
+.correction-form__error-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.correction-form__error-list {
+  margin: 0;
+  padding-left: var(--space-4, 16px);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.correction-form__error-list li {
+  margin-bottom: var(--space-1, 4px);
+}
+
+/* ── fieldsets & legends ── */
+.correction-form__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--card-border, #232327);
+  border-radius: var(--radius-2, 6px);
+  background: var(--frame-bg, #0E0E11);
+}
+
+.correction-form__legend {
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text, #E8E6E1);
+}
+
+.correction-form__help {
+  margin: 0;
+  color: var(--text-soft, #B8B5AE);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* ── template choice list ── */
+.correction-form__templates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.correction-form__template-choice {
+  display: flex;
+  gap: var(--space-3, 12px);
+  padding: var(--space-3, 12px);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-2, 6px);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.correction-form__template-choice:hover {
+  background: var(--frame-bg-2, #0C0C0F);
+  border-color: var(--card-border, #232327);
+}
+
+.correction-form__template-choice.is-selected {
+  background: var(--frame-bg-2, #0C0C0F);
+  border-color: var(--judgment, #C9A961);
+  box-shadow: inset 2px 0 0 var(--judgment, #C9A961);
+}
+
+.correction-form__checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: var(--space-1, 4px);
+  cursor: pointer;
+  accent-color: var(--judgment, #C9A961);
+}
+
+.correction-form__template-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+
+.correction-form__template-label strong {
+  color: var(--text, #E8E6E1);
+  font-size: 0.95rem;
+}
+
+.correction-form__template-desc {
+  margin: 0;
+  color: var(--text-faint, #8A8780);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* ── template field groups ── */
+.correction-form__template-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  padding: var(--space-3, 12px);
+  border-left: 3px solid var(--judgment, #C9A961);
+  background: var(--frame-bg-2, #0C0C0F);
+  border-radius: var(--radius-1, 4px);
+}
+
+.correction-form__template-heading {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--judgment, #C9A961);
+}
+
+/* ── individual field ── */
+.correction-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.correction-form__field-label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text, #E8E6E1);
+}
+
+.correction-form__required-indicator {
+  color: var(--demo-fail-text, #FF9A90);
+}
+
+.correction-form__input,
+.correction-form__textarea,
+.correction-form__select {
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background: var(--frame-bg, #0E0E11);
+  border: 1px solid var(--card-border, #232327);
+  border-radius: var(--radius-1, 4px);
+  color: var(--text, #E8E6E1);
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.correction-form__input:focus,
+.correction-form__textarea:focus,
+.correction-form__select:focus {
+  outline: none;
+  border-color: var(--judgment, #C9A961);
+  box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
+}
+
+.correction-form__textarea {
+  resize: vertical;
+}
+
+.correction-form__field-hint {
+  margin: 0;
+  color: var(--text-faint, #8A8780);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* ── form actions ── */
+.correction-form__actions {
+  display: flex;
+  gap: var(--space-3, 12px);
+  justify-content: flex-end;
+  padding-top: var(--space-2, 8px);
+  border-top: 1px solid var(--card-border, #232327);
+}
+
+.correction-form__submit-btn,
+.correction-form__preview-btn {
+  padding: var(--space-2, 8px) var(--space-5, 20px);
+  min-height: 40px;
+  border-radius: var(--radius-2, 6px);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.correction-form__submit-btn {
+  background: var(--judgment, #C9A961);
+  color: var(--ink, #0F0F10);
+}
+
+.correction-form__submit-btn:hover:not(:disabled) {
+  background: var(--judgment-glow, #DDB561);
+}
+
+.correction-form__submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.correction-form__preview-btn {
+  background: var(--frame-bg-2, #0C0C0F);
+  color: var(--text, #E8E6E1);
+  border-color: var(--card-border, #232327);
+}
+
+.correction-form__preview-btn:hover {
+  background: var(--frame-bg, #0E0E11);
+  border-color: var(--judgment, #C9A961);
+}
+
+/* ── preview panel ── */
+.correction-form__preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--judgment-edge, rgba(201, 169, 97, 0.30));
+  border-radius: var(--radius-2, 6px);
+  background: rgba(201, 169, 97, 0.08);
+}
+
+.correction-form__preview-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--judgment, #C9A961);
+}
+
+.correction-form__preview-note {
+  margin: 0;
+  color: var(--text-soft, #B8B5AE);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.correction-form__preview-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.correction-form__preview-action {
+  padding: var(--space-3, 12px);
+  background: var(--frame-bg, #0E0E11);
+  border-radius: var(--radius-1, 4px);
+  border: 1px solid var(--card-border, #232327);
+}
+
+.correction-form__preview-fields {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3, 12px) var(--space-4, 16px);
+  align-items: baseline;
+}
+
+.correction-form__preview-fields dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--text-faint, #8A8780);
+}
+
+.correction-form__preview-fields dd {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-soft, #B8B5AE);
+}
+
+.correction-form__preview-fields code {
+  font-family: var(--font-mono, monospace);
+  color: var(--judgment, #C9A961);
+  background: var(--frame-bg-2, #0C0C0F);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.correction-form__preview-code {
+  margin: 0;
+  padding: var(--space-2, 8px);
+  background: var(--frame-bg-2, #0C0C0F);
+  border-radius: var(--radius-1, 4px);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--text-soft, #B8B5AE);
+  overflow-x: auto;
+  line-height: 1.4;
+}
+
+/* ── reason textarea ── */
+.correction-form__reason {
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+}
+
+/* ── responsive ── */
+@media (max-width: 900px) {
+  .correction-form__fieldset {
+    padding: var(--space-3, 12px);
+  }
+
+  .correction-form__actions {
+    justify-content: stretch;
+  }
+
+  .correction-form__submit-btn,
+  .correction-form__preview-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .correction-form__fieldset {
+    padding: var(--space-3, 12px);
+  }
+
+  .correction-form__template-choice {
+    flex-direction: column;
+    padding: var(--space-2, 8px);
+  }
+
+  .correction-form__checkbox {
+    margin-top: 0;
+  }
+
+  .correction-form__preview-fields {
+    grid-template-columns: 1fr;
+    gap: var(--space-1, 4px);
+  }
+}
