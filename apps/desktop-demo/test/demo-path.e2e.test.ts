@@ -264,7 +264,7 @@ test("DEMO_CONTRACT outcomes — exactly 1 GovernanceCase, enforcement produced,
 test("beat #1 — Initialize workspace (observe): the governance workspace is set up for the one Acme deal", async () => {
   const engine = await demoEngine();
   // The Initialize screen frames the workspace: the deal under governance + the operator role.
-  assert.equal(SCREEN_COPY.initialize.title, "Initialize governance workspace");
+  assert.equal(SCREEN_COPY.initialize.title, "The deal: $1.2M Acme expansion");
   assert.ok(SCREEN_COPY.initialize.intro.length > 0, "the Initialize screen has intro copy");
   assert.equal(OPERATOR_ROLE, DECIDING_ROLE); // operator is a ROLE (persona rule)
   // one consistent deal across the whole path
@@ -324,7 +324,7 @@ test(
     // the headline the screen renders is derived from the live, computed case
     assert.equal(caseHeadline(gc), "Dropped requirement: EU data residency (blocking)");
     // the screen frames the case with single-source copy, not hardcoded strings
-    assert.equal(SCREEN_COPY.governanceCase.title, "Governance case");
+    assert.equal(SCREEN_COPY.governanceCase.title, "Liminal flags the drift");
     assert.ok(
       SCREEN_COPY.governanceCase.intro.length > 0,
       "the GovernanceCase screen has intro copy",
@@ -335,7 +335,7 @@ test(
 test("beat #6 — Operator clicks Approve + Enforce (correct): the app enforce-handler runs the real use case", async () => {
   const enforced = await demoEnforce();
   // runApproveAndEnforce is the desktop-demo composition root the Approve + Enforce button triggers.
-  assert.equal(SCREEN_COPY.enforcementPanel.title, "Approve + Enforce");
+  assert.equal(SCREEN_COPY.enforcementPanel.title, "The operator approves correction");
   assert.equal(enforced.enforcement.caseId, acmeScenario.governanceCase.id, "the click enforces the open case");
   assert.equal(enforced.enforcement.actor, OPERATOR_ROLE, "the deciding actor is the operator role");
 });

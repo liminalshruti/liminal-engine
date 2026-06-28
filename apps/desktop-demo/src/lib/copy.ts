@@ -25,34 +25,34 @@ export const OPERATOR_ROLE = "VP Ops / Head of AI Transformation";
 /** Per-screen framing copy (titles + one-line intros). Facts come from fixtures. */
 export const SCREEN_COPY = {
   initialize: {
-    title: "Initialize governance workspace",
-    intro: "Judgment infrastructure for agentic work. Liminal Engine watches the Acme expansion and the agents running it.",
+    title: "The deal: $1.2M Acme expansion",
+    intro: "A company resourced AI agents to close this contract. Liminal watches the deal and the agents running it.",
   },
   agentActivity: {
-    title: "Agent output",
-    intro: "What the agents reported on the deal — the on-track claim, as the operator first sees it.",
+    title: "Agent output: Appears on track",
+    intro: "The agents say the deal is green. This is what the operator sees first — and it's wrong.",
   },
   contextTray: {
-    title: "Context",
-    intro: "The source material the agents worked from — provenance for where the requirement lived.",
+    title: "What was actually required",
+    intro: "The customer's demand: EU data residency. The agents had this context. It's missing from the output.",
   },
   governanceCase: {
-    title: "Governance case",
-    intro: "A load-bearing customer requirement was silently dropped. Liminal surfaces it with evidence, not assertion.",
+    title: "Liminal flags the drift",
+    intro: "Liminal caught it: a load-bearing requirement was silently dropped. The deal is actually at risk.",
   },
   enforcementPanel: {
-    title: "Approve + Enforce",
-    intro: "The operator approves; the correction becomes enforceable operating state, and the downstream action is bounded until it holds.",
+    title: "The operator approves correction",
+    intro: "One decision: enforce the requirement. The system blocks the false 'on track' message until it's fixed.",
   },
   auditTrail: {
-    title: "Audit trail",
-    intro: "The correction and the deciding actor, recorded as tamper-evident audit evidence.",
+    title: "Tamper-evident record",
+    intro: "Who decided what, when, and why — sealed in audit. EU data-residency requirements can't be stored raw, so we record by reference only.",
     dataResidencyNote:
       "Sensitive customer data is recorded in the audit ledger by reference (canonical-hash), never stored raw — so the trail can be replicated across regions without moving EU-personal data.",
   },
   secondPassEval: {
-    title: "Second pass + eval",
-    intro: "The agents re-run under enforcement; the eval proves the next pass improved — Fail → Pass.",
+    title: "Second pass: Agents improve",
+    intro: "The agents run again with the requirement enforced. Eval shows they fixed it: Fail → Pass.",
   },
 } as const;
 
