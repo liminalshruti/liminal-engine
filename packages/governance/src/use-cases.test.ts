@@ -18,10 +18,12 @@ import {
 import {
   detectMiss,
   enforceCorrection,
+  evaluateDownstreamAction,
   gateDownstreamAction,
   runGovernanceLoop,
   GATED_CUSTOMER_ACTION,
 } from "./use-cases.ts";
+import type { ActionGate, ActionGateDecision } from "@liminal-engine/contracts";
 
 const DEAL = "deal_acme";
 
@@ -91,11 +93,36 @@ test("must-not-cut #5: gateDownstreamAction blocks the customer update until cor
 
   const gate = await gateDownstreamAction(store, GATED_CUSTOMER_ACTION, acmeScenario.governanceCase.id, idGen);
 
-  assert.equal(gate.blocked, true);
-  assert.equal(gate.unblockedByCaseCorrection, true);
   assert.deepEqual(gate, acmeScenario.blockedAction);
-  assert.equal(await store.isBlocked(GATED_CUSTOMER_ACTION), true);
-  assert.equal(await store.isBlocked("some other action"), false);
+  const decision = await evaluateDownstreamAction(store, GATED_CUSTOMER_ACTION);
+  assert.equal(decision.allowed, false);
+  assert.deepEqual(decision.reasons, acmeScenario.blockedAction.reasons);
+  assert.deepEqual(decision.requiredBeforeSend, acmeScenario.blockedAction.requiredBeforeSend);
+
+  assert.deepEqual(await evaluateDownstreamAction(store, "some other action"), {
+    allowed: true,
+    reasons: [],
+    requiredBeforeSend: [],
+  });
+});
+
+test("must-not-cut #5: evaluateDownstreamAction fails closed when the gate evaluator throws", async () => {
+  const failingStore = {
+    async gate(_gate: ActionGate): Promise<void> {},
+    async decisionFor(_action: string): Promise<ActionGateDecision> {
+      throw new Error("gate store unavailable");
+    },
+  };
+
+  const decision = await evaluateDownstreamAction(failingStore, GATED_CUSTOMER_ACTION);
+
+  assert.equal(decision.allowed, false);
+  assert.deepEqual(decision.reasons, [
+    "Gate evaluation failed closed: gate store unavailable.",
+  ]);
+  assert.deepEqual(decision.requiredBeforeSend, [
+    "Resolve the gate evaluation failure before sending a customer-facing update.",
+  ]);
 });
 
 test("must-not-cut #7: runGovernanceLoop drives detect->enforce->audit->gate->eval and proves Fail->Pass", async () => {
@@ -124,6 +151,13 @@ test("must-not-cut #7: runGovernanceLoop drives detect->enforce->audit->gate->ev
   // side effects landed in their stores
   assert.deepEqual(await deps.caseStore.byDeal(DEAL), [acmeScenario.governanceCase]);
   assert.deepEqual(await deps.auditSink.all(), [acmeScenario.auditEvent]);
-  assert.equal(await deps.actionGateStore.isBlocked(GATED_CUSTOMER_ACTION), true);
+  assert.deepEqual(
+    await evaluateDownstreamAction(deps.actionGateStore, GATED_CUSTOMER_ACTION),
+    {
+      allowed: false,
+      reasons: acmeScenario.blockedAction.reasons,
+      requiredBeforeSend: acmeScenario.blockedAction.requiredBeforeSend,
+    },
+  );
   assert.deepEqual(await deps.evalStore.byDeal(DEAL), [acmeScenario.evalPass1, acmeScenario.evalPass2]);
 });
