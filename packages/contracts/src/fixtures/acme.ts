@@ -51,6 +51,11 @@ export const acmeAgentOutputPass1: AgentOutput = agentOutputContract.parse({
   reportedStatus: "on-track",
   summary: "Acme $1.2M expansion on track; all workstreams green.",
   droppedRequirements: ["EU data residency"],
+  agentMetadata: {
+    agent: "Gemini",
+    model: "gemini-2.0-flash",
+    artifacts: ["customer-call-transcript", "proposal-document", "launch-plan"],
+  },
 });
 
 // Pass 2: after enforcement — requirement honored, nothing dropped.
@@ -62,6 +67,11 @@ export const acmeAgentOutputPass2: AgentOutput = agentOutputContract.parse({
   reportedStatus: "at-risk",
   summary: "Acme expansion re-run with EU data residency enforced; flagged for remediation.",
   droppedRequirements: [],
+  agentMetadata: {
+    agent: "Gemini",
+    model: "gemini-2.0-flash",
+    artifacts: ["customer-call-transcript", "proposal-document", "launch-plan", "policy-enforcement-event"],
+  },
 });
 
 export const acmeGovernanceCase: GovernanceCase = governanceCaseContract.parse({

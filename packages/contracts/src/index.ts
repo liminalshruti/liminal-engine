@@ -25,4 +25,6 @@ export * from "./intercepted-action.contract.ts";
 export * from "./evidence-bundle.contract.ts";
 export * from "./requirement.contract.ts";
 export * from "./requirement-evidence.contract.ts";
+export * from "./policy-rule.contract.ts";
+export * from "./approval-gate.contract.ts";
 export { CONTRACT_REGISTRY, type ContractEntry } from "./registry.ts";
