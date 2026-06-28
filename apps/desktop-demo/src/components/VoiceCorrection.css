@@ -8,9 +8,9 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  border: 1px solid var(--diligence, #333);
+  border: 1px solid var(--diligence);
   border-radius: 4px;
-  background: var(--ambient-bg, #fafafa);
+  background: var(--ambient-bg);
 }
 
 .voice-correction__header {
@@ -24,13 +24,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--diligence, #666);
+  color: var(--diligence);
   margin: 0;
 }
 
 .voice-correction__description {
   font-size: 0.95rem;
-  color: var(--judgment, #555);
+  color: var(--judgment);
   margin: 0;
   line-height: 1.4;
 }
@@ -49,16 +49,17 @@
   padding: 0.75rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 500;
-  color: white;
-  background: var(--signal, #0066cc);
+  color: var(--ink-on-accent);
+  background: var(--signal);
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 200ms ease-out, transform 150ms ease-out;
+  transition: background var(--govern-duration-base) var(--govern-ease-out),
+              transform var(--govern-duration-fast) var(--govern-ease-out);
 }
 
 .voice-correction__button:hover:not(:disabled) {
-  background: var(--watch, #0052a3);
+  background: var(--watch);
   transform: scale(1.02);
 }
 
@@ -74,11 +75,11 @@
 .voice-correction__icon {
   font-size: 1.25rem;
   display: inline-block;
-  transition: transform 300ms ease-in-out;
+  transition: transform var(--govern-duration-settle) var(--govern-ease-standard);
 }
 
 .voice-correction__icon.is-listening {
-  animation: pulse-scale 1.5s ease-in-out infinite;
+  animation: pulse-scale var(--govern-duration-pulse) var(--govern-ease-standard) infinite;
 }
 
 @keyframes pulse-scale {
@@ -103,15 +104,15 @@
 
 .voice-correction__transcript {
   padding: 1rem;
-  background: white;
-  border: 1px solid var(--synthesis, #ddd);
+  background: var(--paper-bg);
+  border: 1px solid var(--synthesis);
   border-radius: 4px;
 }
 
 .voice-correction__status {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--ambient, #0d7c0d);
+  color: var(--ambient);
   margin: 0 0 0.75rem 0;
 }
 
@@ -129,12 +130,12 @@
 
 .voice-correction__speaker {
   font-weight: 600;
-  color: var(--judgment, #555);
+  color: var(--judgment);
   flex-shrink: 0;
 }
 
 .voice-correction__text-content {
-  color: var(--depth, #333);
+  color: var(--depth);
   line-height: 1.4;
 }
 
@@ -149,7 +150,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--diligence, #666);
+  color: var(--diligence);
   margin: 0;
 }
 
@@ -159,8 +160,8 @@
   gap: 0.5rem;
   flex-wrap: wrap;
   padding: 1rem;
-  background: white;
-  border: 1px solid var(--synthesis, #ddd);
+  background: var(--paper-bg);
+  border: 1px solid var(--synthesis);
   border-radius: 4px;
   font-size: 0.85rem;
 }
@@ -171,22 +172,22 @@
   justify-content: center;
   padding: 0.5rem 0.75rem;
   border-radius: 3px;
-  background: var(--ambient-bg, #f0f0f0);
-  border: 1px solid var(--synthesis, #ddd);
+  background: var(--ambient-bg);
+  border: 1px solid var(--synthesis);
   white-space: nowrap;
 }
 
 .voice-correction__step--done {
-  background: var(--ambient, #e8f5e9);
-  border-color: var(--ambient, #4caf50);
-  color: var(--ambient, #2e7d32);
+  background: var(--ambient);
+  border-color: var(--ambient);
+  color: var(--ambient);
   font-weight: 600;
 }
 
 .voice-correction__step--next {
-  background: white;
-  border-color: var(--outreach, #999);
-  color: var(--judgment, #666);
+  background: var(--paper-bg);
+  border-color: var(--outreach);
+  color: var(--judgment);
 }
 
 .voice-correction__step-label {
@@ -194,7 +195,7 @@
 }
 
 .voice-correction__step-arrow {
-  color: var(--judgment, #999);
+  color: var(--judgment);
   font-weight: 500;
   padding: 0 0.25rem;
 }
@@ -203,25 +204,56 @@
 .voice-correction__reset {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
-  color: var(--signal, #0066cc);
+  color: var(--signal);
   background: transparent;
-  border: 1px solid var(--signal, #0066cc);
+  border: 1px solid var(--signal);
   border-radius: 3px;
   cursor: pointer;
-  transition: all 200ms ease-out;
+  transition: all var(--govern-duration-base) var(--govern-ease-out);
 }
 
 .voice-correction__reset:hover {
-  background: var(--signal, #0066cc);
-  color: white;
+  background: var(--signal);
+  color: var(--ink-on-accent);
+}
+
+/* LiveKit status message */
+.voice-correction__status-message {
+  padding: 0.75rem 1rem;
+  background: var(--govern-state-forwarded-bg);
+  border: 1px solid var(--govern-state-forwarded-border);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--govern-state-forwarded-text);
+  line-height: 1.4;
+}
+
+/* Truthful "transcription not wired" placeholder under the live indicator */
+.voice-correction__placeholder {
+  font-size: 0.85rem;
+  color: var(--judgment);
+  margin: 0;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* Truthful "live unavailable — server creds not configured" state */
+.voice-correction__unavailable {
+  padding: 0.75rem 1rem;
+  background: var(--ambient-bg);
+  border: 1px dashed var(--outreach);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--judgment);
+  line-height: 1.4;
 }
 
 /* Error display */
 .voice-correction__error {
   padding: 0.75rem 1rem;
-  background: #fce4ec;
-  border: 1px solid #f06292;
+  background: var(--govern-state-blocked-bg);
+  border: 1px solid var(--govern-state-blocked-border);
   border-radius: 4px;
   font-size: 0.875rem;
-  color: #c2185b;
+  color: var(--govern-state-blocked-text);
 }

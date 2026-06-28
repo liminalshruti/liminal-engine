@@ -1,0 +1,15 @@
+{
+  "id": "eb_acme_real",
+  "goalId": "goal_acme_expansion",
+  "dealId": "deal_acme",
+  "capturedAt": "2026-06-27T09:30:00.000Z",
+  "sources": {
+    "calls/acme-kickoff.vtt": { "title": "Acme expansion kickoff call" },
+    "proposals/acme-expansion-proposal.md": { "title": "Acme expansion proposal v3" },
+    "sow/acme-statement-of-work.md": { "title": "Acme statement of work" },
+    "emails/acme-procurement.eml": { "title": "Acme procurement thread" },
+    "slack/acme-deal-room.slack.json": { "title": "Acme deal room (Slack)" },
+    "linear/acme-readiness.linear.json": { "title": "Acme EU data residency readiness (Linear)" },
+    "agent/deal-desk-pass1.agent.json": { "title": "Deal-desk agent pass 1 report" }
+  }
+}

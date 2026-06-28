@@ -4,6 +4,10 @@ import { test } from "node:test";
 
 const appCss = await readSource("./styles/app.css");
 const designTokens = await readSource("./styles/design-tokens.css");
+const sharedTokens = await readFile(
+  new URL("../../../packages/ui-components/src/styles/govern-slate.css", import.meta.url),
+  "utf8",
+);
 const appShell = await readSource("./App.tsx");
 const evalTable = await readSource("./components/EvalTable.tsx");
 const secondPassEval = await readSource("./screens/SecondPassEval.tsx");
@@ -42,7 +46,7 @@ function contrastRatio(foreground: string, background: string): number {
 }
 
 function cssHexVariable(name: string): string {
-  let source = appCss + designTokens; // Check both files
+  const source = appCss + designTokens + sharedTokens;
   const pattern = new RegExp(`--${name}:\\s*([^;]+);`);
   let match = pattern.exec(source);
   assert.ok(match, `missing CSS color variable --${name}`);
@@ -83,9 +87,9 @@ test("LIM-1244: focus styles and tap targets are explicitly guarded in CSS", () 
 });
 
 test("LIM-1244: status and eval semantic colors meet WCAG AA text contrast on demo surfaces", () => {
-  const stageSurface = "#0C0C0F";
-  const frameSurface = "#0E0E11";
-  const railSurface = "#08080A";
+  const stageSurface = cssHexVariable("frame-bg-2");
+  const frameSurface = cssHexVariable("frame-bg");
+  const railSurface = cssHexVariable("rail-bg");
   const passText = cssHexVariable("demo-pass-text");
   const failText = cssHexVariable("demo-fail-text");
   const focusRing = cssHexVariable("demo-focus-ring");

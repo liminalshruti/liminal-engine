@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "linear:remediation": "node --experimental-strip-types src/remediation-cli.ts"
+  },
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/governance": "workspace:*"

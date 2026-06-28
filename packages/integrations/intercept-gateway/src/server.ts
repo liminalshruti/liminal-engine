@@ -1,5 +1,5 @@
 import http, { type IncomingMessage, type ServerResponse } from "node:http";
-import type { InterceptedAction } from "@liminal-engine/contracts";
+import type { ActionPolicyRule, InterceptedAction } from "@liminal-engine/contracts";
 import type { PolicyMode, ProxyScope } from "@liminal-engine/policy";
 import type {
   OperatorVerdictInput,
@@ -8,10 +8,21 @@ import type {
   RepeaterInput,
 } from "./gateway.ts";
 import type { MatchReplaceRule } from "./match-replace.ts";
+import { computeGatewayMetrics, emptyGatewayMetrics, type GatewayMetrics } from "./metrics.ts";
 
-export function createDecisionServer(gateway: InterceptGateway): http.Server {
+/**
+ * Read side the /metrics route needs beyond what the gateway already exposes.
+ * The gateway publishes the active-rule *count* (health) but not the rules
+ * themselves, which per-rule eval health requires — so the composition root
+ * supplies the read accessor (e.g. PolicyStore.activeRules).
+ */
+export interface MetricsDeps {
+  activeRules(): Promise<readonly ActionPolicyRule[]>;
+}
+
+export function createDecisionServer(gateway: InterceptGateway, metricsDeps?: MetricsDeps): http.Server {
   return http.createServer((req, res) => {
-    void route(req, res, gateway);
+    void route(req, res, gateway, metricsDeps);
   });
 }
 
@@ -19,12 +30,18 @@ async function route(
   req: IncomingMessage,
   res: ServerResponse,
   gateway: InterceptGateway,
+  metricsDeps: MetricsDeps | undefined,
 ): Promise<void> {
   try {
     const url = new URL(req.url ?? "/", "http://127.0.0.1");
 
     if (req.method === "GET" && url.pathname === "/health") {
       sendJson(res, 200, await gateway.health());
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === "/metrics") {
+      sendJson(res, 200, await readMetrics(gateway, metricsDeps));
       return;
     }
 
@@ -136,6 +153,26 @@ async function route(
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown error";
     sendJson(res, 400, { error: message });
+  }
+}
+
+/**
+ * /metrics is a pure read over current state and is fail-closed: on any store
+ * error it returns a zeroed snapshot instead of throwing, so a degraded store
+ * can never take the endpoint (or its callers) down.
+ */
+async function readMetrics(
+  gateway: InterceptGateway,
+  metricsDeps: MetricsDeps | undefined,
+): Promise<GatewayMetrics> {
+  try {
+    const [history, activeRules] = await Promise.all([
+      gateway.history(),
+      metricsDeps === undefined ? Promise.resolve<readonly ActionPolicyRule[]>([]) : metricsDeps.activeRules(),
+    ]);
+    return computeGatewayMetrics({ history, activeRules });
+  } catch {
+    return emptyGatewayMetrics();
   }
 }
 

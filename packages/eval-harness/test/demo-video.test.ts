@@ -35,7 +35,7 @@ test("demo video (LIM-1197): recording directory exists", async () => {
   assert.ok(entries.length >= 0, "demos/recordings/ directory is readable");
 });
 
-test("demo video (LIM-1197): video file is present or noted as not-yet-recorded", async () => {
+test("demo video (LIM-1197): video file is present or noted as not-yet-recorded", async (t) => {
   // Informational, never skipped (a skipped test is a false green — spine-guard
   // rule). The video is a MANUAL recording (not CI-built), so its absence logs a
   // reminder rather than failing; when present, it must be a real non-zero file.
@@ -49,11 +49,11 @@ test("demo video (LIM-1197): video file is present or noted as not-yet-recorded"
   });
 
   if (videoFiles.length === 0) {
-    console.log(
-      "  ⓘ  No demo video found in demos/recordings/ (LIM-1197). " +
-        "This is a manual recording task — record before final submission."
+    t.diagnostic(
+      "  [i] No demo video found in demos/recordings/ (LIM-1197). " +
+        "This is a manual recording task - record before final submission."
     );
-    return; // optional artifact, not a build gate — but NOT skipped
+    return; // optional artifact, not a build gate - but NOT skipped
   }
 
   // When a video IS present, it must be a real, readable, non-zero file.

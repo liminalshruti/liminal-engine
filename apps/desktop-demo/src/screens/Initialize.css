@@ -15,15 +15,15 @@
 
 /* ── Initialize workspace card: soft diligence glow wash ── */
 .initialize__workspace-card {
-  background: var(--diligence-glow, rgba(142,102,251,0.20));
-  padding: var(--space-6, 28px) var(--space-6, 28px) calc(var(--space-6, 28px) + var(--space-2, 8px));
-  border: 1px solid var(--card-border, #232327);
-  border-radius: var(--radius-3, 4px);
+  background: var(--diligence-glow);
+  padding: var(--space-6) var(--space-6) calc(var(--space-6) + var(--space-2));
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-3);
 }
 
 /* ── card title animation: fade-in on beat entry ── */
 .initialize__workspace-card .card__title {
-  animation: screen-title-fade var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+  animation: screen-title-fade var(--tx-settle) var(--ease);
   animation-fill-mode: both;
 }
 
@@ -35,26 +35,26 @@
 
 /* ── screen intro text: softer intro prose ── */
 .screen--initialize .screen__intro {
-  color: var(--text-soft, #B8B5AE);
+  color: var(--text-soft);
   font-size: 1.05rem;
   line-height: 1.55;
-  margin-bottom: var(--space-4, 16px);
+  margin-bottom: var(--space-4);
 }
 
 /* ── fact pairs: clear hierarchy ── */
 .screen--initialize .screen__fact {
-  margin-bottom: var(--space-2, 8px);
+  margin-bottom: var(--space-2);
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--text, #F4F2EE);
+  color: var(--text);
 }
 
 .screen--initialize .screen__fact strong {
-  color: var(--diligence, #8E66FB);
+  color: var(--diligence);
   font-weight: 600;
 }
 
 /* ── spacing context for Initialize screen ── */
 .screen--initialize {
-  gap: var(--space-5, 20px);
+  gap: var(--space-5);
 }

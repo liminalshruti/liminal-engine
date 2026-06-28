@@ -1,42 +1,86 @@
 /**
- * LiveKit adapter — REAL voice-capture implementation with FALLBACK-SAFE degradation.
+ * LiveKit adapter — SERVER-ONLY join-token minting for genuinely-live rooms.
  *
- * This is a REAL LiveKit integration that uses the SDK to capture voice transcripts.
- * If LiveKit is unavailable (missing creds, network failure, SDK error), it falls back
- * to the scripted/fixture transcript — never breaks the demo spine.
+ * This package uses `livekit-server-sdk` (AccessToken) and reads the LiveKit API
+ * SECRET from SERVER env. It must NEVER be imported by the browser bundle.
  *
- * Port contract: matches the TranscriptLine interface + transcript function for direct
- * swapping with the prior fixture stub.
+ * The genuinely-live path is:
+ *   browser (apps/desktop-demo VoiceCorrection, livekit-client)
+ *     → POST /livekit/token on apps/api
+ *       → mintLiveKitToken() here (livekit-server-sdk, LIVEKIT_API_SECRET, server env)
+ *     ← { token, url }
+ *   browser → new Room(); room.connect(url, token); publish REAL microphone track.
+ *
+ * NO transcript fixtures live here. There is no STT in this build, so we do not
+ * fabricate a transcript — the browser publishes the operator's real microphone
+ * audio and reports the published-track state truthfully.
  */
 
-export interface TranscriptLine {
-  speaker: string; // a ROLE, never an invented persona name
-  text: string;
-}
-
-/**
- * Configuration for LiveKit connection. Read from process.env if .env.local is loaded.
- */
+/** Resolved LiveKit server configuration (server env). */
 export interface LiveKitConfig {
   url: string;
   apiKey: string;
   apiSecret: string;
 }
 
-/**
- * Check if LiveKit credentials are available in the environment.
- */
+/** What the browser needs to join + publish: a signed JWT and the server URL. */
+export interface LiveKitToken {
+  /** Signed JWT the browser passes to `room.connect(url, token)`. */
+  token: string;
+  /** LiveKit server ws/wss URL (from LIVEKIT_URL) the browser connects to. */
+  url: string;
+}
+
+/** Inputs for a join token. */
+export interface MintTokenParams {
+  /** Room name to join (LiveKit auto-creates the room on first join). */
+  room: string;
+  /** Participant identity encoded into the token. */
+  identity: string;
+}
+
+/** The video grant we attach — narrow, explicit, and asserted by tests. */
+export interface AccessTokenVideoGrant {
+  room: string;
+  roomJoin: boolean;
+  canPublish: boolean;
+  canPublishData: boolean;
+  canSubscribe: boolean;
+}
+
+/** Structural slice of livekit-server-sdk's AccessToken we depend on. */
+export interface AccessTokenLike {
+  addGrant(grant: AccessTokenVideoGrant): void;
+  toJwt(): Promise<string>;
+}
+
+/** Constructor shape so an offline test can inject a fake AccessToken. */
+export interface AccessTokenCtor {
+  new (
+    apiKey: string,
+    apiSecret: string,
+    options?: { identity?: string },
+  ): AccessTokenLike;
+}
+
+/** Injection seams so mintLiveKitToken can be exercised fully OFFLINE. */
+export interface MintTokenDeps {
+  /** Defaults to reading LiveKit creds from server env via getLiveKitConfig(). */
+  config?: LiveKitConfig;
+  /** Defaults to the real livekit-server-sdk AccessToken. */
+  accessTokenCtor?: AccessTokenCtor;
+}
+
+/** True when all three LiveKit server env vars are present. */
 export function hasLiveKitConfig(): boolean {
   return Boolean(
     process.env.LIVEKIT_URL &&
-    process.env.LIVEKIT_API_KEY &&
-    process.env.LIVEKIT_API_SECRET
+      process.env.LIVEKIT_API_KEY &&
+      process.env.LIVEKIT_API_SECRET,
   );
 }
 
-/**
- * Get LiveKit config from environment. Throws if any required key is missing.
- */
+/** Read LiveKit config from server env. Throws if any required var is missing. */
 export function getLiveKitConfig(): LiveKitConfig {
   const url = process.env.LIVEKIT_URL;
   const apiKey = process.env.LIVEKIT_API_KEY;
@@ -44,7 +88,7 @@ export function getLiveKitConfig(): LiveKitConfig {
 
   if (!url || !apiKey || !apiSecret) {
     throw new Error(
-      "LiveKit credentials missing: LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET required"
+      "LiveKit credentials missing: LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET required",
     );
   }
 
@@ -52,102 +96,36 @@ export function getLiveKitConfig(): LiveKitConfig {
 }
 
 /**
- * Fallback scripted transcript used when LiveKit is unavailable.
- * This ensures the demo spine never breaks due to missing credentials or connection issues.
- */
-function scriptedFallbackTranscript(): TranscriptLine[] {
-  return [
-    { speaker: "the operator", text: "Acme shows on-track — but did we keep EU data residency?" },
-    { speaker: "Liminal Engine", text: "No. It was silently dropped. Opening a governance case." },
-    { speaker: "the operator", text: "Approve and enforce the correction." },
-  ];
-}
-
-/**
- * Capture transcript from a live LiveKit room with voice transcription.
+ * Mint a LiveKit join token SERVER-SIDE.
  *
- * This attempts to:
- * 1. Connect to the LiveKit room using real SDK credentials
- * 2. Capture the operator's voice correction
- * 3. Transcribe it using LiveKit's transcription services
- * 4. Return structured transcript lines (speaker + text)
+ * Uses the API secret (server env) to sign a JWT that grants the browser
+ * participant `roomJoin` + `canPublish` (+ data/subscribe) for the given room.
+ * The secret is used here and NEVER leaves the server — only the signed JWT does.
  *
- * If any step fails, logs the error and falls back to the scripted transcript,
- * ensuring the demo spine never depends on a live network call.
- *
- * FALLBACK-SAFE: always returns a valid TranscriptLine[], never throws.
+ * Throws if credentials are not configured (callers surface this as HTTP 503;
+ * there is NO scripted fallback).
  */
-export async function captureVoiceTranscript(roomName: string = "correction-room"): Promise<TranscriptLine[]> {
-  if (!hasLiveKitConfig()) {
-    console.debug(
-      "[LiveKit] Credentials not found (LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET). Using fallback fixture."
-    );
-    return scriptedFallbackTranscript();
-  }
+export async function mintLiveKitToken(
+  params: MintTokenParams,
+  deps: MintTokenDeps = {},
+): Promise<LiveKitToken> {
+  const config = deps.config ?? getLiveKitConfig(); // throws if creds absent
 
-  try {
-    const config = getLiveKitConfig();
+  const Ctor: AccessTokenCtor =
+    deps.accessTokenCtor ?? (await import("livekit-server-sdk")).AccessToken;
 
-    // Import here to avoid requiring the SDK if creds aren't present
-    // (allows tests + demo to run headless without livekit SDK issues)
-    const { AccessToken } = await import("livekit-server-sdk");
+  const at = new Ctor(config.apiKey, config.apiSecret, {
+    identity: params.identity,
+  });
 
-    // Create a token for a bot/participant that will join the room
-    // and capture the transcript
-    const at = new AccessToken(config.apiKey, config.apiSecret);
-    const identity = `bot-${Date.now()}`;
+  at.addGrant({
+    room: params.room,
+    roomJoin: true,
+    canPublish: true, // the browser publishes its REAL microphone track
+    canPublishData: true,
+    canSubscribe: true,
+  });
 
-    at.addGrant({
-      room: roomName,
-      roomJoin: true,
-      canPublish: false,
-      canPublishData: true,
-      canSubscribe: true,
-    });
-
-    const token = await at.toJwt();
-
-    // In a real implementation, this would:
-    // 1. Use the livekit-client SDK to connect to LiveKit
-    // 2. Subscribe to room events and participant publications
-    // 3. Capture transcription data from participants
-    // 4. Return the parsed transcript
-    //
-    // For the demo, we log the successful credential setup and return the
-    // fixture transcript. This proves the LiveKit path is wired correctly
-    // and credentials are valid, while keeping the demo deterministic.
-
-    console.debug(
-      `[LiveKit] AccessToken generated for identity="${identity}", room="${roomName}". ` +
-      `URL: ${config.url} · ` +
-      `Token (first 50 chars): ${token.substring(0, 50)}... ` +
-      `In production, this would connect to LiveKit and capture real transcription. ` +
-      `Using demonstration fixture for now.`
-    );
-
-    // Return a marked transcript indicating this would be real voice in production
-    const demoTranscript = scriptedFallbackTranscript();
-    // Add metadata to indicate attempt was made to use real LiveKit
-    (demoTranscript as any)._liveKitAttempted = true;
-
-    return demoTranscript;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.warn(
-      `[LiveKit] Failed to capture voice transcript: ${message}. Falling back to fixture.`,
-      err
-    );
-
-    // Never let a LiveKit failure break the demo spine
-    return scriptedFallbackTranscript();
-  }
-}
-
-/**
- * Synchronous fallback for demo initialization or testing contexts where
- * async is not available. Returns the scripted fixture without attempting
- * a live connection.
- */
-export function scriptedTranscript(): TranscriptLine[] {
-  return scriptedFallbackTranscript();
+  const token = await at.toJwt();
+  return { token, url: config.url };
 }
