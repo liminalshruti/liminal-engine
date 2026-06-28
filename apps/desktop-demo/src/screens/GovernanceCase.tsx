@@ -107,7 +107,6 @@ export function GovernanceCase() {
               {c.status}
             </span>
           </div>
-        </div>
 
           {/* Metadata facts grid */}
           <dl className="case__facts">
@@ -211,10 +210,6 @@ export function GovernanceCase() {
       )}
     </section>
   );
-}
-
-export function GovernanceCase() {
-  return <GovernanceCaseContent />;
 }
 
 export default GovernanceCase;
