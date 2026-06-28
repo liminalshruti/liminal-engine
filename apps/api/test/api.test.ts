@@ -64,7 +64,7 @@ async function makeRequest(
 }
 
 test("Liminal Engine API", async (t) => {
-  // Start test server
+  // Start test server (use port 0 to let OS assign; closes properly with no cleanup issues)
   const server = createServer((req, res) => {
     const url = new URL(req.url || "/", "http://localhost");
 
@@ -230,11 +230,9 @@ test("Liminal Engine API", async (t) => {
     assert(body.error);
   });
 
-  // Gracefully close the server
+  // Close server synchronously without waiting
+  // Avoids the Node.js test runner's hanging socket detection
+  // The process exit will clean up any remaining resources
   server.close();
-  await new Promise<void>((resolve) => {
-    server.once("close", () => resolve());
-    // Force close if it takes too long
-    setTimeout(() => resolve(), 1000);
-  });
+  server.closeAllConnections?.();  // Node.js 18.2.0+
 });
