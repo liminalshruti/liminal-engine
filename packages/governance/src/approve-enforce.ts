@@ -26,8 +26,8 @@ import type {
   DealStatus,
 } from "@liminal-engine/contracts";
 import {
-  enforceCorrection,
-  gateDownstreamAction,
+  buildEnforcement,
+  buildGate,
   type Clock,
   type IdGen,
 } from "./use-cases.ts";
@@ -65,30 +65,40 @@ export interface ApproveAndEnforceResult {
 }
 
 /**
- * The enforce handler. Atomic: enforce the correction (status flip + audit) then
- * open the action gate for the downstream blocked action. Returns the resulting
- * operating state. Rejects (via enforceCorrection) if the deal is not on-track —
- * there is nothing to enforce on an already at-risk deal.
+ * The enforce handler. Atomic: enforce the correction (status flip + audit) and
+ * open the action gate for the downstream blocked action, returning the resulting
+ * operating state. Rejects (via buildEnforcement) if the deal is not on-track —
+ * there is nothing to enforce on an already at-risk deal, and nothing is
+ * persisted in that case.
+ *
+ * Ordering is deliberate and has two distinct concerns:
+ *   - IDENTITY: the effects are BUILT in the canonical order enforcement(action,
+ *     audit) → gate, so the deterministic idGen/clock assign the same fixture
+ *     ids/timestamps the rest of the spine (runGovernanceLoop, the locked Acme
+ *     fixtures) expects. Reordering the build would reshuffle those ids.
+ *   - PERSISTENCE (fail-closed): the protective gate is OPENED FIRST, then the
+ *     audit is recorded. If the audit sink fails mid-way the gate is already in
+ *     place, so we never leave a half-enforced, UN-GATED at-risk state (which
+ *     would defeat must-not-cut #5); if the gate write itself fails, nothing was
+ *     persisted at all. buildEnforcement validates on-track up front, so a deal
+ *     with nothing to enforce never opens a gate.
  */
 export async function approveAndEnforce(
   input: ApproveAndEnforceInput,
   deps: ApproveAndEnforceDeps,
 ): Promise<ApproveAndEnforceResult> {
-  // 1. Enforce the correction — flip status on-track → at-risk + record audit.
-  const { action, audit } = await enforceCorrection(
+  // Build effects in canonical id/clock order (validates on-track; no I/O yet).
+  const { action, audit } = buildEnforcement(
     input.caseId,
     input.dealId,
     input.currentStatus,
-    { auditSink: deps.auditSink, clock: deps.clock, idGen: deps.idGen },
+    { clock: deps.clock, idGen: deps.idGen },
   );
+  const gate = buildGate(input.gatedAction, input.caseId, deps.idGen);
 
-  // 2. Open the action-gate state for the downstream blocked action.
-  const gate = await gateDownstreamAction(
-    deps.actionGateStore,
-    input.gatedAction,
-    input.caseId,
-    deps.idGen,
-  );
+  // Persist fail-closed: open the protective gate first, then record the audit.
+  await deps.actionGateStore.gate(gate);
+  await deps.auditSink.record(audit);
 
   return { status: action.toStatus, enforcement: action, audit, gate };
 }

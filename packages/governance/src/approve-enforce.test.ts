@@ -18,6 +18,7 @@ import {
 } from "@liminal-engine/integration-fixture-determinism";
 import { approveAndEnforce } from "./approve-enforce.ts";
 import { GATED_CUSTOMER_ACTION } from "./use-cases.ts";
+import type { AuditSink } from "./ports.ts";
 
 const DEAL = "deal_acme";
 
@@ -107,6 +108,7 @@ test("LIM-1169: enforce + gate happen together — one operator action yields bo
 });
 
 test("LIM-1169: approveAndEnforce refuses when the deal is not on-track (nothing to enforce)", async () => {
+  const actionGateStore = new InMemoryActionGateStore();
   await assert.rejects(
     () =>
       approveAndEnforce(
@@ -118,11 +120,51 @@ test("LIM-1169: approveAndEnforce refuses when the deal is not on-track (nothing
         },
         {
           auditSink: new InMemoryAuditSink(),
-          actionGateStore: new InMemoryActionGateStore(),
+          actionGateStore,
           clock: createAcmeClock(),
           idGen: createAcmeIdGen(),
         },
       ),
     /at-risk/,
+  );
+
+  // a refused enforcement persists NOTHING — no gate is opened on the refusal path
+  assert.equal(
+    (await actionGateStore.decisionFor(GATED_CUSTOMER_ACTION)).allowed,
+    true,
+  );
+});
+
+test("LIM-1169: fail-closed — if the audit sink throws, the protective gate is still in place (never an un-gated at-risk)", async () => {
+  const deps = enforceDeps();
+  // an audit sink that fails on write, simulating a mid-enforcement failure
+  const throwingAuditSink: AuditSink = {
+    async record(): Promise<void> {
+      throw new Error("audit sink unavailable");
+    },
+    async all() {
+      return [];
+    },
+  };
+
+  await assert.rejects(
+    () =>
+      approveAndEnforce(
+        {
+          caseId: acmeScenario.governanceCase.id,
+          dealId: DEAL,
+          currentStatus: "on-track",
+          gatedAction: GATED_CUSTOMER_ACTION,
+        },
+        { ...deps, auditSink: throwingAuditSink },
+      ),
+    /audit sink unavailable/,
+  );
+
+  // the gate was opened BEFORE the audit write failed → the downstream action
+  // stays blocked even though enforcement failed mid-way (fail-closed, MNC#5)
+  assert.equal(
+    (await deps.actionGateStore.decisionFor(GATED_CUSTOMER_ACTION)).allowed,
+    false,
   );
 });

@@ -83,6 +83,54 @@ export interface EnforceDeps {
   idGen: IdGen;
 }
 
+/** Deterministic sources of identity + time only (no I/O ports). */
+export interface IdentityClock {
+  clock: Clock;
+  idGen: IdGen;
+}
+
+/**
+ * buildEnforcement — construct the EnforcementAction + AuditEvent for a
+ * correction WITHOUT persisting anything. Consumes the idGen twice (action,
+ * audit) and the clock twice (enforcedAt, recordedAt) in that fixed order, and
+ * throws (via the pure engine-core state machine) when there is nothing to
+ * enforce. Separated from persistence so a caller can order side effects for
+ * fail-safety while keeping the deterministic id/timestamp assignment stable.
+ */
+export function buildEnforcement(
+  caseId: string,
+  dealId: string,
+  currentStatus: DealStatus,
+  gen: IdentityClock,
+): { action: EnforcementAction; audit: AuditEvent } {
+  const flip = pureEnforceCorrection(currentStatus);
+  if (!flip.ok) throw new Error(flip.error);
+  const newStatus = flip.value;
+
+  const action: EnforcementAction = {
+    id: gen.idGen.next(),
+    caseId,
+    dealId,
+    fromStatus: currentStatus,
+    toStatus: newStatus,
+    actor: DECIDING_ROLE,
+    enforcedAt: gen.clock.now(),
+  };
+
+  const audit: AuditEvent = {
+    id: gen.idGen.next(),
+    caseId,
+    dealId,
+    action: "correction-enforced",
+    decidingActor: DECIDING_ROLE,
+    previousStatus: currentStatus,
+    newStatus,
+    recordedAt: gen.clock.now(),
+  };
+
+  return { action, audit };
+}
+
 /**
  * enforce — the operator's Approve + Enforce. Uses the pure engine-core state
  * machine to flip the deal status, emits an EnforcementAction, and records an
@@ -97,33 +145,34 @@ export async function enforceCorrection(
   currentStatus: DealStatus,
   deps: EnforceDeps,
 ): Promise<{ action: EnforcementAction; audit: AuditEvent }> {
-  const flip = pureEnforceCorrection(currentStatus);
-  if (!flip.ok) throw new Error(flip.error);
-  const newStatus = flip.value;
-
-  const action: EnforcementAction = {
-    id: deps.idGen.next(),
-    caseId,
-    dealId,
-    fromStatus: currentStatus,
-    toStatus: newStatus,
-    actor: DECIDING_ROLE,
-    enforcedAt: deps.clock.now(),
-  };
-
-  const audit: AuditEvent = {
-    id: deps.idGen.next(),
-    caseId,
-    dealId,
-    action: "correction-enforced",
-    decidingActor: DECIDING_ROLE,
-    previousStatus: currentStatus,
-    newStatus,
-    recordedAt: deps.clock.now(),
-  };
+  const { action, audit } = buildEnforcement(caseId, dealId, currentStatus, {
+    clock: deps.clock,
+    idGen: deps.idGen,
+  });
   await deps.auditSink.record(audit);
-
   return { action, audit };
+}
+
+/**
+ * buildGate — construct the deny ActionGate for a downstream action WITHOUT
+ * persisting it. Consumes the idGen once (gate id). Separated from persistence
+ * so a caller can open the gate before other side effects (fail-closed).
+ */
+export function buildGate(
+  action: string,
+  caseId: string,
+  idGen: IdGen,
+): ActionGate {
+  return {
+    id: idGen.next(),
+    caseId,
+    action,
+    verdict: "deny",
+    reasons: [
+      `Open governance case ${caseId} requires EU data residency correction before a customer-facing on-track update.`,
+    ],
+    requiredBeforeSend: [...REQUIRED_BEFORE_CUSTOMER_UPDATE],
+  };
 }
 
 /**
@@ -136,16 +185,7 @@ export async function gateDownstreamAction(
   caseId: string,
   idGen: IdGen,
 ): Promise<ActionGate> {
-  const gate: ActionGate = {
-    id: idGen.next(),
-    caseId,
-    action,
-    verdict: "deny",
-    reasons: [
-      `Open governance case ${caseId} requires EU data residency correction before a customer-facing on-track update.`,
-    ],
-    requiredBeforeSend: [...REQUIRED_BEFORE_CUSTOMER_UPDATE],
-  };
+  const gate = buildGate(action, caseId, idGen);
   await actionGateStore.gate(gate);
   return gate;
 }
