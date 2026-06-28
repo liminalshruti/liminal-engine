@@ -1,0 +1,92 @@
+/* Demo-spine layout. Consumes the vendored canonical tokens (design-tokens.css)
+ * — never redefines a token, only references --* per the consumer contract.
+ * Phase colors map to the named chrome registers (diligence/judgment/synthesis/
+ * etc.) from the Liminal canon. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg, #0A0A0B);
+  color: var(--text, #E8E6E1);
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+.app__bar {
+  display: flex; align-items: baseline; gap: var(--space-4, 16px);
+  padding: var(--space-3, 12px) var(--space-5, 20px);
+  background: var(--frame-bg, #0E0E11);
+  border-bottom: 1px solid var(--card-border, #232327);
+}
+.app__brand { font-weight: 600; letter-spacing: 0.02em; }
+.app__scenario { color: var(--text-faint, #8A8780); font-size: 0.85rem; }
+.app__loop {
+  margin-left: auto; font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem; color: var(--text-faint, #6B6862); letter-spacing: 0.04em;
+}
+
+.app__body { display: flex; flex: 1; min-height: 0; }
+
+/* ── step rail ── */
+.rail {
+  width: 320px; flex-shrink: 0; overflow-y: auto;
+  background: var(--rail-bg, #08080A);
+  border-right: 1px solid var(--card-border, #232327);
+  padding: var(--space-2, 8px);
+}
+.rail__step {
+  display: grid; grid-template-columns: 24px 1fr auto; align-items: center;
+  gap: var(--space-2, 8px); width: 100%; text-align: left;
+  padding: var(--space-2, 8px) var(--space-3, 12px); margin-bottom: 2px;
+  background: transparent; border: 1px solid transparent; border-radius: var(--radius-2, 6px);
+  color: var(--text-faint, #8A8780); cursor: pointer; font: inherit; font-size: 0.82rem;
+}
+.rail__step:hover { background: var(--frame-bg-2, #0C0C0F); color: var(--text, #E8E6E1); }
+.rail__step.is-active {
+  background: var(--frame-bg, #0E0E11); color: var(--text, #E8E6E1);
+  border-color: var(--card-border-2, #2A2A2F);
+}
+.rail__step.is-done .rail__n { color: var(--synthesis, #7BA88C); }
+.rail__n { font-family: var(--font-mono, monospace); text-align: center; opacity: 0.7; }
+.rail__title { line-height: 1.25; }
+.rail__phase { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.65; }
+
+/* ── stage ── */
+.stage {
+  flex: 1; overflow-y: auto; padding: var(--space-7, 40px) var(--space-8, 56px);
+  display: flex; flex-direction: column; max-width: 900px;
+}
+.stage__head { display: flex; align-items: center; gap: var(--space-3, 12px); margin-bottom: var(--space-4, 16px); }
+.stage__beat { font-family: var(--font-mono, monospace); font-size: 0.72rem; color: var(--text-faint, #6B6862); }
+.stage__phase {
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--frame-bg-2, #0C0C0F); border: 1px solid var(--card-border, #232327);
+}
+.stage__mnc {
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--amber-orn, #FDC237);
+  padding: 2px 8px; border: 1px solid var(--amber-orn-edge, rgba(253,194,55,0.40)); border-radius: 999px;
+}
+.stage__title { font-family: var(--font-display, var(--font-serif, serif)); font-size: 2rem; line-height: 1.1; margin: 0 0 var(--space-3, 12px); }
+.stage__summary { font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.5; margin: 0 0 var(--space-6, 32px); }
+
+.stage__placeholder {
+  display: flex; flex-direction: column; gap: var(--space-2, 8px);
+  padding: var(--space-6, 32px); border: 1px dashed var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
+  color: var(--text-faint, #8A8780); margin-bottom: var(--space-6, 32px);
+}
+.stage__placeholder-note { font-size: 0.8rem; opacity: 0.7; }
+
+.stage__nav { display: flex; gap: var(--space-3, 12px); margin-top: auto; }
+.stage__nav button {
+  padding: var(--space-2, 8px) var(--space-5, 20px); border-radius: var(--radius-2, 6px);
+  border: 1px solid var(--card-border-2, #2A2A2F); background: var(--frame-bg, #0E0E11);
+  color: var(--text, #E8E6E1); cursor: pointer; font: inherit; font-size: 0.9rem;
+}
+.stage__nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+.stage__nav-primary { background: var(--judgment, #C9A961) !important; color: var(--ink, #0F0F10) !important; border-color: transparent !important; font-weight: 600; }

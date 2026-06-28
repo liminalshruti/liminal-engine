@@ -5,6 +5,7 @@ packages:
 
 # lefthook postinstall links its binary; approve so install doesn't hard-fail.
 allowBuilds:
+  esbuild: true
   lefthook: true
 
 verifyDepsBeforeRun: false
