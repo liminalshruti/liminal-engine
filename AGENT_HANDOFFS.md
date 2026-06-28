@@ -5,6 +5,47 @@ this first.
 
 ---
 
+## Session: LIM-1235 3-part blocked-action card (2026-06-28)
+
+**Did:**
+- Claimed LIM-1235 in Linear, assigned it to Sean, moved it to In Progress, and
+  worked only in `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1235`
+  on branch `agent/LIM-1235-blocked-action-card`.
+- Upgraded `apps/desktop-demo/src/components/BlockedActionBanner.tsx` into the
+  explicit 3-part blocked-action card: `Not allowed`, `Why blocked`, and
+  `Required before send` from `ActionGate.requiredBeforeSend`.
+- Replaced the `EnforcementPanel` placeholder with fixture-backed rendering for
+  beats #6-#10: Approve + Enforce, On Track -> At Risk status flip, simulated
+  Linear workstream + Product/Security/Engineering owners, attempted customer
+  on-track update, and the blocked card.
+
+**Verified:**
+- `pnpm --filter @liminal-engine/desktop-demo typecheck` green.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- Headless Chrome DOM check on `http://localhost:5174/` clicked beat #10 and
+  confirmed `Not allowed`, `Why blocked`, `Required before send`, all three
+  `requiredBeforeSend` items, the simulated Linear badge, required owners, and
+  the On Track -> At Risk status flip.
+- `pnpm verify` green: root typecheck, app typecheck, 80 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no persona names; no changes
+  outside the desktop-demo UI plus required handoff docs.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1235 PR, then merge after the normal reviewer gates pass.
+- Continue the remaining per-beat screen work; several other screens still carry
+  their original stub notes.
+
+**Risks / watch:**
+- The card is fixture-backed from `acmeScenario.blockedAction`; if another branch
+  rewires the app to `runGovernanceLoop()` output, preserve the same
+  `ActionGate` shape and three visible sections.
+
+---
+
 ## Session: LIM-1242 audit reconstruction test (2026-06-27 night)
 
 **Did:**

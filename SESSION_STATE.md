@@ -2,7 +2,21 @@
 
 Current state of the build, right now. Keep this short and true.
 
-## As of: backend loop on main, M1 UI next (2026-06-28 early)
+## As of: LIM-1235 blocked-action card branch ready (2026-06-28)
+
+- **LIM-1235 branch:** `agent/LIM-1235-blocked-action-card` upgrades the demo
+  enforcement beat with a visible 3-part blocked-action card and replaces the
+  `EnforcementPanel` placeholder with fixture-backed rendering for beats #6-#10.
+  Pending PR/review; not merged.
+- **LIM-1235 verification:** app typecheck, app production build, headless Chrome
+  DOM check for beat #10, `pnpm verify` (80/80 tests + boundary lint), and
+  `./scripts/smoke.sh` automated checks are green.
+- **Demo path impact:** beat #10 / MNC#5 is now explicit on screen: attempted
+  customer-facing on-track update -> `Not allowed` / `Why blocked` / `Required
+  before send` with all `ActionGate.requiredBeforeSend` items visible. Fixtures
+  only; no live calls; no persona names.
+
+## Previous state: backend loop on main, M1 UI next (2026-06-28 early)
 
 - **LIM-1242 branch:** `agent/LIM-1242-audit-reconstruction-test` adds
   governance-local audit reconstruction support + tests. It verifies

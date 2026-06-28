@@ -6,6 +6,16 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1235 3-part blocked-action card (2026-06-28)
+- `apps/desktop-demo/src/components/BlockedActionBanner.tsx` now renders the
+  blocked downstream customer update as an explicit 3-part card: `Not allowed`,
+  `Why blocked`, and `Required before send` from `ActionGate.requiredBeforeSend`.
+- `apps/desktop-demo/src/screens/EnforcementPanel.tsx` now renders the
+  fixture-backed enforcement path for beats #6-#10: Approve + Enforce, On Track
+  -> At Risk, simulated Linear workstream + required owners, attempted on-track
+  customer update, and the blocked-action card. No live integrations or contract
+  changes.
+
 ### Added — LIM-1242 audit reconstruction test (2026-06-27)
 - `packages/governance/src/audit-reconstruction.ts` — verifies AuditEvent hash
   chains by recomputing `sha256(prevHash + canonical_json(event))` and rebuilds a
