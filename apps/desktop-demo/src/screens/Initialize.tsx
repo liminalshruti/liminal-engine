@@ -1,25 +1,46 @@
 /**
- * Initialize screen — beats #1–2 (initialize workspace + show Acme business goal).
- * STUB created by LIM-1226 «spine-shell-v2». Filled by LIM-1215 «screen-initialize».
+ * Initialize screen — demo beats #1–2 of the locked required path (DEMO_CONTRACT.md):
+ *   #1  Initialize workspace.
+ *   #2  Show the Acme business goal — "Close Acme expansion by Friday — $1.2M ARR".
  *
- * Screen agent: replace the stub body. Read facts from `acmeScenario`, framing copy
- * from `SCREEN_COPY.initialize`, compose with widgets from `../components`. No live
- * calls; no invented persona name (Locked Rules in apps/desktop-demo/AGENTS.md).
+ * Fills the LIM-1226 «spine-shell-v2» stub (task LIM-1215 «screen-initialize»). Beat
+ * #1 establishes the governance workspace the rest of the demo runs in: the deal
+ * under governance and the operator observing it (a ROLE, never an invented persona
+ * name). Beat #2 surfaces the business goal verbatim.
+ *
+ * All demo facts come ONLY from the validated Acme fixtures
+ * (`@liminal-engine/contracts/fixtures`) — no live calls, no hardcoded or invented
+ * data (apps/desktop-demo/AGENTS.md Locked Rules). Framing copy comes from the
+ * central demo-copy module (`../lib/copy.ts`); the workspace facts are composed
+ * inside the shared `Card` widget (`../components`). This screen has no simulated or
+ * stubbed panel, so nothing carries a "Simulated" badge — that label is reserved for
+ * the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
+import { Card } from "../components";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
-import { SCREEN_COPY } from "../lib/copy.ts";
+import { OPERATOR_ROLE, SCREEN_COPY } from "../lib/copy.ts";
 
 export function Initialize() {
-  const { businessGoal } = acmeScenario;
+  // Neutral facts only: the deal/workspace subject (`dealName`) and the goal — never
+  // the pass-1 false-green claim, which is the later reveal (beat #3, AgentActivity).
+  const { businessGoal, agentOutputPass1 } = acmeScenario;
   const copy = SCREEN_COPY.initialize;
 
   return (
     <section className="screen screen--initialize" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
-      <p className="screen__fact">
-        Business goal: <strong>{businessGoal}</strong>
-      </p>
-      <p className="screen__stub-note">Stub — to be filled by LIM-1215.</p>
+
+      <Card title={copy.title}>
+        <p className="screen__fact">
+          Deal under governance: {agentOutputPass1.dealName}
+        </p>
+        <p className="screen__fact">
+          Business goal: <strong>{businessGoal}</strong>
+        </p>
+        <p className="screen__fact">
+          Operator: {OPERATOR_ROLE}
+        </p>
+      </Card>
     </section>
   );
 }

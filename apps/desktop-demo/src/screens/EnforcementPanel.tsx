@@ -1,12 +1,19 @@
 /**
  * EnforcementPanel screen — beats #6–10 · MNC#3, #4, #5 (the densest beat).
  *
- * Renders Approve + Enforce → status flip On Track → At Risk (StatusBadge, MNC#3) →
+ * Beat #6: the compiled EnforcementAction preview (EnforcementPreview, LIM-1234) —
+ * the operator approves the *rule*, not just the text.
+ * Then the enforced result: status flip On Track → At Risk (StatusBadge, MNC#3) →
  * simulated Linear workstream (LinearPayloadView, MNC#4) → required owners → blocked
- * customer update (BlockedActionBanner, MNC#5).
+ * customer update (the 3-part BlockedActionBanner, MNC#5 / LIM-1235).
  */
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
-import { BlockedActionBanner, LinearPayloadView, StatusBadge } from "../components";
+import {
+  BlockedActionBanner,
+  EnforcementPreview,
+  LinearPayloadView,
+  StatusBadge,
+} from "../components";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function EnforcementPanel() {
@@ -22,6 +29,9 @@ export function EnforcementPanel() {
   return (
     <section className="screen screen--enforcement-panel" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
+
+      {/* Beat #6 — preview the compiled actions before Approve + Enforce. */}
+      <EnforcementPreview actions={[enforcementAction]} />
 
       <div className="enforcement-panel__approval">
         <div className="enforcement-panel__approval-copy">
@@ -55,6 +65,7 @@ export function EnforcementPanel() {
         </p>
       </div>
 
+      {/* Beat #10 / MNC#5 — the 3-part block: not allowed · why · required before send. */}
       <BlockedActionBanner gate={blockedAction} />
     </section>
   );

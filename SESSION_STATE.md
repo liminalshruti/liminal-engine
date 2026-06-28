@@ -17,7 +17,15 @@ Current state of the build, right now. Keep this short and true.
   only; no live calls; no persona names.
 
 ## Previous state: backend loop on main, M1 UI next (2026-06-28 early)
+## As of: LIM-1234 preview branch ready for PR (2026-06-28)
 
+- **LIM-1234 branch:** `agent/LIM-1234-compiled-enforcement-preview` adds
+  `EnforcementPreview` under `apps/desktop-demo/src/components/`, exports it from
+  the component barrel, and renders it on the routed enforcement panel before the
+  enforce transition text. Beat #6 now shows the compiled `EnforcementAction`
+  preview before Approve + Enforce. Verification is green: `pnpm typecheck:app`,
+  desktop-demo build, `git diff --check`, `pnpm verify` (68 tests), and
+  `./scripts/smoke.sh` automated tests.
 - **LIM-1242 branch:** `agent/LIM-1242-audit-reconstruction-test` adds
   governance-local audit reconstruction support + tests. It verifies
   hash-chained AuditEvents and rebuilds the Acme GovernanceCase lifecycle from
