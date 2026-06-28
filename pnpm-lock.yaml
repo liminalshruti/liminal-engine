@@ -35,6 +35,9 @@ importers:
       '@liminal-engine/governance':
         specifier: workspace:*
         version: link:../../packages/governance
+      '@liminal-engine/integration-livekit':
+        specifier: workspace:*
+        version: link:../../packages/integrations/livekit
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -72,9 +75,6 @@ importers:
       '@liminal-engine/integration-governance-case-store':
         specifier: workspace:*
         version: link:../../packages/integrations/governance-case-store
-      '@liminal-engine/integration-livekit':
-        specifier: workspace:*
-        version: link:../../packages/integrations/livekit
       '@liminal-engine/substrate':
         specifier: workspace:*
         version: link:../../packages/substrate
@@ -279,9 +279,6 @@ importers:
 
   packages/integrations/livekit:
     dependencies:
-      livekit-client:
-        specifier: ^2.4.0
-        version: 2.20.0(@types/dom-mediacapture-record@1.0.22)
       livekit-server-sdk:
         specifier: ^2.15.5
         version: 2.15.5
