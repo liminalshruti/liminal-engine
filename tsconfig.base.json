@@ -19,6 +19,7 @@
       "@liminal-engine/contracts/fixtures": ["packages/contracts/src/fixtures/acme.ts"],
       "@liminal-engine/engine-core": ["packages/engine-core/src/index.ts"],
       "@liminal-engine/governance": ["packages/governance/src/index.ts"],
+      "@liminal-engine/policy": ["packages/policy/src/index.ts"],
       "@liminal-engine/eval-harness": ["packages/eval-harness/src/index.ts"],
       "@liminal-engine/ui-components": ["packages/ui-components/src/index.ts"],
       "@liminal-engine/integration-gemini": ["packages/integrations/gemini/src/index.ts"],
@@ -28,7 +29,9 @@
       "@liminal-engine/integration-audit-sink": ["packages/integrations/audit-sink/src/index.ts"],
       "@liminal-engine/integration-action-gate-store": ["packages/integrations/action-gate-store/src/index.ts"],
       "@liminal-engine/integration-eval-store": ["packages/integrations/eval-store/src/index.ts"],
-      "@liminal-engine/integration-fixture-determinism": ["packages/integrations/fixture-determinism/src/index.ts"]
+      "@liminal-engine/integration-fixture-determinism": ["packages/integrations/fixture-determinism/src/index.ts"],
+      "@liminal-engine/integration-policy-store": ["packages/integrations/policy-store/src/index.ts"],
+      "@liminal-engine/integration-intercept-gateway": ["packages/integrations/intercept-gateway/src/index.ts"]
     }
   }
 }

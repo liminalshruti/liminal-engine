@@ -1,0 +1,11 @@
+{
+  "name": "@liminal-engine/integration-policy-store",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/policy": "workspace:*"
+  }
+}

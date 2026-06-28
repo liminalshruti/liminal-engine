@@ -6,6 +6,31 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1367 policy intercept control plane (2026-06-28)
+- `packages/contracts/src/action-policy-rule.contract.ts` — a separate learned
+  allow/deny/ask action-policy contract for intercepted tool actions. This avoids
+  colliding with the existing remediation `PolicyRule` used by the correction
+  pipeline while still pinning canonical/golden hashes for learned proxy rules.
+- `packages/contracts/src/intercepted-action.contract.ts` now rejects undeclared
+  fields at the boundary and carries provenance for action-level auditability.
+- `packages/policy/` — pure action-policy decision engine with `shadow`,
+  `intercept`, and `learned` modes, target scope, deterministic specificity
+  ordering, fail-closed store errors, rule narrowing helpers, and escalation/safety
+  metrics.
+- `packages/governance/src/compile-correction.ts` now compiles concrete operator
+  corrections into `ActionPolicyRule` proposals, activation actions, eval cases,
+  and preview rows; vague corrections fail closed with actionable errors.
+- `packages/governance/src/policy-audit.ts` records action-policy verdicts/rules
+  into the existing hash-chained audit ledger and reconstructs rule lifecycle from
+  audit events.
+- `packages/integrations/intercept-gateway/` — HTTP gateway, `policy-gw` CLI,
+  gh/git/deploy shims, MCP destructive-call classifier, target scope,
+  match/replace, queue controls, forward/drop/bulk controls, repeater, immutable
+  proxy history, and command outcome recording.
+- `packages/integrations/policy-store/` — in-memory and file-backed action-policy
+  stores plus intercept queues. `policy-gw serve --session-dir <path>` persists
+  learned rules, pending intercepts, and proxy history across gateway restart.
+
 ### Added — LIM-1197 demo video infrastructure (2026-06-28)
 - `demos/recordings/README.md` — guide for judges explaining the demo video,
   verification checklist, and fallback reference to `demos/fallback/WALKTHROUGH.md`.
