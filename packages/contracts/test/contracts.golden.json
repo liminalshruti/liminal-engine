@@ -170,6 +170,80 @@
       },
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
+    },
+    "liminal_engine.trace_event.v1::acme-case-detected": {
+      "schema": "liminal_engine.trace_event.v1",
+      "purpose": "detect stage: governance case detected with dropped EU requirement",
+      "input": {
+        "id": "te_acme_detect_1",
+        "timestamp": "2026-06-27T10:00:00.000Z",
+        "stage": "detect",
+        "actor": "AI Detection Agent",
+        "event": "case-detected",
+        "payload": {
+          "caseId": "gc_acme_eu",
+          "missedRequirement": "EU data residency",
+          "severity": "high"
+        }
+      },
+      "canonical_string": "{\"actor\":\"AI Detection Agent\",\"event\":\"case-detected\",\"id\":\"te_acme_detect_1\",\"payload\":{\"caseId\":\"gc_acme_eu\",\"missedRequirement\":\"EU data residency\",\"severity\":\"high\"},\"schema\":\"liminal_engine.trace_event.v1\",\"stage\":\"detect\",\"timestamp\":\"2026-06-27T10:00:00.000Z\"}",
+      "sha256": "f218ffa57c01a37e1f59ce97ec7f414e7de53d1520c296005a5ad55f5465d133"
+    },
+    "liminal_engine.trace_event.v1::acme-correction-applied": {
+      "schema": "liminal_engine.trace_event.v1",
+      "purpose": "correct stage: operator applies correction to the detected case",
+      "input": {
+        "id": "te_acme_correct_1",
+        "timestamp": "2026-06-27T10:03:00.000Z",
+        "stage": "correct",
+        "actor": "VP Ops / Head of AI Transformation",
+        "event": "correction-applied",
+        "payload": {
+          "caseId": "gc_acme_eu",
+          "correction": "EU data residency is a hard requirement; honor it before any on-track claim."
+        },
+        "parentEventId": "te_acme_detect_1"
+      },
+      "canonical_string": "{\"actor\":\"VP Ops / Head of AI Transformation\",\"event\":\"correction-applied\",\"id\":\"te_acme_correct_1\",\"parent_event_id\":\"te_acme_detect_1\",\"payload\":{\"caseId\":\"gc_acme_eu\",\"correction\":\"EU data residency is a hard requirement; honor it before any on-track claim.\"},\"schema\":\"liminal_engine.trace_event.v1\",\"stage\":\"correct\",\"timestamp\":\"2026-06-27T10:03:00.000Z\"}",
+      "sha256": "32adba8cb29b766a5d65c18e52cd2d23d9b79321df784b564b43b93e0e827298"
+    },
+    "liminal_engine.trace_event.v1::acme-enforcement-queued": {
+      "schema": "liminal_engine.trace_event.v1",
+      "purpose": "enforce stage: enforcement action compiled and queued for approval",
+      "input": {
+        "id": "te_acme_enforce_1",
+        "timestamp": "2026-06-27T10:04:00.000Z",
+        "stage": "enforce",
+        "actor": "VP Ops / Head of AI Transformation",
+        "event": "enforcement-queued",
+        "payload": {
+          "caseId": "gc_acme_eu",
+          "actionCount": 1,
+          "actionType": "require_approval"
+        },
+        "parentEventId": "te_acme_correct_1"
+      },
+      "canonical_string": "{\"actor\":\"VP Ops / Head of AI Transformation\",\"event\":\"enforcement-queued\",\"id\":\"te_acme_enforce_1\",\"parent_event_id\":\"te_acme_correct_1\",\"payload\":{\"actionCount\":1,\"actionType\":\"require_approval\",\"caseId\":\"gc_acme_eu\"},\"schema\":\"liminal_engine.trace_event.v1\",\"stage\":\"enforce\",\"timestamp\":\"2026-06-27T10:04:00.000Z\"}",
+      "sha256": "925620d90a9af8587559546c90089d5ed247dfa45a0e0ce28c11c49688c12054"
+    },
+    "liminal_engine.trace_event.v1::acme-audit-recorded": {
+      "schema": "liminal_engine.trace_event.v1",
+      "purpose": "audit stage: correction and status flip recorded in the chain",
+      "input": {
+        "id": "te_acme_audit_1",
+        "timestamp": "2026-06-27T10:05:00.000Z",
+        "stage": "audit",
+        "actor": "VP Ops / Head of AI Transformation",
+        "event": "audit-recorded",
+        "payload": {
+          "auditEventId": "ae_acme_1",
+          "previousStatus": "on-track",
+          "newStatus": "at-risk"
+        },
+        "parentEventId": "te_acme_enforce_1"
+      },
+      "canonical_string": "{\"actor\":\"VP Ops / Head of AI Transformation\",\"event\":\"audit-recorded\",\"id\":\"te_acme_audit_1\",\"parent_event_id\":\"te_acme_enforce_1\",\"payload\":{\"auditEventId\":\"ae_acme_1\",\"newStatus\":\"at-risk\",\"previousStatus\":\"on-track\"},\"schema\":\"liminal_engine.trace_event.v1\",\"stage\":\"audit\",\"timestamp\":\"2026-06-27T10:05:00.000Z\"}",
+      "sha256": "7cd76c9917b9c2a8a4a8b3a9cc7aea9a24948ba50efab2328c57201e820b563f"
     }
   }
 }
