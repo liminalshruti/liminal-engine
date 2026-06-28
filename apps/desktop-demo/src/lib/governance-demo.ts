@@ -24,6 +24,7 @@ import type {
   ActionGateDecision,
   EvalCase,
   EvalResult,
+  RedactedRef,
   AgentOutput,
   LinearWorkstreamPayload,
   RedactedRef,
@@ -72,6 +73,8 @@ export interface GovernanceDemo {
   gatedAction: string;
   /** beat 11: the recorded audit evidence. */
   auditEvent: AuditEvent;
+  /** beat 11 (data-residency proof): the redacted reference sensitive data is stored by. */
+  dataResidencyRef: RedactedRef;
   /** beat 12: the eval case the second pass is graded against. */
   evalCase: EvalCase;
   /** beat 14: Fail (pass 1) → Pass (pass 2). */
@@ -145,6 +148,7 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
     gateDecision,
     gatedAction: GATED_CUSTOMER_ACTION,
     auditEvent,
+    dataResidencyRef: acmeScenario.dataResidencyRef,
     evalCase,
     evalResults,
     evalRows: toRows(evalResults),
