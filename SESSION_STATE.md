@@ -2,19 +2,32 @@
 
 Current state of the build, right now. Keep this short and true.
 
-## As of: harness merged + LIM-1165 in progress (2026-06-27 eve)
+## As of: backend loop on main, M1 UI next (2026-06-28 early)
 
-- **Phase:** Control harness **merged to `main`** (PR #1, `3792b84`). First fixture
-  issue **LIM-1165 in progress** on `feature/lim-1165-create-acme-fixture-set`
-  (`b065b70`, not pushed). **No app/UI yet** (demo spine = LIM-1166/1167).
-- **Harness:** pnpm/TS workspace; `packages/contracts` (7 locked primitives as
-  hashed contracts + golden tests + Acme fixtures asserting every must-not-cut);
-  boundary lint enforcing fixtures-on-spine; CI + hooks + PR template; AGENTS.md +
-  5 agent roles; Linear packets/issues in `ops/linear/`. `pnpm verify` green (47
-  tests after LIM-1165). Commits = allsmog only (hook-enforced).
-- **LIM-1165:** Acme fixture set ratified — `acmeDemoBeats` (verbatim DEMO_CONTRACT
-  display copy for steps 2–4) + single-source `acmeScenario` + `acme-beats.test.ts`.
-  No golden changes (display copy kept out of hashed fields). Branch not yet PR'd.
+- **Phase:** Backend governance loop is **DONE and on `main`**. The demo-spine
+  **shell** is on `main`. Remaining critical path = **M1 per-beat screens** (wire
+  the real loop output into the 14-step UI). 56/56 tests green on trunk.
+- **Merged to `main`** (origin, in order): PR #1 control harness · PR #2 LIM-1165
+  Acme fixtures · #3 LIM-1210 worktree workflow · #4 LIM-1163 demo-spine shell ·
+  #5 LIM-1199 spec consolidation · #6 LIM-1163 apps boundary-lint (review Finding 1) ·
+  **#7 LIM-1168 governance loop (M2) + eval Fail→Pass (M3)**. No open PRs.
+- **M2/M3 (PR #7):** `packages/governance/src/use-cases.ts` — `detectMiss`,
+  `enforceCorrection` (flips on-track→at-risk via engine-core's pure fn, emits
+  EnforcementAction + AuditEvent), `gateDownstreamAction`, `runGovernanceLoop`.
+  `packages/eval-harness` — `runEvals` (Fail p1 → Pass p2). In-memory port adapters
+  in `packages/integrations/*` (governance-case-store, audit-sink, action-gate-store,
+  eval-store, fixture-determinism). Deterministic via injected Clock/IdGen — no
+  Date.now/randomness. Tests assert the loop reproduces the Acme fixtures
+  byte-for-byte (must-not-cut #2/#3/#5/#6/#7). No contract change → goldens stable.
+- **Shell (PR #4):** React 18 + Vite + TS SPA in `apps/desktop-demo/`; 14-step
+  stepper bound to `acmeScenario`. Stack locked: **React-on-prototype-CSS**.
+- **Spine guard (PR #6):** boundary lint now cruises `apps/` too — `apps/desktop-demo`
+  → `packages/integrations/*` is mechanically forbidden (closed review Finding 1).
+- **Open follow-ups:** LIM-1211 (Finding 1 — DONE via PR #6), LIM-1212 (wire app
+  `.tsx` into the verify/CI typecheck gate — still open).
+- **Harness:** pnpm/TS workspace; `packages/contracts` (7 hashed primitives + golden
+  tests + Acme fixtures); boundary lint (incl. apps/); CI + hooks + PR template;
+  worktree helper (`pnpm wt:new`). Commits = allsmog only (hook-enforced).
 - **Scaffold:** All folders + docs + `.claude` dev env + `scripts/smoke.sh` created.
 - **Official repo name:** `liminal-engine`.
 - **Public repo:** ✅ Created and live — `github.com/liminalshruti/liminal-engine`
@@ -29,19 +42,23 @@ Current state of the build, right now. Keep this short and true.
 - **Source of truth:** This standalone public `liminal-engine` repo. (It was
   split out of a private `hackathons/` monorepo at setup time; that copy is
   historical only and must not be pushed — it is not the active version control.)
-- **Demo path:** Locked in `DEMO_CONTRACT.md`. Not yet implemented.
+- **Demo path:** Locked in `DEMO_CONTRACT.md`. Backend loop implemented; UI shell
+  up; **per-beat screens are the remaining piece**.
 - **Persona:** Not extracted. Using generic operator language. Do not invent a name.
 
 ## Blocking / waiting
 
-- `allsmog` collaborator invitation pending Sean's acceptance.
-- Persona extraction from `liminal-prototype` pending.
+- Persona extraction from `liminal-prototype` pending (LIM-«persona», yellow).
+- LIM-1212 open: app `.tsx` not yet in the `verify`/CI typecheck gate.
 
 ## Next concrete step
 
-Open + merge the **LIM-1165** PR (branch `feature/lim-1165-create-acme-fixture-set`;
-title must carry `LIM-1165`; fill the conformance matrix). Then **LIM-1166**: decide
-the demo-app UI stack (Solid / React / Vite-vanilla — human gate) and stand up the
-seven-screen static clickable demo in `apps/desktop-demo/` covering the full 14-step
-required path, rendering Acme fixtures from `@liminal-engine/contracts/fixtures`,
-followed by **LIM-1167** (typed local state).
+**M1 — per-beat screens (LIM-1166 + 1167).** Extend the existing
+`apps/desktop-demo/` shell (do NOT rebuild) to render the real governance/eval
+artifacts for each of the 14 beats: wire the app composition root to
+`runGovernanceLoop` + `runEvals` over the in-memory adapters, render the
+GovernanceCase / status flip / blocked action / AuditEvent / Fail→Pass table.
+Pull verbatim display copy from `acmeScenario.demoBeats` (don't re-hardcode).
+Panel components → `packages/ui-components` (LIM-1171/1172). This flips
+`JUDGING_MAP.md` Technicality + Live Demo from Partial → Covered. Then
+`./scripts/smoke.sh` + a fallback recording (LIM-1192/1197) before submission.
