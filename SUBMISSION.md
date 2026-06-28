@@ -38,17 +38,25 @@ gaps remain — is in **`JUDGING_MAP.md`**.
 
 ## Demo readiness
 
-- [ ] Required demo path (`DEMO_CONTRACT.md`) runs end to end, in order.
-- [ ] All must-not-cut items visibly present.
-- [ ] Eval table shows Fail → Pass.
-- [ ] Completes in under 3 minutes.
-- [ ] `scripts/smoke.sh` passes / checklist walked.
-- [ ] Fallback recording in `demos/fallback/` in case live demo fails.
+- [x] Required demo path (`DEMO_CONTRACT.md`) runs end to end, in order — all 7
+      screens filled + merged; the 14-step Acme walkthrough renders.
+- [x] All must-not-cut items visibly present (MNC#1–7 each rendered on screen).
+- [x] Eval table shows Fail → Pass (SecondPassEval, beat #14 / MNC#7).
+- [x] `scripts/smoke.sh` passes; `pnpm verify` green (124 tests, 0 boundary violations).
+- [x] Determinism guaranteed — a test runs the loop twice and asserts identical artifacts.
+- [x] **Screens render live `runGovernanceLoop` output, not raw fixtures** (LIM-1255,
+      merged) — all 7 screens read `useDemo()` (the real `buildGovernanceDemo()` result).
+      **UI == engine verified end-to-end:** the un-skipped beat-#5 e2e asserts the screen's
+      case is the engine's live loop-detected case (18/18 e2e, zero skips).
+- [ ] Completes in under 3 minutes — *confirm in a live rehearsal* (LIM-1246 pacing pass).
+- [ ] Fallback recording in `demos/fallback/` — *manual; record before submission.*
+      (The deterministic fallback *walkthrough* is written/merged; the video is pending.)
 
 ## Persona
 
-- [ ] Persona extracted from `liminal-prototype` (or generic operator language
-      retained). **No invented persona name anywhere.**
+- [x] Generic operator language retained (role only — "VP Ops / Head of AI
+      Transformation"). **No invented persona name anywhere** (verified). Persona
+      extraction from `liminal-prototype` is optional/post-hack (LIM-1247).
 
 ## Links (fill in)
 
