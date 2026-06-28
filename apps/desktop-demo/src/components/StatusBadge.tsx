@@ -13,7 +13,6 @@ export interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const isAtRisk = status === "at-risk";
   const label = status === "on-track" ? "On Track" : "At Risk";
 
   return (
@@ -22,7 +21,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       role="status"
       aria-label={`Deal status: ${label}`}
     >
-      <span className="status-badge__dot" />
+      <span className="status-badge__dot" aria-hidden="true" />
       <span className="status-badge__label">{label}</span>
     </span>
   );

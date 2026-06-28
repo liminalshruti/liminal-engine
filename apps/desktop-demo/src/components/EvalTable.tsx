@@ -25,6 +25,9 @@ export function EvalTable({ rows, className }: EvalTableProps) {
   return (
     <div className={`eval-table${className ? ` ${className}` : ""}`}>
       <table className="eval-table__table">
+        <caption className="sr-only">
+          Eval results by pass showing the first pass failing and the second pass passing.
+        </caption>
         <thead>
           <tr>
             <th className="eval-table__th eval-table__th--pass">Pass</th>
@@ -33,8 +36,7 @@ export function EvalTable({ rows, className }: EvalTableProps) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, idx) => {
-            const isPass = row.result === "pass";
+          {rows.map((row) => {
             return (
               <tr key={`${row.pass}-${row.criterion}`} className="eval-table__row">
                 <td className="eval-table__td eval-table__td--pass">
@@ -43,7 +45,10 @@ export function EvalTable({ rows, className }: EvalTableProps) {
                 <td className="eval-table__td eval-table__td--criterion">{row.criterion}</td>
                 <td className={`eval-table__td eval-table__td--result eval-table__result--${row.result}`}>
                   <span className="eval-table__result-badge">
-                    <span className={`eval-table__result-dot eval-table__result-dot--${row.result}`} />
+                    <span
+                      className={`eval-table__result-dot eval-table__result-dot--${row.result}`}
+                      aria-hidden="true"
+                    />
                     <span className="eval-table__result-label">{row.result.toUpperCase()}</span>
                   </span>
                 </td>
