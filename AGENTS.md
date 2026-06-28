@@ -45,6 +45,16 @@ evidence). Partial ≠ done. No silent scope reduction, no stub/fake/TODO for
 required behavior, no truncated edits. Build every layer the feature needs. Full
 detail: `.claude/agents/implementer.md`; overnight model + roles below.
 
+## Parallel agents — one git worktree per issue
+Agents run concurrently, so they CANNOT share one working tree. The moment you
+claim an issue, create your own isolated worktree:
+`pnpm wt:new <LINEAR-ID> short-desc` → branch `agent/<LINEAR-ID>-short-desc` in a
+dedicated checkout (own `node_modules` + `.env`). Work only there; never in the repo
+root, on `main`, or in another agent's worktree. One worktree per claimed issue
+mirrors the `agent-claimed` mutex. `pnpm wt:rm <LINEAR-ID>` after the PR merges.
+Full mechanics (and the hooks fix that keeps the attribution strip firing inside
+worktrees): `WORKTREES.md`.
+
 ## Definition of Done (ALL must hold)
 - [ ] Every linked acceptance criterion (and the relevant `DEMO_CONTRACT.md`
       must-not-cut items) implemented AND verified with evidence.

@@ -75,10 +75,17 @@ criterion only if the issue text explicitly says it's out of scope.
 - Stay inside the assigned bounded context unless the issue is explicitly an
   integration task.
 
-## Branch
-`git checkout -b agent/<LINEAR-ID>-short-desc`. Never work on main/master or a
-shared demo branch. Commits are authored as the user only — never add AI
-attribution (a hook strips it, but don't write it).
+## Worktree + branch (you run in parallel with other agents)
+Claim your own isolated git worktree the moment you claim the issue:
+`pnpm wt:new <LINEAR-ID> short-desc`, then `cd ../liminal-engine.worktrees/<LINEAR-ID>`.
+This gives you branch `agent/<LINEAR-ID>-short-desc` in a dedicated checkout with its
+own `node_modules` + `.env`, so you never collide with other implementers. Do ALL
+work for this issue inside that worktree. Never work in the repo root, on
+`main`/master or a shared demo branch, or in another agent's worktree, and never
+`git checkout` a different branch in your worktree. After a human merges your PR,
+`pnpm wt:rm <LINEAR-ID>`. Commits are authored as the user only — never add AI
+attribution (the commit-msg hook strips it — verified to fire inside worktrees too —
+but don't write it). Full mechanics: `WORKTREES.md`.
 
 ## Verify before declaring done
 Run `pnpm typecheck && pnpm test && pnpm lint:boundaries` plus targeted tests and

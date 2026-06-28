@@ -15,7 +15,10 @@
     "check:linear-id": "node tools/check-linear-id.mjs",
     "verify": "pnpm typecheck && pnpm test && pnpm lint:boundaries",
     "smoke": "./scripts/smoke.sh",
-    "prepare": "git config core.hooksPath .git/hooks 2>/dev/null; lefthook install || true"
+    "wt:new": "bash tools/worktree.sh new",
+    "wt:rm": "bash tools/worktree.sh rm",
+    "wt:ls": "bash tools/worktree.sh ls",
+    "prepare": "sh tools/setup-hooks.sh"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
