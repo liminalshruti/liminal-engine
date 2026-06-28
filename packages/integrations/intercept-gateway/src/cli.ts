@@ -30,6 +30,8 @@ export async function runPolicyGwCli(argv: readonly string[], deps: PolicyGwCliD
         return await serve(parsed.args, deps);
       case "health":
         return await printResponse(deps, parsed, request(deps, parsed.url, "GET", "/health"));
+      case "metrics":
+        return await printResponse(deps, parsed, request(deps, parsed.url, "GET", "/metrics"));
       case "queue":
         return await printResponse(deps, parsed, request(deps, parsed.url, "GET", "/queue"));
       case "history":
@@ -101,7 +103,9 @@ async function serve(args: readonly string[], deps: PolicyGwCliDeps): Promise<nu
     mode,
     ...(sessionDir !== undefined ? { sessionDir } : {}),
   });
-  const server = createDecisionServer(runtime.gateway);
+  const server = createDecisionServer(runtime.gateway, {
+    activeRules: () => runtime.policyStore.activeRules(),
+  });
   server.listen(port, host);
   await once(server, "listening");
   deps.stdout.write(
@@ -256,6 +260,7 @@ function helpText(): string {
     "Commands:",
     "  serve [--host 127.0.0.1] [--port 17373] [--mode shadow|intercept|learned] [--session-dir path]",
     "  health",
+    "  metrics",
     "  mode <shadow|intercept|learned>",
     "  queue",
     "  history [--tool gh] [--action pr-merge] [--verdict ask|deny|allow] [--in-scope-only]",

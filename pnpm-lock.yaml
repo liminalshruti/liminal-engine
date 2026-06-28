@@ -243,6 +243,9 @@ importers:
       '@liminal-engine/contracts':
         specifier: workspace:*
         version: link:../../contracts
+      '@liminal-engine/eval-harness':
+        specifier: workspace:*
+        version: link:../../eval-harness
       '@liminal-engine/governance':
         specifier: workspace:*
         version: link:../../governance
