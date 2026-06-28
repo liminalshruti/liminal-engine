@@ -13,38 +13,28 @@
  */
 
 const NOT_TEST = "\\.(test|spec)\\.ts$";
-const SPINE = "^packages/(engine-core|governance|eval-harness|ui-components)/";
 
 // The LIVE integrations the demo spine must never call (DEMO_CONTRACT cut-if-risky).
 // The OTHER integrations (in-memory fixture stores + the deterministic clock/idgen)
 // are fixture-backed and ARE allowed at the apps/ composition root so the app can
 // run the real governance loop over them (LIM-1245 — UI renders real loop output,
 // not raw fixtures). The spine itself still may not import ANY integration.
-const LIVE_INTEGRATIONS = "^packages/integrations/(gemini|linear|livekit)/";
 
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
   forbidden: [
     {
-      name: "spine-no-live-integrations",
+      name: "engine-core-no-integrations",
       comment:
-        "The demo spine must run on fixtures. Live integrations (gemini/linear/livekit) " +
-        "are adapters wired ONLY in apps/ composition root. (DEMO_CONTRACT cut-if-risky / CLAUDE build order.)",
+        "The pure DOMAIN (engine-core) must not import any integration adapter — it " +
+        "stays I/O-free and testable. Live integrations are wired by the application " +
+        "(governance) + the app composition root. " +
+        "[DIRECTIVE.md: build a real product on live integrations; only engine-core " +
+        "stays pure — the demo-flow 'no live calls on the spine' constraint is removed " +
+        "so the product can run real gemini/linear/livekit end to end.]",
       severity: "error",
-      from: { path: SPINE, pathNot: NOT_TEST },
+      from: { path: "^packages/engine-core/", pathNot: NOT_TEST },
       to: { path: "^packages/integrations/" },
-    },
-    {
-      name: "demo-app-no-live-integrations",
-      comment:
-        "The demo-spine app (apps/desktop-demo) must run on fixtures only — no LIVE " +
-        "integrations (gemini/linear/livekit). The in-memory fixture stores + the " +
-        "deterministic clock/idgen ARE allowed here (the composition root runs the " +
-        "real governance loop over them — LIM-1245). (LIM-1163 review Finding 1 / " +
-        "DEMO_CONTRACT 'no live calls on the spine'.)",
-      severity: "error",
-      from: { path: "^apps/desktop-demo/", pathNot: NOT_TEST },
-      to: { path: LIVE_INTEGRATIONS },
     },
     {
       name: "engine-core-is-domain",
