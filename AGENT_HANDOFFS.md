@@ -27,15 +27,15 @@ this first.
 
 **Decided:** commits = allsmog only, never Claude/AI (hooks enforce); overnight = PR-only.
 
-**Did NOT do (by design):** no app/UI (still LE-1 — needs a UI-stack decision);
+**Did NOT do (by design):** no app/UI (the demo spine — needs a UI-stack decision);
 no live Gemini/LiveKit/Linear; did not push (awaiting your go).
 
 **Next session should:**
-1. Decide demo-app UI stack (LE-1); build the static clickable spine on the Acme fixtures.
-2. Implement governance use cases (LE-2) + eval harness (LE-3) per the packets.
-3. Auth Linear MCP; file `ops/linear/ISSUES.md` as real issues.
+1. Decide demo-app UI stack; build the static clickable spine on the Acme fixtures.
+2. Implement governance use cases + eval harness per the packets.
+3. Auth Linear MCP; file `ops/linear/ISSUES.md` as real `LIM-` issues under LIM-1199.
 
-**Risks / watch:** persona name must NOT be invented (LE-5 yellow); keep the spine
+**Risks / watch:** persona name must NOT be invented (persona issue is yellow); keep the spine
 deterministic; `pnpm install` pins local `core.hooksPath` so lefthook doesn't
 clobber the global attribution hook — keep that in `prepare`.
 

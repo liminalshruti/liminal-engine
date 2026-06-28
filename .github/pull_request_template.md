@@ -1,6 +1,6 @@
 <!--
   PR rules (enforced by CI + the architect-reviewer agent):
-  - Title MUST contain the Linear issue ID, e.g.  LE-12: detect dropped requirement
+  - Title MUST contain the Linear issue ID, e.g.  LIM-1234: detect dropped requirement
   - The "Architecture conformance" matrix MUST be filled (CI fails if empty).
   - Map acceptance criteria to DEMO_CONTRACT.md must-not-cut items where relevant.
   - Incomplete work → prefix title with  BLOCKED:  and use the Blocked format below.
@@ -8,7 +8,7 @@
 
 # Summary
 
-Implements Linear issue: <!-- LE-### -->
+Implements Linear issue: <!-- LIM-### -->
 Spec / contract: <!-- DEMO_CONTRACT.md#... · SCOPE_SPEC.md -->
 
 ## What changed
@@ -53,7 +53,7 @@ Where this sits on the required demo path, and how to see it on screen:
 
 None. <!-- gaps → convert to a BLOCKED PR; do not present partial work as ready -->
 
-<!-- BLOCKED PR (title "BLOCKED: LE-###: ..."):
+<!-- BLOCKED PR (title "BLOCKED: LIM-###: ..."):
 ## Blocked PR — does NOT complete the issue
 ### Completed / Not completed / Exact blocker / Why it needs a human / Options / Recommendation
 ### Safe to merge? No. -->

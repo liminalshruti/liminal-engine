@@ -93,7 +93,7 @@ tests, unrelated refactors, contract changes without golden/contract-test update
 forbidden files touched. Fix everything you find.
 
 ## PR — complete only
-Open the PR only when complete. Title `HACK-###: <title>`. Fill the PR template
+Open the PR only when complete. Title `LIM-###: <title>`. Fill the PR template
 including the **acceptance-criteria matrix** and the **architecture conformance
 matrix** (CI fails if the conformance matrix is empty). Then comment the PR link
 + verification evidence on Linear, add `agent-pr-ready`, move to `In Review`.
@@ -116,7 +116,7 @@ the failure.
 When blocked: comment the structured blocker on Linear (completed investigation,
 what's done, what's not, exact blocker, why it needs a human, options considered,
 recommended decision, verification run), add `agent-blocked`, leave it OUT of
-review. Optionally open a `BLOCKED: HACK-###: <title>` PR using the Blocked PR
+review. Optionally open a `BLOCKED: LIM-###: <title>` PR using the Blocked PR
 format only if it contains useful, non-misleading progress.
 
 ## Anti-stall checkpoints (so the night isn't wasted on one issue)

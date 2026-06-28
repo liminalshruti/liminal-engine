@@ -5,7 +5,7 @@ Current state of the build, right now. Keep this short and true.
 ## As of: control-harness session (2026-06-27)
 
 - **Phase:** Control harness in place + verified, reconciled to the 14-step / 7
-  must-not-cut demo contract. **No app/UI yet** (still LE-1).
+  must-not-cut demo contract. **No app/UI yet** (the demo spine; see LIM-1199 / ops/linear/ISSUES.md).
 - **Harness:** pnpm/TS workspace; `packages/contracts` (7 locked primitives as
   hashed contracts + golden tests + Acme fixtures asserting every must-not-cut);
   boundary lint enforcing fixtures-on-spine; CI + hooks + PR template; AGENTS.md +
@@ -35,6 +35,6 @@ Current state of the build, right now. Keep this short and true.
 
 ## Next concrete step
 
-Decide the demo-app UI stack (LE-1), then stand up the static clickable demo in
+Decide the demo-app UI stack (demo-spine issue under LIM-1199), then stand up the static clickable demo in
 `apps/desktop-demo/` covering the full 14-step required demo path, rendering the
 deterministic Acme fixtures from `@liminal-engine/contracts/fixtures`.
