@@ -25,6 +25,19 @@ work is **PR-only — never merge.**
    spine**; **never invent a persona name** (use a role); don't make a dashboard the
    hero; preserve the required demo path. Mark adapted prior-repo code
    `// ADAPTED FROM: <repo>/<path> — prior work`.
+6. **Real logic, never a mock of it.** Build the actual functionality. Never ship a
+   mocked/stubbed/faked implementation of required behavior, a hardcoded or canned
+   value standing in for real computation, or output rigged to the expected result
+   to fake a pass — `engine-core`/`governance`/`eval-harness` must genuinely compute
+   their results. **Real tools, real AI too:** when the system uses an LLM or an
+   external service, it makes a *real* call through a real adapter
+   (`packages/integrations/*`) — never a fake/simulated-in-code stand-in that returns
+   canned data while pretending to hit the model/API. This does **not** touch the
+   demo **fixtures**: the declared Acme scenario data + golden vectors are required
+   demo *input* (Rule 5), and the spine may still *select* fixtures over a real
+   adapter at the `apps/` composition root for live-demo determinism — what's banned
+   is faking the *code* itself (the logic OR the adapter). Can't build it for real?
+   Mark the issue **Formally Blocked** with evidence — a mock is never "done".
 
 ## Required reading before coding
 `DEMO_CONTRACT.md` → `CLAUDE.md` → `SCOPE_SPEC.md` → the linked Linear issue +
@@ -42,7 +55,8 @@ adapters in `packages/integrations/*` are wired ONLY at the apps/ composition ro
 ## No-skip / full-scope (anti-laziness)
 Claim ONE issue → lock on it until **Complete** or **Formally Blocked** (with
 evidence). Partial ≠ done. No silent scope reduction, no stub/fake/TODO for
-required behavior, no truncated edits. Build every layer the feature needs. Full
+required behavior (Rule 6 — real logic + real tools/AI, never a mock), no
+fake/simulated adapters, no truncated edits. Build every layer the feature needs. Full
 detail: `.claude/agents/implementer.md`; overnight model + roles below.
 
 ## Parallel agents — one git worktree per issue
@@ -58,6 +72,9 @@ worktrees): `WORKTREES.md`.
 ## Definition of Done (ALL must hold)
 - [ ] Every linked acceptance criterion (and the relevant `DEMO_CONTRACT.md`
       must-not-cut items) implemented AND verified with evidence.
+- [ ] Required behavior is **real** — real logic + real tool/AI calls through real
+      adapters; no mock/stub/fake adapter, hardcoded value, or output rigged to the
+      expected result (Rule 6). Fixtures stay the demo *input*, not a fake of the code.
 - [ ] `pnpm verify` (typecheck + test + boundary lint) green; `./scripts/smoke.sh`
       run for demo-path work.
 - [ ] Goldens regenerated if a contract changed; fixtures still valid.
