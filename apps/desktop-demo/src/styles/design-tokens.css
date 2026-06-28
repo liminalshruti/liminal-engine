@@ -1137,7 +1137,11 @@
   */
   --demo-focus-ring:  var(--watch-500);    /* amber focus · keyboard nav, active states */
   --demo-pass-text:   #A8DDB9;              /* sage green · passing eval result */
+  --demo-pass-bg:     rgba(168, 221, 185, 0.08);   /* sage green bg · 8% opacity on dark */
+  --demo-pass-border: rgba(168, 221, 185, 0.24);  /* sage green border · 24% opacity */
   --demo-fail-text:   #FF9A90;              /* coral red · failing eval result */
+  --demo-fail-bg:     rgba(255, 154, 144, 0.08);  /* coral red bg · 8% opacity on dark */
+  --demo-fail-border: rgba(255, 154, 144, 0.24); /* coral red border · 24% opacity */
 
   /* interaction overlays · white-alpha states on dark chrome */
   --hover-strong:     rgba(255, 255, 255, 0.08);
