@@ -659,6 +659,43 @@ button { touch-action: manipulation; }
   .trace-row__timestamp { text-align: left; }
 }
 
+/* ── screen: GovernanceCase with correction form toggle (STRETCH) ── */
+.governance-case__correction-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: var(--space-4, 16px);
+  border: 1px dashed var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-2, 6px);
+  background: var(--frame-bg, #0E0E11);
+}
+
+.governance-case__toggle-btn {
+  padding: var(--space-2, 8px) var(--space-4, 16px);
+  min-height: 40px;
+  border-radius: var(--radius-2, 6px);
+  border: 1px solid var(--synthesis-edge, rgba(123, 168, 140, 0.30));
+  background: rgba(123, 168, 140, 0.12);
+  color: var(--synthesis, #7BA88C);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.governance-case__toggle-btn:hover {
+  background: rgba(123, 168, 140, 0.18);
+  border-color: var(--synthesis, #7BA88C);
+}
+
+.governance-case__toggle-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-faint, #8A8780);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 @media (max-width: 640px) {
   .app__bar { padding: var(--space-3, 12px); }
   .rail { max-height: 42vh; }
