@@ -24,9 +24,9 @@ import type {
   ActionGateDecision,
   EvalCase,
   EvalResult,
+  RedactedRef,
   AgentOutput,
   LinearWorkstreamPayload,
-  RedactedRef,
 } from "@liminal-engine/contracts";
 import { redact } from "@liminal-engine/contracts";
 import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";

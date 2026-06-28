@@ -17,12 +17,18 @@ jobs:
           node-version: "22.x"
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Typecheck
+      - name: Typecheck (packages)
         run: pnpm typecheck
-      - name: Tests (contracts golden + fixtures + domain)
+      - name: Typecheck (app .tsx)
+        run: pnpm typecheck:app
+      - name: Tests (contracts golden + fixtures + domain + e2e)
         run: pnpm test
+      - name: App production build (catches bundle breaks tsc misses)
+        run: pnpm --filter @liminal-engine/desktop-demo build
       - name: Boundary lint (hexagonal + no live integrations on spine)
         run: pnpm lint:boundaries
+      - name: Spine guard (14 beats · 7 must-not-cut · no skipped tests)
+        run: node tools/check-spine-guard.mjs
       - name: Goldens committed & up to date
         run: |
           pnpm regen:goldens
