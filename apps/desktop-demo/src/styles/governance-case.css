@@ -1,0 +1,305 @@
+/**
+ * governance-case.css — refined case-detail hub layout (LIM-1256)
+ *
+ * Per IDEAS.md Demo/UX #1: case-detail single hub layout with
+ * title/severity/status · first-pass output with inline-highlighted violations ·
+ * detector findings · correction form · compiled-enforcement preview · audit
+ * timeline · rerun + before/after compare · eval.
+ *
+ * All tokens via the canonical design-tokens.css (never hardcoded colors).
+ */
+
+/* ── Case detail header / metadata ── */
+.case__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  margin-bottom: var(--space-5, 22px);
+  padding-bottom: var(--space-4, 16px);
+  border-bottom: 1px solid var(--card-border-2, #2A2A2F);
+}
+
+.case__title-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3, 12px);
+  flex-wrap: wrap;
+}
+
+.case__headline {
+  font-size: var(--fs-lg, 19px);
+  font-weight: 600;
+  line-height: var(--lh-snug, 1.2);
+  color: var(--text, #F4F2EE);
+  margin: 0;
+}
+
+/* ── Severity badge ── */
+.case__severity-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1, 4px) var(--space-3, 12px);
+  border-radius: var(--radius-2, 6px);
+  font-size: var(--fs-xs, 12px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.case__severity-badge--blocking {
+  background: var(--alarm-100, rgba(237, 33, 79, 0.08));
+  color: var(--alarm, #ED214F);
+  border: 1px solid var(--alarm-edge, rgba(237, 33, 79, 0.4));
+}
+
+.case__severity-badge--high {
+  background: var(--watch-100, rgba(253, 194, 55, 0.08));
+  color: var(--watch, #FDC237);
+  border: 1px solid var(--watch-edge, rgba(253, 194, 55, 0.4));
+}
+
+.case__severity-badge--medium {
+  background: var(--synthesis-bg, rgba(254, 240, 89, 0.08));
+  color: var(--synthesis, #FEF059);
+  border: 1px solid var(--synthesis-edge, rgba(254, 240, 89, 0.4));
+}
+
+.case__severity-badge--low {
+  background: var(--connection-bg, rgba(49, 230, 130, 0.08));
+  color: var(--connection, #31E682);
+  border: 1px solid var(--connection-edge, rgba(49, 230, 130, 0.42));
+}
+
+/* ── Status indicator ── */
+.case__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  padding: var(--space-1, 4px) var(--space-3, 12px);
+  border-radius: var(--radius-2, 6px);
+  font-size: var(--fs-xs, 12px);
+  font-weight: 500;
+  background: var(--frame-bg-3, #15161A);
+  color: var(--text-mid, #C9C5BD);
+  border: 1px solid var(--card-border, #232327);
+}
+
+.case__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-faint, #807D78);
+}
+
+.case__status.is-open .case__status-dot {
+  background: var(--watch, #FDC237);
+}
+
+.case__status.is-approved .case__status-dot {
+  background: var(--connection, #31E682);
+}
+
+.case__status.is-resolved .case__status-dot {
+  background: var(--text-faint, #807D78);
+}
+
+/* ── Metadata facts (case ID, category, detected date) ── */
+.case__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4, 16px);
+  margin: 0;
+}
+
+.case__fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+
+.case__fact dt {
+  font-size: var(--fs-xs, 12px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint, #807D78);
+}
+
+.case__fact dd {
+  margin: 0;
+  font-size: var(--fs-base, 15px);
+  color: var(--text, #F4F2EE);
+  word-break: break-word;
+}
+
+/* ── False-green output section with violation highlight ── */
+.case__output-section {
+  margin: var(--space-5, 22px) 0;
+}
+
+.case__output-title {
+  font-size: var(--fs-body, 14px);
+  font-weight: 600;
+  color: var(--text, #F4F2EE);
+  margin: 0 0 var(--space-2, 8px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--fs-xs, 12px);
+}
+
+.case__output-card {
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-3, 10px);
+  background: var(--frame-bg, #0E0E11);
+}
+
+.case__output-text {
+  margin: 0;
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text, #F4F2EE);
+}
+
+/* ── Inline violation highlight (mark element) ── */
+.violation-highlight__text {
+  display: inline;
+}
+
+.violation-highlight__mark {
+  background: none;
+  padding: 2px 6px;
+  border-radius: var(--radius-2, 6px);
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.violation-highlight__mark--blocking {
+  background: var(--alarm-100, rgba(237, 33, 79, 0.08));
+  border-color: var(--alarm-edge, rgba(237, 33, 79, 0.4));
+  color: var(--alarm, #ED214F);
+}
+
+.violation-highlight__mark--high {
+  background: var(--watch-100, rgba(253, 194, 55, 0.08));
+  border-color: var(--watch-edge, rgba(253, 194, 55, 0.4));
+  color: var(--watch, #FDC237);
+}
+
+.violation-highlight__mark--medium {
+  background: var(--synthesis-tint, rgba(254, 240, 89, 0.14));
+  border-color: var(--synthesis-edge, rgba(254, 240, 89, 0.4));
+  color: var(--synthesis, #FEF059);
+}
+
+.violation-highlight__mark--low {
+  background: var(--connection-tint, rgba(49, 230, 130, 0.14));
+  border-color: var(--connection-edge, rgba(49, 230, 130, 0.42));
+  color: var(--connection, #31E682);
+}
+
+/* ── Evidence badge / "cited in audit" indicator ── */
+.case__evidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  padding: var(--space-1, 4px) var(--space-2, 8px);
+  font-size: var(--fs-mono-xs, 10px);
+  border-radius: var(--radius-1, 4px);
+  background: var(--frame-bg-3, #15161A);
+  border: 1px solid var(--card-border, #232327);
+  color: var(--text-faint, #807D78);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.case__evidence-badge--cited {
+  border-color: var(--connection-edge, rgba(49, 230, 130, 0.42));
+  color: var(--connection, #31E682);
+  background: var(--connection-bg, rgba(49, 230, 130, 0.08));
+}
+
+/* ── Evidence section (missing from, recommended actions) ── */
+.case__evidence {
+  margin: var(--space-4, 16px) 0 0;
+  padding: var(--space-4, 16px);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-2, 6px);
+  background: var(--frame-bg, #0E0E11);
+}
+
+.case__evidence-title {
+  margin: 0 0 var(--space-3, 12px);
+  font-size: var(--fs-body, 14px);
+  font-weight: 600;
+  color: var(--text, #F4F2EE);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--fs-xs, 12px);
+}
+
+.case__evidence ul {
+  margin: 0;
+  padding: 0 0 0 var(--space-4, 16px);
+  list-style: disc;
+}
+
+.case__evidence li {
+  margin-bottom: var(--space-2, 8px);
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-normal, 1.45);
+  color: var(--text-mid, #C9C5BD);
+}
+
+.case__evidence li:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Business impact section ── */
+.case__business-impact {
+  margin: var(--space-5, 22px) 0;
+  padding: var(--space-4, 16px);
+  border-left: 4px solid var(--alarm, #ED214F);
+  background: var(--alarm-bg, rgba(237, 33, 79, 0.08));
+  border-radius: var(--radius-1, 4px);
+}
+
+.case__business-impact-label {
+  font-size: var(--fs-xs, 12px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--alarm, #ED214F);
+  margin-bottom: var(--space-2, 8px);
+}
+
+.case__business-impact-text {
+  margin: 0;
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-normal, 1.45);
+  color: var(--text, #F4F2EE);
+}
+
+/* ── Card (composed with Card component) ── */
+.card {
+  padding: var(--space-5, 22px);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  border-radius: var(--radius-3, 10px);
+  background: var(--frame-bg-2, #0C0C0F);
+}
+
+.card__title {
+  margin: 0 0 var(--space-4, 16px);
+  font-size: var(--fs-xl, 22px);
+  font-weight: 600;
+  color: var(--text, #F4F2EE);
+  line-height: var(--lh-snug, 1.2);
+}
+
+.card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+}

@@ -1,42 +1,99 @@
 /* ContextTray screen styling (LIM-1237 — evidence badges + cited-in-case/audit).
+ * Polished per design direction (LIM-1238): Beat #4 native desktop feel.
  *
  * Screen-scoped because the shared app.css is owned elsewhere; this file stays inside
  * the ContextTray.* ownership fence. It only REFERENCES the canonical design tokens
  * (design-tokens.css) via var(--*) with the same fallbacks app.css uses — it never
  * redefines a token or inlines a style (apps/desktop-demo/AGENTS.md Locked Rule #6).
+ *
+ * DESIGN DIRECTION APPLIED:
+ *   - Screen-level intro & fact (h2): serif-influenced, spacing-rich hierarchy
+ *   - Evidence cards: proper shadow elevation (--shadow-card), motion fade-in
+ *   - Dropped-requirement highlight: --outreach-bg (warm green) wash, not amber
+ *   - Motion: opacity 0→1 + translateY(8px) over --tx-settle (0.32s) on card mount
+ *   - Typography: body --fs-base 15px, labels --fs-mono-xs 10px, hierarchy locked
  */
+
+/* ── intro & fact ── */
+.screen__intro {
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text-soft, #B8B5AE);
+}
+.screen__fact {
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text-soft, #B8B5AE);
+}
+.screen__fact strong {
+  color: var(--text, #F4F2EE);
+  font-weight: 600;
+}
 
 /* ── legend ── */
 .context-tray__legend {
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--text-faint, #8A8780);
+  font-size: var(--fs-sm, 13.5px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text-faint, #807D78);
 }
 .context-tray__legend-tag {
-  color: var(--text-soft, #B8B5AE);
+  color: var(--text, #F4F2EE);
   font-weight: 600;
 }
 
 /* ── card grid ── */
 .context-tray__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-4, 16px);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6, 28px);
 }
 
 /* The context card composes the shared Card widget; tighten its default spacing and
- * make it a flex column so the citation row pins to the bottom for an even grid. */
+ * make it a flex column so the citation row pins to the bottom for an even grid.
+ * Apply card shadow elevation and fade-in motion per design direction. */
 .context-card.card {
   margin-bottom: 0;
-  padding: var(--space-5, 20px);
+  padding: var(--space-6, 28px);
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.35));
+  border: 1px solid var(--card-border, #232327);
+  /* Fade-in animation: opacity 0→1 + translateY(8px)→0 over --tx-settle (0.32s) */
+  animation: card-float-up var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
 }
+/* Stagger cards by +20ms each */
+.context-card:nth-child(2) {
+  animation-delay: 20ms;
+}
+.context-card:nth-child(3) {
+  animation-delay: 40ms;
+}
+.context-card:nth-child(4) {
+  animation-delay: 60ms;
+}
+.context-card:nth-child(5) {
+  animation-delay: 80ms;
+}
+.context-card:nth-child(6) {
+  animation-delay: 100ms;
+}
+
+@keyframes card-float-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .context-card .card__content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3, 12px);
+  gap: var(--space-4, 16px);
   height: 100%;
 }
 
@@ -46,190 +103,205 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-2, 8px);
+  gap: var(--space-3, 12px);
 }
 .context-card__title {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: var(--fs-lg, 19px);
   font-weight: 600;
-  line-height: 1.25;
-  color: var(--text, #E8E6E1);
+  line-height: var(--lh-snug, 1.2);
+  color: var(--text, #F4F2EE);
+  flex: 1;
 }
 .context-card__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1, 4px);
+  gap: var(--space-2, 8px);
+  justify-content: flex-end;
 }
 
 /* source-type tag — the IDEAS.md "source type" affordance. Mono so it reads as a type. */
 .context-card__type {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  padding: 2px 8px;
-  border-radius: var(--radius-1, 4px);
-  color: var(--text-soft, #B8B5AE);
-  background: var(--frame-bg, #0E0E11);
-  border: 1px solid var(--card-border, #232327);
+  font-family: var(--mono, "Geist Mono", ui-monospace, monospace);
+  font-size: var(--fs-mono-xs, 10px);
+  letter-spacing: var(--ls-mono, 0.18em);
+  padding: var(--space-1, 4px) var(--space-2, 8px);
+  border-radius: var(--radius-1, 2px);
+  color: var(--text-faint, #807D78);
+  background: var(--frame-bg-2, #0C0C0F);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 /* provenance tag — the "live-stream vs pinned" affordance. */
 .context-card__capture {
-  font-size: 0.66rem;
+  font-size: var(--fs-mono-xs, 10px);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 2px 8px;
-  border-radius: var(--radius-1, 4px);
-  color: var(--text-faint, #8A8780);
+  letter-spacing: var(--ls-mono, 0.18em);
+  padding: var(--space-1, 4px) var(--space-2, 8px);
+  border-radius: var(--radius-1, 2px);
+  color: var(--text-faint, #807D78);
   background: var(--frame-bg-2, #0C0C0F);
   border: 1px solid var(--card-border-2, #2A2A2F);
+  white-space: nowrap;
 }
-/* simulated badge — mirrors the linear-payload simulated badge (watch/amber). */
+/* simulated badge — highlights non-deterministic/scaffolding elements (watch register). */
 .context-card__simulated {
-  font-size: 0.66rem;
+  font-size: var(--fs-mono-xs, 10px);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--ls-mono, 0.18em);
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-1, 4px);
-  color: var(--watch, #FEC125);
-  background: var(--watch-bg, rgba(254, 193, 37, 0.12));
-  border: 1px solid var(--watch-edge, rgba(254, 193, 37, 0.30));
+  padding: var(--space-1, 4px) var(--space-2, 8px);
+  border-radius: var(--radius-1, 2px);
+  color: var(--watch, #FDC237);
+  background: var(--watch-bg, rgba(253, 194, 55, 0.12));
+  border: 1px solid var(--watch-edge, rgba(253, 194, 55, 0.40));
+  white-space: nowrap;
 }
 
 /* ── evidence badge ── */
 .context-card__evidence {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: var(--space-2, 8px) var(--space-3, 12px);
-  border-radius: var(--radius-2, 6px);
-  background: var(--frame-bg, #0E0E11);
-  border: 1px solid var(--card-border, #232327);
-  border-left: 3px solid var(--card-border-2, #2A2A2F);
+  gap: var(--space-1, 4px);
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  border-radius: var(--radius-3, 4px);
+  background: var(--frame-bg-2, #0C0C0F);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+  border-left: 3px solid var(--card-border, #232327);
 }
-/* the cards where the load-bearing requirement actually lived (or was dropped) get an
- * amber accent so the #4 reveal is legible at a glance. */
+/* the cards where the load-bearing requirement actually lived (or was dropped) get a
+ * warm green (--outreach) accent so the #4 reveal is legible at a glance. Per design
+ * direction: "Dropped requirement highlighted with warm wash (not red box). Apply
+ * --outreach-bg (coral wash, 12% alpha) as background tint only to that line/section." */
 .context-card__evidence--requirement {
-  border-left-color: var(--watch, #FEC125);
-  background: var(--watch-bg, rgba(254, 193, 37, 0.08));
+  border-left-color: var(--outreach, #31E682);
+  background: var(--outreach-bg, rgba(49, 230, 130, 0.12));
+  border-color: var(--outreach-edge, rgba(49, 230, 130, 0.42));
 }
 .context-card__evidence-label {
-  font-size: 0.6rem;
+  font-size: var(--fs-mono-xs, 10px);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-mono, 0.18em);
   font-weight: 600;
-  color: var(--text-faint, #8A8780);
+  color: var(--text-faint, #807D78);
 }
 .context-card__evidence-text {
-  font-size: 0.86rem;
-  line-height: 1.45;
-  color: var(--text-soft, #B8B5AE);
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-normal, 1.45);
+  color: var(--text-soft, #C9C5BD);
 }
 
 /* ── card body ── */
 .context-card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
+  gap: var(--space-3, 12px);
 }
 .context-card__detail {
   margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.45;
-  color: var(--text-soft, #B8B5AE);
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-normal, 1.45);
+  color: var(--text-soft, #C9C5BD);
 }
 .context-card__status {
   margin: 0;
   display: flex;
   align-items: center;
   gap: var(--space-2, 8px);
-  font-size: 0.85rem;
-  color: var(--text-faint, #8A8780);
+  font-size: var(--fs-sm, 13.5px);
+  color: var(--text-faint, #807D78);
 }
 .context-card__trace {
   margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.4;
+  font-size: var(--fs-sm, 13.5px);
+  line-height: var(--lh-normal, 1.45);
+  font-weight: 500;
 }
 .context-card__trace--warn {
-  color: var(--watch, #FEC125);
+  color: var(--watch, #FDC237);
 }
 .context-card__trace--green {
-  color: var(--synthesis, #7BA88C);
+  color: var(--outreach, #31E682);
 }
 
 /* ── cited-in-case/audit indicators ── */
 .context-card__citations {
-  margin: var(--space-1, 4px) 0 0;
+  margin: 0;
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1, 4px);
-  padding-top: var(--space-3, 12px);
+  gap: var(--space-2, 8px);
+  padding-top: var(--space-4, 16px);
   border-top: 1px solid var(--card-border-2, #2A2A2F);
 }
 .context-card__cite {
   display: grid;
-  grid-template-columns: 16px 1fr auto;
+  grid-template-columns: 20px 1fr auto;
   align-items: center;
   gap: var(--space-2, 8px);
-  font-size: 0.78rem;
+  font-size: var(--fs-mono-xs, 10px);
 }
 .context-card__cite-mark {
   text-align: center;
   font-weight: 700;
+  font-size: var(--fs-base, 15px);
+  line-height: 1;
 }
 .context-card__cite-label {
-  color: var(--text-soft, #B8B5AE);
+  color: var(--text-soft, #C9C5BD);
+  font-size: var(--fs-sm, 13.5px);
 }
 .context-card__cite-verdict {
   justify-self: end;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  font-size: 0.66rem;
+  letter-spacing: var(--ls-mono, 0.18em);
+  font-size: var(--fs-mono-xs, 10px);
 }
 .context-card__cite-ref {
   grid-column: 2 / -1;
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.68rem;
-  color: var(--text-faint, #8A8780);
+  font-family: var(--mono, "Geist Mono", ui-monospace, monospace);
+  font-size: var(--fs-mono-xs, 10px);
+  letter-spacing: var(--ls-mono-sm, 0.16em);
+  color: var(--text-faint, #807D78);
 }
 /* cited → affirmative (matches the app's positive/on-track register). */
 .context-card__cite--yes .context-card__cite-mark,
 .context-card__cite--yes .context-card__cite-verdict {
-  color: var(--synthesis, #7BA88C);
+  color: var(--outreach, #31E682);
 }
 /* not cited → muted (informational, not an error). */
 .context-card__cite--no .context-card__cite-mark,
 .context-card__cite--no .context-card__cite-verdict {
-  color: var(--text-faint, #8A8780);
+  color: var(--text-faint, #807D78);
 }
 
 /* ── beat #4 reveal callout ── */
 .context-tray__reveal {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
-  padding: var(--space-4, 16px) var(--space-5, 20px);
-  border-radius: var(--radius-2, 6px);
-  background: var(--watch-bg, rgba(254, 193, 37, 0.10));
-  border: 1px solid var(--watch-edge, rgba(254, 193, 37, 0.30));
-  border-left: 3px solid var(--watch, #FEC125);
+  gap: var(--space-3, 12px);
+  padding: var(--space-6, 28px);
+  border-radius: var(--radius-3, 4px);
+  background: var(--outreach-bg, rgba(49, 230, 130, 0.12));
+  border: 1px solid var(--outreach-edge, rgba(49, 230, 130, 0.42));
+  border-left: 4px solid var(--outreach, #31E682);
 }
 .context-tray__reveal-label {
-  font-size: 0.66rem;
+  font-size: var(--fs-mono-xs, 10px);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--ls-mono, 0.18em);
   font-weight: 600;
-  color: var(--watch, #FEC125);
+  color: var(--outreach, #31E682);
 }
 .context-tray__reveal-text {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: var(--text-soft, #B8B5AE);
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text-soft, #C9C5BD);
 }
 .context-tray__reveal-text strong {
-  color: var(--text, #E8E6E1);
+  color: var(--text, #F4F2EE);
+  font-weight: 600;
 }

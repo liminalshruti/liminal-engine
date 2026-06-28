@@ -8,6 +8,7 @@
  * never a concrete adapter. Do not redesign the loop.
  */
 export * from "./ports.ts";
+export * from "./requirement-ports.ts"; // RequirementStore port + fail-closed read (LIM-1322)
 
 // loop phases (one file per phase)
 export * from "./detect-miss.ts"; // detect       (incl. shared Clock / IdGen)
