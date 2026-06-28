@@ -123,19 +123,22 @@ export function SecondPassEval() {
               </tr>
             </thead>
             <tbody>
-              {beforeAfterRows.map((row) => (
-                <tr key={row.criterion} className="eval-table__row">
+              {beforeAfterRows.map((row, idx) => (
+                <tr key={row.criterion} className={`eval-table__row eval-table__row--before-after ${row.after.result === 'pass' ? 'eval-table__row--pass-animated' : ''}`} style={{ '--animation-delay': `${idx * 20}ms` } as React.CSSProperties}>
                   <td className="eval-table__td eval-table__td--criterion">{row.criterion}</td>
                   <td className={`eval-table__td eval-table__td--result eval-table__result--${row.before.result}`}>
                     <span className="eval-table__pass-number">Pass {row.before.pass}</span>{" "}
                     <EvalResultBadge result={row.before.result} />
                   </td>
-                  <td className={`eval-table__td eval-table__td--result eval-table__result--${row.after.result}`}>
+                  <td className={`eval-table__td eval-table__td--result eval-table__result--${row.after.result} eval-table__result-cell--discovery`}>
                     <span className="eval-table__pass-number">Pass {row.after.pass}</span>{" "}
-                    <EvalResultBadge result={row.after.result} />
+                    <span className="eval-table__result-badge--discovery">
+                      <span className={`eval-table__result-dot eval-table__result-dot--${row.after.result}`} aria-hidden="true" />
+                      <span className="eval-table__result-label">{row.after.result.toUpperCase()}</span>
+                    </span>
                   </td>
                   <td className="eval-table__td eval-table__td--result">
-                    <strong>{row.before.result.toUpperCase()} -&gt; {row.after.result.toUpperCase()}</strong>
+                    <strong className="eval-table__change-arrow">{row.before.result.toUpperCase()} <span className="eval-table__arrow" aria-hidden="true">→</span> {row.after.result.toUpperCase()}</strong>
                   </td>
                 </tr>
               ))}
