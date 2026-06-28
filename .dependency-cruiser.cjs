@@ -15,6 +15,13 @@
 const NOT_TEST = "\\.(test|spec)\\.ts$";
 const SPINE = "^packages/(engine-core|governance|eval-harness|ui-components)/";
 
+// The LIVE integrations the demo must never call (DEMO_CONTRACT cut-if-risky).
+// The OTHER integrations (in-memory fixture stores + the deterministic clock/idgen)
+// are fixture-backed and ARE allowed at the apps/ composition root so the app can
+// run the real governance loop over them (LIM-1245 — UI renders real loop output,
+// not raw fixtures). The spine itself still may not import ANY integration.
+const LIVE_INTEGRATIONS = "^packages/integrations/(gemini|linear|livekit)/";
+
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
   forbidden: [
@@ -30,12 +37,14 @@ module.exports = {
     {
       name: "demo-app-no-live-integrations",
       comment:
-        "The demo-spine app (apps/desktop-demo) must run on fixtures only — no live " +
-        "integrations (gemini/linear/livekit). It is the demo spine, not the future " +
-        "Tauri composition root. (LIM-1163 review Finding 1 / DEMO_CONTRACT 'no live calls on the spine'.)",
+        "The demo-spine app (apps/desktop-demo) must run on fixtures only — no LIVE " +
+        "integrations (gemini/linear/livekit). The in-memory fixture stores + the " +
+        "deterministic clock/idgen ARE allowed here (the composition root runs the " +
+        "real governance loop over them — LIM-1245). (LIM-1163 review Finding 1 / " +
+        "DEMO_CONTRACT 'no live calls on the spine'.)",
       severity: "error",
       from: { path: "^apps/desktop-demo/", pathNot: NOT_TEST },
-      to: { path: "^packages/integrations/" },
+      to: { path: LIVE_INTEGRATIONS },
     },
     {
       name: "engine-core-is-domain",
