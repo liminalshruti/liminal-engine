@@ -170,6 +170,9 @@ importers:
       '@liminal-engine/integration-governance-case-store':
         specifier: workspace:*
         version: link:../integrations/governance-case-store
+      '@liminal-engine/policy':
+        specifier: workspace:*
+        version: link:../policy
 
   packages/integrations/action-gate-store:
     dependencies:
@@ -222,6 +225,21 @@ importers:
         specifier: workspace:*
         version: link:../../governance
 
+  packages/integrations/intercept-gateway:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+      '@liminal-engine/integration-policy-store':
+        specifier: workspace:*
+        version: link:../policy-store
+      '@liminal-engine/policy':
+        specifier: workspace:*
+        version: link:../../policy
+
   packages/integrations/linear:
     dependencies:
       '@liminal-engine/contracts':
@@ -263,6 +281,21 @@ importers:
       zod:
         specifier: ^3.24.1
         version: 3.25.76
+
+  packages/integrations/policy-store:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/policy':
+        specifier: workspace:*
+        version: link:../../policy
+
+  packages/policy:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/ui-components:
     dependencies:

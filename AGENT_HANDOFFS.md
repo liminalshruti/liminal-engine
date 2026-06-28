@@ -5,6 +5,55 @@ this first.
 
 ---
 
+## Session: LIM-1367 policy intercept control plane PR-ready (2026-06-28)
+
+**Did:**
+- Created Linear issue LIM-1367 and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/GOAL-policy-loop` on branch
+  `agent/LIM-1367-policy-intercept-control-plane`.
+- Added the live/dogfood proxy control plane: `ActionPolicyRule` contract,
+  `InterceptedAction` strict boundary validation, pure policy decision engine,
+  correction-to-action-policy compilation, policy verdict/rule audit helpers, and
+  rule-health eval reporting.
+- Added `packages/integrations/intercept-gateway`: HTTP server, `policy-gw` CLI,
+  gh/git/deploy shims, MCP destructive-call classifier, target scope, match/replace,
+  queue controls, forward/drop/bulk controls, repeater, proxy history, and execution
+  outcome recording.
+- Added `packages/integrations/policy-store`: in-memory and file-backed action
+  policy stores plus intercept queues. `policy-gw serve --session-dir <path>` now
+  persists learned rules, pending queue state, and proxy history across restart.
+- Rebased onto current `origin/main` and reconciled the existing remediation
+  `PolicyRule` model by splitting learned verdict rules into `ActionPolicyRule`
+  rather than overwriting main's correction-pipeline contract.
+
+**Verified:**
+- `pnpm regen:goldens` wrote 25 vectors across 16 contracts.
+- `pnpm install --frozen-lockfile` refreshed this worktree after rebasing onto
+  current main.
+- `pnpm typecheck` green after the model split.
+- Focused contracts/policy/governance/gateway tests green: 66 tests.
+- `pnpm verify` green on rebased branch: 394 tests, app typecheck, boundary lint.
+
+**Did NOT do (by design):**
+- Did not merge the PR or mark Linear Done.
+- Did not wire live calls into the deterministic Acme demo spine.
+- Did not remove current main's correction-pipeline `PolicyRule` or policy-router
+  packages; this PR adds the action-intercept layer beside them.
+
+**Next session should:**
+- Review/open the LIM-1367 PR and watch CI after push.
+- If main moves again, rebase before review; current branch was observed as ahead 1
+  and behind 4 after verification, so a final fetch/rebase is expected before push.
+
+**Risks / watch:**
+- This is a large product-surface PR. The biggest review point is terminology:
+  remediation `PolicyRule` remains the governance-case rule, while `ActionPolicyRule`
+  is the learned allow/deny/ask rule used by the intercept gateway.
+- The control plane is real logic and real local shims/HTTP, but not yet a full
+  browser-grade operator UI. CLI/HTTP persistence is the current fidelity level.
+
+---
+
 ## Session: reconcile — spine complete, #51 gated, video is the last gap (2026-06-28)
 
 > Reconciliation pass. The per-PR session blocks below stop at LIM-1239 but the

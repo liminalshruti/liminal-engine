@@ -1,5 +1,5 @@
 /**
- * Contract registry — the single list the golden test and regen tool both read,
+ * Contract registry - the single list the golden test and regen tool both read,
  * so adding a contract automatically pins it.
  */
 import { AGENT_OUTPUT_SCHEMA, agentOutputContract, agentOutputGoldenVectors } from "./agent-output.contract.ts";
@@ -15,6 +15,9 @@ import { INTERCEPTED_ACTION_SCHEMA, interceptedActionContract, interceptedAction
 import { EVIDENCE_BUNDLE_SCHEMA, evidenceBundleContract, evidenceBundleGoldenVectors } from "./evidence-bundle.contract.ts";
 import { REQUIREMENT_SCHEMA, requirementContract, requirementGoldenVectors } from "./requirement.contract.ts";
 import { REQUIREMENT_EVIDENCE_SCHEMA, requirementEvidenceContract, requirementEvidenceGoldenVectors } from "./requirement-evidence.contract.ts";
+import { POLICY_RULE_SCHEMA, policyRuleContract, policyRuleGoldenVectors } from "./policy-rule.contract.ts";
+import { ACTION_POLICY_RULE_SCHEMA, actionPolicyRuleContract, actionPolicyRuleGoldenVectors } from "./action-policy-rule.contract.ts";
+import { APPROVAL_GATE_SCHEMA, approvalGateContract, approvalGateGoldenVectors } from "./approval-gate.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -42,4 +45,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: EVIDENCE_BUNDLE_SCHEMA, contract: evidenceBundleContract, vectors: evidenceBundleGoldenVectors },
   { schema: REQUIREMENT_SCHEMA, contract: requirementContract, vectors: requirementGoldenVectors },
   { schema: REQUIREMENT_EVIDENCE_SCHEMA, contract: requirementEvidenceContract, vectors: requirementEvidenceGoldenVectors },
+  { schema: POLICY_RULE_SCHEMA, contract: policyRuleContract, vectors: policyRuleGoldenVectors },
+  { schema: ACTION_POLICY_RULE_SCHEMA, contract: actionPolicyRuleContract, vectors: actionPolicyRuleGoldenVectors },
+  { schema: APPROVAL_GATE_SCHEMA, contract: approvalGateContract, vectors: approvalGateGoldenVectors },
 ] as unknown as ContractEntry[];

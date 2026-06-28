@@ -51,6 +51,13 @@ module.exports = {
       to: { dependencyTypes: ["core"] },
     },
     {
+      name: "policy-is-domain",
+      comment: "policy is a pure bounded context: it may import @liminal-engine/contracts only, with adapters behind ports.",
+      severity: "error",
+      from: { path: "^packages/policy/", pathNot: NOT_TEST },
+      to: { path: "^packages/(engine-core|governance|eval-harness|ui-components|integrations)/" },
+    },
+    {
       name: "ui-calls-application",
       comment: "UI calls governance (application) + contracts — not engine-core domain internals.",
       severity: "error",

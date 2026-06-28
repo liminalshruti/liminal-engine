@@ -1,0 +1,19 @@
+{
+  "name": "@liminal-engine/integration-intercept-gateway",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "bin": {
+    "policy-gw": "./bin/policy-gw.mjs",
+    "liminal-gh": "./bin/gh.mjs",
+    "liminal-git": "./bin/git.mjs",
+    "liminal-deploy": "./bin/deploy.mjs"
+  },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/governance": "workspace:*",
+    "@liminal-engine/integration-policy-store": "workspace:*",
+    "@liminal-engine/policy": "workspace:*"
+  }
+}

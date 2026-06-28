@@ -28,7 +28,7 @@ export const actionGateVerdictShape = z.enum(["allow", "deny"]);
  * Verdict provenance — who/what produced this gate: an operator ratification, an
  * auto-verdict from a learned PolicyRule, or a fail-closed default-deny.
  */
-export const actionGateSourceShape = z.enum(["operator", "policy", "default-deny"]);
+export const actionGateSourceShape = z.enum(["operator", "policy", "scope", "default-deny"]);
 export type ActionGateSource = z.infer<typeof actionGateSourceShape>;
 
 export const actionGateShape = z.object({
@@ -67,10 +67,17 @@ export const actionGateShape = z.object({
 });
 export type ActionGate = z.infer<typeof actionGateShape>;
 
+export const actionGateDecisionSource = z.enum(["operator", "policy", "scope", "default-deny"]);
+export type ActionGateDecisionSource = z.infer<typeof actionGateDecisionSource>;
+
 export interface ActionGateDecision {
   allowed: boolean;
   reasons: string[];
   requiredBeforeSend: string[];
+  /** Optional for back-compat with persisted ActionGate v2 payloads. */
+  source?: ActionGateDecisionSource;
+  /** Present when a learned policy rule produced the decision. */
+  sourceRuleId?: string;
 }
 
 export function deriveActionGateAllowed(
