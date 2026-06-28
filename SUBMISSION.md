@@ -1,94 +1,106 @@
-# SUBMISSION.md — Liminal Engine — Agentic Work Governance MVP
+# SUBMISSION — Liminal Engine
 
-> Hackathon: Liminal Engine Governance Hack 2026
+> AI Engineer World's Fair Hackathon 2026 · Theme: **The Self-Improvement Stack**
+> (secondary: **Continual Learning**).
+>
+> **Repo:** https://github.com/liminalshruti/liminal-engine (public)
+> **Team:** Shruti Rajagopal · Sean Nejad
 
-The pre-submission checklist and the net-new claim judges will rely on.
+This is the judge-facing companion to the [README](./README.md): what we built, what's
+real vs. simulated, and where every claim is verifiable in the code.
 
-## What we're submitting
+## The one line
 
-**Liminal Engine — Agentic Work Governance MVP.** A governance layer that catches
-false greens in agentic work and forces provable correction, demonstrated on the
-Acme $1.2M false-green scenario. Loop: `observe → detect → correct → enforce →
-audit → improve`.
+**Liminal is the governance layer for agentic work that gets smarter every time a human
+corrects it — it catches drift from the goal, enforces the fix, and proves the next pass
+improved.**
 
-Submitted under **The Self-Improvement Stack** (secondary: **Continual
-Learning**). How each rubric criterion maps to a demo beat — and where coverage
-gaps remain — is in **`JUDGING_MAP.md`**.
+Companies are starting to run teams of AI agents like teams of people, and can't answer
+the question that follows: *is all this AI work moving the goals we resourced it for?*
+Liminal answers it.
 
-## Net-new claim (read this, judges)
+## What we built (net-new, this hackathon)
 
-- The submission scope is **this standalone public repo** — `liminal-engine`
-  (`github.com/liminalshruti/liminal-engine`) — the Liminal Engine Agentic Work
-  Governance MVP.
-- It is the **net-new 2026 hackathon build**. Prior Liminal repos are
-  reference/context only; the demo only highlights functionality built here.
-- Any adapted prior-work code is explicitly marked (`// ADAPTED FROM: …`) and
-  catalogued in `IP_RECEIPT.md`.
+The repo's entire git history begins with this build. Prior Liminal surfaces informed
+vocabulary and design language only (marked `ADAPTED FROM` where reused; catalogued in
+`IP_RECEIPT.md`). The demo highlights only functionality built here.
 
-## Repo visibility — DONE
+- **Governance loop engine** (`packages/governance`, `engine-core`) — port-driven
+  `observe → detect → correct → enforce → audit → improve`, real computed logic.
+- **Eval Fail→Pass + persisted archive** (`eval-harness`, `eval-library`).
+- **Policy + correction pipeline** (`policy`, `policy-router`, `correction-pipeline`) —
+  a `CorrectionEvent` compiles into policy rules + approval gates.
+- **Substrate ingest** (`packages/substrate`) — runs the loop on arbitrary streams, not
+  one baked-in answer.
+- **Goal + AI-spend alignment** (`packages/goal-alignment`) — the executive wedge: "$X of
+  AI spend produced N outputs, but the goal isn't moving."
+- **Inference proxy** ("Burp for LLM traffic") — intercepts model calls, routes against
+  cost + mission policy (transform / deny / allow), seals to the audit ledger.
+- **Hash-chained audit ledger** — tamper-evident, reconstructable, redaction-safe.
+- **Live integrations** — Gemini (live inference, cache-replayed, fails-loud), LiveKit
+  (real room + mic publish), Linear (real `issueCreate`, dry-run default).
+- **Two surfaces over the engine** — `apps/api` (governs arbitrary posted output) and
+  `apps/desktop-demo` (operating Workspace · Inference proxy · guided 14-step Demo).
 
-- [x] Published as a **standalone PUBLIC repo** `liminal-engine`
-      (`github.com/liminalshruti/liminal-engine`), not by making the private
-      multi-project parent public.
-- [x] Entire git history begins with the hackathon (clean net-new boundary,
-      first commit is t=0).
-- [x] **MIT `LICENSE`** present at repo root.
-- [x] **Final verification passed** — no secrets / `.env` / unrelated sibling
-      projects included; README and demo reflect final build; all tests green.
+## Is it real? (the honesty judges should rely on)
 
-## Demo readiness
+**Real, computed, tested:** the governance loop, eval grading, policy/correction
+pipeline, hash-chained audit, fail-closed gate, substrate ingest, goal/AI-spend model,
+the inference-proxy policy engine, and the live Gemini / LiveKit / Linear adapters. The
+`apps/api` service governs **arbitrary posted agent output** — `./scripts/live-demo.sh
+your-payload.json` runs the full loop on data we've never seen.
 
-- [x] Required demo path (`DEMO_CONTRACT.md`) runs end to end, in order — all 7
-      screens filled + merged; the 14-step Acme walkthrough renders.
-- [x] All must-not-cut items visibly present (MNC#1–7 each rendered on screen).
-- [x] Eval table shows Fail → Pass (SecondPassEval, beat #14 / MNC#7).
-- [x] `scripts/smoke.sh` passes; `pnpm verify` green (151 tests, 0 boundary violations).
-- [x] Determinism guaranteed — a test runs the loop twice and asserts identical artifacts.
-- [x] **Screens render live `runGovernanceLoop` output, not raw fixtures** (LIM-1255,
-      merged) — all 7 screens read `useDemo()` (the real `buildGovernanceDemo()` result).
-      **UI == engine verified end-to-end:** the un-skipped beat-#5 e2e asserts the screen's
-      case is the engine's live loop-detected case (18/18 e2e, zero skips).
-- [ ] Completes in under 3 minutes — *confirm in a live rehearsal* (LIM-1246 pacing pass).
-- [ ] Fallback recording in `demos/fallback/` — *manual; record before submission.*
-      (The deterministic fallback *walkthrough* is written/merged; the video is pending.)
+**Simulated by deterministic fixtures, by design:** the worked example (Acme expansion)
+and the proxy's intercepted traffic are seeded so the demo can't flake on stage — the
+engine/verdicts/audit are real and run on the real contracts; the *traffic* is the
+fixture. The simulated Linear workstream panel (read-only) and voice STT
+(operator-entered transcript) are fixtures, labeled in the UI. Live STT is not wired.
 
-## Persona
+**No invented identity:** operator is a role only ("VP Ops / Head of AI Transformation");
+no fabricated persona or company; the entity is not yet incorporated.
 
-- [x] Generic operator language retained (role only — "VP Ops / Head of AI
-      Transformation"). **No invented persona name anywhere** (verified). Persona
-      extraction from `liminal-prototype` is optional/post-hack (LIM-1247).
+## The 14-beat demo (the worked example)
 
-## 14-beat path verification
+The guided Demo (desktop app → "Demo" tab) walks the Acme false-green case end to end;
+every screen renders live `runGovernanceLoop` output (`useDemo()`), not hardcoded screens.
 
-All 14 required demo beats are implemented, live-wired to the engine, and covered by tests:
-
-| Beat | Requirement | Screen | Status |
+| Beat | What's shown | Screen | MNC |
 |------|---|---|---|
-| 1–2 | Initialize workspace + business goal | `Initialize` | ✓ Renders goal: "Close Acme expansion — $1.2M ARR" |
-| 3–4 | Agent output reads "on track"; EU data-residency dropped | `AgentActivity` → `ContextTray` | ✓ False green + dropped requirement visible |
-| 5 | `GovernanceCase` flags dropped requirement with evidence | `GovernanceCase` | ✓ MNC#2: detection artifact on screen |
-| 6–7 | Operator clicks Approve + Enforce; status flips On Track → At Risk | `EnforcementPanel` | ✓ MNC#3: status flip visible in UI |
-| 8–9 | Simulated Linear workstream; Product / Security / Engineering owners required | `EnforcementPanel` | ✓ MNC#4: workstream + required owners shown |
-| 10 | Blocked customer-facing "on track" update (gate enforced) | `EnforcementPanel` (blocked-action banner) | ✓ MNC#5: action gate prevents false update |
-| 11 | `AuditEvent` recorded on hash-chained ledger | `AuditTrail` | ✓ MNC#6: audit evidence captured and reconstructable |
-| 12–14 | `EvalCase` generated; second pass re-runs; eval table shows Fail → Pass | `SecondPassEval` | ✓ MNC#7: improvement proven in eval table |
+| 1–2 | Goal: "Close Acme expansion — $1.2M ARR" | Initialize | |
+| 3 | Agent output reads "on track" (false green) | AgentActivity | #1 |
+| 4 | EU data-residency requirement revealed as dropped | ContextTray | |
+| 5 | `GovernanceCase` opened with evidence + business impact | GovernanceCase | #2 |
+| 6–7 | Approve + Enforce → status flips On Track → At Risk | EnforcementPanel | #3 |
+| 8–9 | Simulated Linear workstream; Product/Security/Eng owners required | EnforcementPanel | #4 |
+| 10 | False customer-facing "on track" update blocked by the gate | EnforcementPanel | #5 |
+| 11 | `AuditEvent` recorded on the hash-chained ledger | AuditTrail | #6 |
+| 12–14 | `EvalCase` generated; second pass; eval table shows Fail → Pass | SecondPassEval | #7 |
 
-**Coverage:** All 7 must-not-cut items (MNC#1–7) and all 14 beats verified on screen. Engine-produced output (via `buildGovernanceDemo()` and `runGovernanceLoop()`) fed live to the UI (`useDemo()` hook); not hardcoded screens. Backbone tested in `apps/desktop-demo/test/demo-path.e2e.test.ts` (18/18 e2e, zero skips).
+All 7 must-not-cut items and all 14 beats are verified on screen and in
+`apps/desktop-demo/test/demo-path.e2e.test.ts` (the e2e asserts the rendered case is the
+engine's live loop-detected case — UI == engine).
 
-## Claim scan (brand/entity rules)
+## Verification
 
-- [x] **No Stanford references.** Verified across `/src`, `/apps`, `/packages`, `.md` files. CLAUDE.md rule enforced: Shruti is UC Berkeley (Cognitive Science & Computer Science).
-- [x] **No SPC fellow claim.** Shruti applied to South Park Commons but is not a member. Not mentioned anywhere.
-- [x] **No "Liminal, Inc." claims.** Entity stated as not yet incorporated per CLAUDE.md. References correctly note "Shruti Rajagopal and contributors" (MIT license).
-- [x] **No invented persona name.** Operator referred to generically as "VP Ops / Head of AI Transformation" (meets DEMO_CONTRACT persona rule).
-- [x] **No Claude/Anthropic attribution in code or submission materials.** Git commit messages and SUBMISSION.md clean per global CLAUDE.md rule.
+`pnpm verify` is the proof gate: typecheck (every package + the app), the contract /
+engine / determinism test suite, and dependency-cruiser boundary rules. Current main:
+**662 tests pass, 0 boundary violations**; a spine-guard asserts all 14 beats + 7
+must-not-cut items are present and no spine test is skipped. Contracts hash canonically
+and are pinned by golden vectors — same inputs, byte-identical artifacts.
 
-## Live-demo timing note
+## Partner technology
 
-The full 14-step walkthrough (`scripts/smoke.sh` checklist) targets **under 3 minutes**. Deterministic engine (no live API calls) + fixtures guarantee repeatable performance. Final timing confirmation: pending founder rehearsal before judges receive the link (SUBMISSION.md open item).
+- **Google Gemini** — live inference producing `AgentOutput` from arbitrary transcripts
+  (cache-replayed for determinism; never fabricates).
+- **LiveKit** — genuinely-live room connection + real microphone publish for the
+  voice-correction path.
+- **DigitalOcean** — model access wired for inference.
 
-## Links (fill in)
+## Claim scan (brand / entity rules) — clean
 
-- Public repo URL: _TBD_
-- Demo video URL: _TBD_
-- Submission portal entry: _TBD_
+Full scan in `specs/CLAIM_SCAN_AUDIT.md`. Summary of what is intentionally absent:
+
+- No "Liminal, Inc." — the entity is not yet incorporated (MIT © "Shruti Rajagopal and contributors").
+- No invented persona name — the operator is a role only.
+- Founder bio claims are limited to the accurate record: UC Berkeley (Cognitive Science & Computer Science); PM at Asana, Cloudflare, Robinhood, Ancestry.
+- No AI/Anthropic attribution in commit messages or submission materials.

@@ -1,102 +1,134 @@
 # Liminal Engine
 
-**Governance for agentic work — catch the _false green_.**
+**The governance layer for agentic work — it gets smarter every time a human corrects it.**
 
-> Submission for the Liminal Engine Governance Hack 2026.
+Companies are starting to manage teams of AI agents like teams of people, and can't
+answer the question that follows: *is all this AI work actually moving the goals we
+resourced it for?* Liminal Engine answers it — it **catches when agents drift from the
+goal, enforces the human correction as real operating state, and proves the next agent
+pass improved.**
 
-## The problem
+> Submission for the AI Engineer World's Fair Hackathon 2026 · Theme: **The
+> Self-Improvement Stack** (a human correction becomes a durable eval/policy update —
+> continual learning without touching model weights).
 
-When a team hands real, high-stakes work to AI agents, the agents can report a
-**false green**: output that *looks* finished and on-track while silently dropping
-a load-bearing requirement. The status says "on track," the customer update goes
-out, and nobody notices the gap until it ships.
+## The problem — *agentic work drift*
+
+Hand real, high-stakes work to AI agents and they report a **false green**: output that
+*looks* finished and on-track while silently dropping a load-bearing requirement. A
+$1.2M deal's gating requirement — *EU data residency* — is captured in the customer
+call but never propagates into the proposal, the scope, or the launch plan. The agents
+look productive. The status says "on track." The deal is quietly at risk, and the AI
+spend that produced the work isn't moving the goal.
+
+This isn't model hallucination. It's **organizational hallucination** — work that loses
+the thread to the business goal it was resourced for.
 
 ## What Liminal Engine does
 
-Liminal Engine is a governance layer that runs a closed loop over agent output:
+A closed governance loop over agent work:
 
 ```text
 observe → detect → correct → enforce → audit → improve
 ```
 
-- **observe** — take in an agent's reported output for a piece of work.
-- **detect** — find the silent miss (a requirement the agent dropped) and open a
-  `GovernanceCase` with the supporting evidence.
-- **correct + enforce** — compile the correction into an `EnforcementAction`, flip
-  a false *On Track* to *At Risk*, and **gate the downstream action** (e.g. block a
-  customer-facing "on track" update) until the work is actually corrected.
+- **observe** — ingest the agent's work and the streams it drew from (call, proposal,
+  launch plan) as *substrate*.
+- **detect** — find the silent miss across the streams and open a `GovernanceCase` with
+  evidence and **goal-alignment / AI-spend risk** ("$18,400 of spend produced 2 outputs,
+  but a gating requirement was lost — the goal isn't advancing").
+- **correct + enforce** — compile the human correction into an `EnforcementAction`, flip
+  a false *On Track* → *At Risk*, and **gate the downstream action** (block the false
+  "on track" customer update) until the work is actually corrected.
 - **audit** — append a tamper-evident, hash-chained `AuditEvent` recording the
   correction and the deciding actor.
 - **improve** — generate an `EvalCase` from the correction and grade the next pass,
   proving the rerun moves **Fail → Pass**.
 
+The same engine runs on a **second axis** — the **inference proxy** ("Burp for LLM
+traffic"): every agent model call is intercepted, routed against model-cost + mission
+policy, and sealed to the same audit ledger — **transform** an over-spec request
+(Calendar work asking for Opus → downgraded to Haiku), **deny** an off-mission one
+(a crypto-trading-bot request), **allow** a justified one (security-critical SSO at
+Opus). The proxy proposes new routing policy from observed traffic; the operator
+ratifies. *Corrections become policy. Spend governs itself.*
+
 ## What's real — and what isn't (honest disclosure)
 
-The engine is **real computed logic**, not hardcoded screens. The pieces that do
-the work are genuine and tested:
+The engine is **real computed logic**, not hardcoded screens. What does the work is
+genuine and tested:
 
-- **Generic, port-driven engine.** `runGovernanceLoop` (in `packages/governance`)
-  takes its inputs through injected ports (`AgentOutputSource`, `GovernanceCaseStore`,
-  `AuditSink`, `ActionGateStore`, `EvalStore`). The detection, enforcement, audit,
-  and eval logic is algorithmic — it runs on whatever data source is wired in, not
-  on a baked-in answer.
-- **Hash-chained audit ledger.** `AuditEvent`s chain via `prevHash` into a
-  tamper-evident ledger that reconstructs the case lifecycle; redaction stores a
-  canonical hash reference without breaking the chain (`packages/governance/src/audit-ledger.ts`,
-  with chain-verification + reconstruction tests).
+- **Generic, port-driven engine.** `runGovernanceLoop` takes its inputs through injected
+  ports (`AgentOutputSource`, `GovernanceCaseStore`, `AuditSink`, `ActionGateStore`,
+  `EvalStore`). Detection, enforcement, audit, and eval are algorithmic — they run on
+  whatever source is wired in. The `apps/api` HTTP service governs **arbitrary posted
+  agent output**: a stranger can `POST /governance/loop` their own data and get the full
+  loop back (`./scripts/live-demo.sh your-payload.json` proves it on data we've never seen).
+- **Real arbitrary-data ingest.** `packages/substrate` ingests arbitrary streams
+  (transcript / proposal / ticket / agent trace) and runs detection over them — the loop
+  is substrate-driven, not bound to one baked-in answer.
+- **Live Gemini inference.** `GeminiAgentOutputSource` produces an `AgentOutput` from an
+  arbitrary transcript by calling Gemini, replaying a **real captured response** from a
+  content-addressed cache for deterministic, offline-filmable runs. It never fabricates:
+  a cache miss with no key **fails loud** rather than inventing output.
+- **Genuinely-live LiveKit.** The voice-correction path mints a real LiveKit access token
+  and publishes a **real microphone track** into a real room (`livekit-client`); it
+  degrades to a scripted transcript only when creds/mic are absent. (Live speech-to-text
+  is not wired — the transcript is operator-entered, labeled as such.)
+- **Real Linear remediation.** `LinearRemediationAdapter` turns a remediation payload
+  into a real Linear `issueCreate` — **dry-run by default** (prints the exact payload, no
+  network), **live only on explicit opt-in**. Quarantined to a composition root; the demo
+  spine never calls it.
+- **Hash-chained audit ledger.** `AuditEvent`s chain via `prevHash` into a tamper-evident
+  ledger that reconstructs the case lifecycle; redaction stores a canonical hash reference
+  without breaking the chain (chain-verification + reconstruction tests).
 - **Fail-closed action gate.** If gate evaluation throws, the downstream action is
-  **denied**, never silently allowed (`proxy-gate.ts`; tested).
-- **Deterministic.** Contracts hash canonically and are pinned by golden vectors;
-  the same inputs produce byte-identical artifacts, so results are reproducible.
-- **Boundary-enforced architecture.** A dependency-cruiser rule forbids the UI from
-  importing a live integration directly — cross-package coupling goes through the
-  `contracts` kernel only. Enforced by the build, not by review.
+  **denied**, never silently allowed.
+- **Deterministic + boundary-enforced.** Contracts hash canonically and are pinned by
+  golden vectors — same inputs, byte-identical artifacts. A dependency-cruiser rule
+  forbids the demo spine from importing a live integration; enforced by the build, not by
+  review.
 
-And, just as plainly, what is **not** real yet in this build:
+And, just as plainly, what is **simulated by deterministic fixtures, by design**:
 
-- **One worked example.** The bundled reference dataset is a single scenario (the
-  "Acme expansion" case). The engine is generic, but the composition roots
-  (`apps/api`, `apps/desktop-demo`) currently bind it to that fixture rather than to
-  arbitrary, caller-supplied work. Pointing it at your own data is the next step,
-  not something this build does on demand.
-- **External integrations sit behind ports.** Gemini and Linear are deterministic
-  stubs; the LiveKit adapter is implemented but falls back to a scripted transcript.
-  Real adapters swap in at the composition root without touching the engine — but
-  they are not running live here.
-- **No invented identity.** There is no fabricated persona or company; the operating
-  entity is not yet incorporated.
+- **Seeded demo traffic.** The worked example (the "Acme expansion") and the inference
+  proxy's intercepted calls are seeded so the demo is deterministic and can't flake on
+  stage. The engine, verdicts, policy, and audit are real and run on the real contracts —
+  the *traffic* is the fixture. Point a real proxy endpoint / live source at it and it
+  governs live calls.
+- **The simulated Linear workstream panel** (read-only, no network) and **voice STT**
+  (operator-entered transcript) are fixtures; both are labeled in the UI.
+- **No invented identity.** No fabricated persona or company; the operating entity is not
+  yet incorporated.
 
-We'd rather show a real engine with an honestly-scoped example than a polished
-surface that quietly fakes the work underneath.
+We'd rather show a real engine with an honestly-scoped example than a polished surface
+that quietly fakes the work underneath.
 
 ## Run it
 
 **Prerequisites:** Node `>=22.6.0` and `pnpm@11.1.2` (pinned via `packageManager`).
 
 ```bash
-pnpm install                              # install workspace deps
+pnpm install                                       # install workspace deps
+
+# The desktop app — operating Workspace, Inference proxy, and the guided Demo:
+pnpm --filter @liminal-engine/desktop-demo dev     # Vite dev server → open the printed URL
+                                                   #   Workspace · Inference proxy · Demo (tabs)
 
 # The governance loop as an HTTP service (contract JSON in → contract JSON out):
-pnpm --filter @liminal-engine/api dev     # starts the API; try GET /health,
-                                          # POST /governance/{detect,enforce,eval,loop}
+pnpm --filter @liminal-engine/api dev              # GET /health · POST /governance/{detect,enforce,eval,loop}
 
-# A reference UI that renders the live engine output for the worked example:
-pnpm --filter @liminal-engine/desktop-demo dev   # Vite dev server → open the printed URL
+# Run the real loop on arbitrary data (no narrator, no fixed sequence):
+./scripts/live-demo.sh                             # built-in example
+./scripts/live-demo.sh your-payload.json           # your own agent output
 
-pnpm verify                               # the full proof gate (see below)
+pnpm verify                                        # the full proof gate (below)
 ```
 
 `pnpm verify` typechecks every package and the app, runs the contract + engine +
-determinism tests, and enforces the architecture boundary rules. A green `verify`
-means the loop is correct and reproducible. CI additionally regenerates the contract
-goldens and checks they are committed and up to date.
-
-To serve a production build of the reference UI instead of the dev server:
-
-```bash
-pnpm --filter @liminal-engine/desktop-demo build
-pnpm --filter @liminal-engine/desktop-demo preview
-```
+determinism tests, and enforces the architecture boundary rules. A green `verify` means
+the loop is correct and reproducible. CI additionally regenerates the contract goldens
+and checks they are committed and current.
 
 ## Repo layout
 
@@ -104,26 +136,25 @@ pnpm --filter @liminal-engine/desktop-demo preview
 |------|------------|
 | `packages/contracts` | The shared kernel — zod contracts, canonical hashing, redaction. All cross-package coupling goes through here. |
 | `packages/engine-core` | Pure governance computations (no I/O). |
-| `packages/governance` | The loop use-cases and ports — detect, enforce, audit ledger, second-pass eval. |
-| `packages/policy-router` | Rule engine: load active rules and compile matches into enforcement actions. |
+| `packages/governance` | The loop use-cases + ports — detect, enforce, audit ledger, second-pass eval. |
+| `packages/substrate` | Ingest arbitrary streams + detect lost context — runs the loop on real data. |
+| `packages/goal-alignment` | Goal + AI-spend model: assess whether the spend is moving the goal. |
+| `packages/policy` · `packages/policy-router` | Policy / model-routing rule engines. |
 | `packages/correction-pipeline` | Compile a `CorrectionEvent` into actions, policy rules, and approval gates. |
 | `packages/eval-library` | Persisted archive of generated `EvalCase`s. |
-| `packages/integrations/{gemini,linear,livekit}` | Adapters behind ports (stubs / fixture-fallback in this build). |
-| `apps/api` | HTTP service exposing the governance loop as a stateless REST API. |
-| `apps/desktop-demo` | Reference UI that renders the live engine output. |
-
-> `policy-router`, `correction-pipeline`, and `eval-library` are standalone,
-> independently-tested libraries; they are not yet wired into the main loop.
+| `packages/integrations/{gemini,linear,livekit}` | Adapters behind ports — live-capable (Gemini, LiveKit, Linear) with fixture fallback, quarantined from the demo spine. |
+| `apps/api` | HTTP service exposing the governance loop on arbitrary posted output. |
+| `apps/desktop-demo` | Desktop app: operating Workspace, Inference proxy, and the guided 14-step Demo. |
 
 ## Scope of this submission
 
 - This repository is **the entire submission**, net-new for the hackathon. Its git
   history begins with this work.
 - It has **no dependency on, and includes no code from, any prior or private Liminal
-  repository.** Prior product surfaces informed vocabulary and design language only;
-  none of them are part of this submission.
-- Before sharing the link: confirm no secrets are committed and that this README and
-  the running surfaces reflect the current build (see `SUBMISSION.md`).
+  repository.** Prior product surfaces informed vocabulary and design language only
+  (marked `ADAPTED FROM` where reused); none are part of this submission.
+- Partner tech: **Google Gemini** (live inference), **LiveKit** (live room + mic publish),
+  **DigitalOcean** (model access).
 
 ## License
 
