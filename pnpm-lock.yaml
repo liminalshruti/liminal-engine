@@ -101,6 +101,22 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
 
+  packages/correction-pipeline:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@liminal-engine/engine-core':
+        specifier: workspace:*
+        version: link:../engine-core
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../governance
+    devDependencies:
+      '@liminal-engine/integration-fixture-determinism':
+        specifier: workspace:*
+        version: link:../integrations/fixture-determinism
+
   packages/engine-core:
     dependencies:
       '@liminal-engine/contracts':
