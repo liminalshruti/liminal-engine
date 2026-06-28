@@ -11,6 +11,7 @@ import { EVAL_CASE_SCHEMA, evalCaseContract, evalCaseGoldenVectors } from "./eva
 import { EVAL_RESULT_SCHEMA, evalResultContract, evalResultGoldenVectors } from "./eval-result.contract.ts";
 import { CORRECTION_EVENT_SCHEMA, correctionEventContract, correctionEventGoldenVectors } from "./correction-event.contract.ts";
 import { LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, linearWorkstreamPayloadContract, linearWorkstreamPayloadGoldenVectors } from "./linear-workstream-payload.contract.ts";
+import { LINEAR_REMEDIATION_ISSUE_SCHEMA, linearRemediationIssueContract, linearRemediationIssueGoldenVectors } from "./linear-remediation-issue.contract.ts";
 import { INTERCEPTED_ACTION_SCHEMA, interceptedActionContract, interceptedActionGoldenVectors } from "./intercepted-action.contract.ts";
 import { EVIDENCE_BUNDLE_SCHEMA, evidenceBundleContract, evidenceBundleGoldenVectors } from "./evidence-bundle.contract.ts";
 import { REQUIREMENT_SCHEMA, requirementContract, requirementGoldenVectors } from "./requirement.contract.ts";
@@ -26,6 +27,7 @@ import {
 import { DRIFT_SIGNAL_SCHEMA, driftSignalContract, driftSignalGoldenVectors } from "./drift-signal.contract.ts";
 import { LLM_REQUEST_SCHEMA, llmRequestContract, llmRequestGoldenVectors } from "./llm-request.contract.ts";
 import { LLM_OUTCOME_SCHEMA, llmOutcomeContract, llmOutcomeGoldenVectors } from "./llm-outcome.contract.ts";
+import { LLM_CALL_OUTCOME_SCHEMA, llmCallOutcomeContract, llmCallOutcomeGoldenVectors } from "./llm-outcome.contract.ts";
 import { ENDPOINT_CONFIG_SCHEMA, endpointConfigContract, endpointConfigGoldenVectors } from "./endpoint-config.contract.ts";
 import { TRANSFORM_RULE_SCHEMA, transformRuleContract, transformRuleGoldenVectors } from "./transform-rule.contract.ts";
 import { RESOURCE_ALLOCATION_SCHEMA, resourceAllocationContract, resourceAllocationGoldenVectors } from "./resource-allocation.contract.ts";
@@ -55,6 +57,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: EVAL_RESULT_SCHEMA, contract: evalResultContract, vectors: evalResultGoldenVectors },
   { schema: CORRECTION_EVENT_SCHEMA, contract: correctionEventContract, vectors: correctionEventGoldenVectors },
   { schema: LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, contract: linearWorkstreamPayloadContract, vectors: linearWorkstreamPayloadGoldenVectors },
+  { schema: LINEAR_REMEDIATION_ISSUE_SCHEMA, contract: linearRemediationIssueContract, vectors: linearRemediationIssueGoldenVectors },
   { schema: INTERCEPTED_ACTION_SCHEMA, contract: interceptedActionContract, vectors: interceptedActionGoldenVectors },
   { schema: EVIDENCE_BUNDLE_SCHEMA, contract: evidenceBundleContract, vectors: evidenceBundleGoldenVectors },
   { schema: REQUIREMENT_SCHEMA, contract: requirementContract, vectors: requirementGoldenVectors },
@@ -68,6 +71,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: DRIFT_SIGNAL_SCHEMA, contract: driftSignalContract, vectors: driftSignalGoldenVectors },
   { schema: LLM_REQUEST_SCHEMA, contract: llmRequestContract, vectors: llmRequestGoldenVectors },
   { schema: LLM_OUTCOME_SCHEMA, contract: llmOutcomeContract, vectors: llmOutcomeGoldenVectors },
+  { schema: LLM_CALL_OUTCOME_SCHEMA, contract: llmCallOutcomeContract, vectors: llmCallOutcomeGoldenVectors },
   { schema: ENDPOINT_CONFIG_SCHEMA, contract: endpointConfigContract, vectors: endpointConfigGoldenVectors },
   { schema: TRANSFORM_RULE_SCHEMA, contract: transformRuleContract, vectors: transformRuleGoldenVectors },
   { schema: RESOURCE_ALLOCATION_SCHEMA, contract: resourceAllocationContract, vectors: resourceAllocationGoldenVectors },

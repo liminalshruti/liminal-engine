@@ -234,6 +234,58 @@
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
     },
+    "liminal_engine.linear_remediation_issue.v1::acme-eu-residency-security-accountable": {
+      "schema": "liminal_engine.linear_remediation_issue.v1",
+      "purpose": "the accountable-owner remediation issue (Security owns EU data residency)",
+      "input": {
+        "title": "[Remediation] All Acme EU customer data must remain resident in EU data centers. — Security",
+        "requirementId": "req_acme_eu_residency",
+        "governanceCaseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "ownerRole": "Security",
+        "accountableOwner": true,
+        "severity": "hard",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "description": "Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\n\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\nOwner role: Security (accountable owner)\nDeal: deal_acme\nGovernanceCase: gc_acme_eu\nSeverity: hard\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\nEvidence: call_acme_kickoff, dpa_acme_v3",
+        "labels": [
+          "remediation",
+          "governance",
+          "severity:hard",
+          "owner:Security"
+        ]
+      },
+      "canonical_string": "{\"accountable_owner\":true,\"deal_id\":\"deal_acme\",\"description\":\"Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\\n\\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\\nOwner role: Security (accountable owner)\\nDeal: deal_acme\\nGovernanceCase: gc_acme_eu\\nSeverity: hard\\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\\nEvidence: call_acme_kickoff, dpa_acme_v3\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"governance_case_id\":\"gc_acme_eu\",\"labels\":[\"remediation\",\"governance\",\"severity:hard\",\"owner:Security\"],\"owner_role\":\"Security\",\"requirement_id\":\"req_acme_eu_residency\",\"schema\":\"liminal_engine.linear_remediation_issue.v1\",\"severity\":\"hard\",\"title\":\"[Remediation] All Acme EU customer data must remain resident in EU data centers. — Security\"}",
+      "sha256": "bbe0b39c4683c9dc6e8719b76c6c2b5d2cf7b43252e0d0196643fc7ae6be0107"
+    },
+    "liminal_engine.linear_remediation_issue.v1::acme-eu-residency-product-workstream": {
+      "schema": "liminal_engine.linear_remediation_issue.v1",
+      "purpose": "a required-workstream-owner remediation issue (Product), not the accountable owner",
+      "input": {
+        "title": "[Remediation] All Acme EU customer data must remain resident in EU data centers. — Product",
+        "requirementId": "req_acme_eu_residency",
+        "governanceCaseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "ownerRole": "Product",
+        "accountableOwner": false,
+        "severity": "hard",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "description": "Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\n\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\nOwner role: Product\nDeal: deal_acme\nGovernanceCase: gc_acme_eu\nSeverity: hard\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\nEvidence: call_acme_kickoff, dpa_acme_v3",
+        "labels": [
+          "remediation",
+          "governance",
+          "severity:hard",
+          "owner:Product"
+        ]
+      },
+      "canonical_string": "{\"accountable_owner\":false,\"deal_id\":\"deal_acme\",\"description\":\"Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\\n\\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\\nOwner role: Product\\nDeal: deal_acme\\nGovernanceCase: gc_acme_eu\\nSeverity: hard\\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\\nEvidence: call_acme_kickoff, dpa_acme_v3\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"governance_case_id\":\"gc_acme_eu\",\"labels\":[\"remediation\",\"governance\",\"severity:hard\",\"owner:Product\"],\"owner_role\":\"Product\",\"requirement_id\":\"req_acme_eu_residency\",\"schema\":\"liminal_engine.linear_remediation_issue.v1\",\"severity\":\"hard\",\"title\":\"[Remediation] All Acme EU customer data must remain resident in EU data centers. — Product\"}",
+      "sha256": "9bc60d4184d19a1ad3bf714bed89a0691b48b74448a207bf57dba8ea145bd457"
+    },
     "liminal_engine.intercepted_action.v1::pr20-merge-intercepted": {
       "schema": "liminal_engine.intercepted_action.v1",
       "purpose": "the PR-#20 replay action - gh pr-merge with split reviews, full provenance",
@@ -819,6 +871,85 @@
       },
       "canonical_string": "{\"completed_at\":\"2026-06-27T10:00:02.000Z\",\"error\":\"HTTP 429: rate limited\",\"id\":\"llm_out_acme_error\",\"latency_ms\":325,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"request_id\":\"llm_req_acme_p1\",\"schema\":\"liminal_engine.llm_outcome.v1\",\"status\":\"error\"}",
       "sha256": "a31c8e4ad7ee753d05b2bc0f9974be1e3e70603a5ca35469ce1df9122b38ae32"
+    },
+    "liminal_engine.llm_call_outcome.v1::acme-forwarded-default-passthrough": {
+      "schema": "liminal_engine.llm_call_outcome.v1",
+      "purpose": "default pass-through — the Acme pass-1 call is forwarded unchanged; no rule, default-forward source, token usage recorded",
+      "input": {
+        "id": "llm_call_acme_p1_forwarded",
+        "requestId": "llm_req_acme_p1",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "disposition": "forwarded",
+        "source": "default-forward",
+        "usage": {
+          "inputTokens": 42,
+          "outputTokens": 18,
+          "totalTokens": 60
+        },
+        "latencyMs": 913,
+        "decidedAt": "2026-06-27T10:00:02.000Z"
+      },
+      "canonical_string": "{\"decided_at\":\"2026-06-27T10:00:02.000Z\",\"disposition\":\"forwarded\",\"id\":\"llm_call_acme_p1_forwarded\",\"latency_ms\":913,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"request_id\":\"llm_req_acme_p1\",\"schema\":\"liminal_engine.llm_call_outcome.v1\",\"source\":\"default-forward\",\"usage\":{\"input_tokens\":42,\"output_tokens\":18,\"total_tokens\":60}}",
+      "sha256": "7a9d6bdbe260a0fb7956c897eda81bc8991077c16d317ed7e887f4f9758ae25b"
+    },
+    "liminal_engine.llm_call_outcome.v1::acme-blocked-by-policy-rule": {
+      "schema": "liminal_engine.llm_call_outcome.v1",
+      "purpose": "blocked by a learned policy rule before reaching the model — carries ruleId + policy source + reason; no token usage",
+      "input": {
+        "id": "llm_call_acme_blocked",
+        "requestId": "llm_req_acme_ontrack_update",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "disposition": "blocked",
+        "ruleId": "prule_eu_residency_no_false_green_v1",
+        "source": "policy",
+        "reason": "Open governance case gc_acme_eu denies an LLM-generated on-track customer update until EU data residency is corrected.",
+        "latencyMs": 7,
+        "decidedAt": "2026-06-27T10:05:00.000Z"
+      },
+      "canonical_string": "{\"decided_at\":\"2026-06-27T10:05:00.000Z\",\"disposition\":\"blocked\",\"id\":\"llm_call_acme_blocked\",\"latency_ms\":7,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"reason\":\"Open governance case gc_acme_eu denies an LLM-generated on-track customer update until EU data residency is corrected.\",\"request_id\":\"llm_req_acme_ontrack_update\",\"rule_id\":\"prule_eu_residency_no_false_green_v1\",\"schema\":\"liminal_engine.llm_call_outcome.v1\",\"source\":\"policy\"}",
+      "sha256": "a3e86715f8fb5224150c81f2a5a9ba479238ff5a5828f09f19ed9b87e7240e22"
+    },
+    "liminal_engine.llm_call_outcome.v1::acme-transformed-redact-customer-claim": {
+      "schema": "liminal_engine.llm_call_outcome.v1",
+      "purpose": "rewritten by a transform rule (redact the customer-facing claim) then forwarded — carries ruleId + policy source + usage",
+      "input": {
+        "id": "llm_call_acme_transformed",
+        "requestId": "llm_req_acme_p2",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "disposition": "transformed",
+        "ruleId": "tr_redact_customer_claim",
+        "source": "policy",
+        "reason": "Transform rule tr_redact_customer_claim redacted the customer-facing claim before forwarding the call.",
+        "usage": {
+          "inputTokens": 51,
+          "outputTokens": 22,
+          "totalTokens": 73
+        },
+        "latencyMs": 864,
+        "decidedAt": "2026-06-27T10:06:30.000Z"
+      },
+      "canonical_string": "{\"decided_at\":\"2026-06-27T10:06:30.000Z\",\"disposition\":\"transformed\",\"id\":\"llm_call_acme_transformed\",\"latency_ms\":864,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"reason\":\"Transform rule tr_redact_customer_claim redacted the customer-facing claim before forwarding the call.\",\"request_id\":\"llm_req_acme_p2\",\"rule_id\":\"tr_redact_customer_claim\",\"schema\":\"liminal_engine.llm_call_outcome.v1\",\"source\":\"policy\",\"usage\":{\"input_tokens\":51,\"output_tokens\":22,\"total_tokens\":73}}",
+      "sha256": "26355d689ad2869c3d01d5406b195448402833165d802f9e520620a22d040aa2"
+    },
+    "liminal_engine.llm_call_outcome.v1::acme-held-for-operator-review": {
+      "schema": "liminal_engine.llm_call_outcome.v1",
+      "purpose": "held for operator review with an operator source and NO ruleId — exercises the operator-source branch of the invariant",
+      "input": {
+        "id": "llm_call_acme_held",
+        "requestId": "llm_req_acme_ontrack_update",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "disposition": "held",
+        "source": "operator",
+        "reason": "Operator parked the customer-facing on-track summary pending EU data residency sign-off.",
+        "latencyMs": 4,
+        "decidedAt": "2026-06-27T10:05:30.000Z"
+      },
+      "canonical_string": "{\"decided_at\":\"2026-06-27T10:05:30.000Z\",\"disposition\":\"held\",\"id\":\"llm_call_acme_held\",\"latency_ms\":4,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"reason\":\"Operator parked the customer-facing on-track summary pending EU data residency sign-off.\",\"request_id\":\"llm_req_acme_ontrack_update\",\"schema\":\"liminal_engine.llm_call_outcome.v1\",\"source\":\"operator\"}",
+      "sha256": "4bcc1a600ff529f3e22234d19216a2bd264fc4653f7b5dcd7e01ba227a0925e3"
     },
     "liminal_engine.endpoint_config.v1::gemini-agent-output-endpoint": {
       "schema": "liminal_engine.endpoint_config.v1",

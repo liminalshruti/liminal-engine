@@ -14,6 +14,7 @@ export * from "./requirement-ports.ts"; // RequirementStore port + fail-closed r
 export * from "./detect-miss.ts"; // detect       (incl. shared Clock / IdGen)
 export * from "./active-requirement-checker.ts"; // detect: grade output/action vs active user requirements (LIM-1326)
 export * from "./propose-requirements.ts"; // detect: candidate-requirement inbox — proposed until approved (LIM-1325)
+export * from "./requirement-case.ts"; // detect: open GovernanceCase from active requirement violations (LIM-1327)
 export * from "./compile-correction.ts"; // correct  (STUB — «gov-correct»)
 export * from "./enforce.ts"; // enforce
 export * from "./proxy-gate.ts"; // enforce: downstream gate (fail-closed)
@@ -26,3 +27,4 @@ export * from "./policy-audit.ts"; // audit: policy verdict + rule lifecycle
 // orchestrator + the atomic Approve+Enforce handler
 export * from "./use-cases.ts"; // runGovernanceLoop
 export * from "./approve-enforce.ts";
+export * from "./remediation.ts"; // enforce: file Linear remediation issues (LIM-1335)

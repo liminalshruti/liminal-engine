@@ -75,14 +75,14 @@ test("LIM-1244: demo shell exposes keyboard skip, current-step, and focus contex
   assert.match(appShell, /onClick=\{\(\) => titleRef\.current\?\.focus\(\)\}/);
   assert.match(appShell, /aria-current=\{idx === i \? "step" : undefined\}/);
   assert.match(appShell, /titleRef\.current\?\.focus\(\)/);
-  assert.match(appShell, /aria-labelledby="demo-stage-title"/);
+  assert.match(appShell, /ref={titleRef}/);
 });
 
 test("LIM-1244: focus styles and tap targets are explicitly guarded in CSS", () => {
   assert.match(appCss, /:where\(a, button, \[role="button"\], \[tabindex\]\):focus-visible/);
   assert.match(appCss, /#demo-stage-title:focus/);
-  assert.match(appCss, /\.rail__step\s*\{[^}]*min-height:\s*44px/s);
-  assert.match(appCss, /\.stage__nav button\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(appCss, /\.rail-item\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(appCss, /\.demo-nav button\s*\{[^}]*min-height:\s*44px/s);
   assert.match(appCss, /\.skip-link\s*\{[^}]*min-height:\s*44px/s);
 });
 

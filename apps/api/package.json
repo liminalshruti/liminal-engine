@@ -16,7 +16,8 @@
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/eval-harness": "workspace:*",
     "@liminal-engine/engine-core": "workspace:*",
-    "@liminal-engine/governance": "workspace:*"
+    "@liminal-engine/governance": "workspace:*",
+    "@liminal-engine/integration-livekit": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
