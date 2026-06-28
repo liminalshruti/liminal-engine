@@ -18,6 +18,19 @@ import { REQUIREMENT_EVIDENCE_SCHEMA, requirementEvidenceContract, requirementEv
 import { POLICY_RULE_SCHEMA, policyRuleContract, policyRuleGoldenVectors } from "./policy-rule.contract.ts";
 import { ACTION_POLICY_RULE_SCHEMA, actionPolicyRuleContract, actionPolicyRuleGoldenVectors } from "./action-policy-rule.contract.ts";
 import { APPROVAL_GATE_SCHEMA, approvalGateContract, approvalGateGoldenVectors } from "./approval-gate.contract.ts";
+import {
+  OPERATOR_MESSAGE_SCHEMA, operatorMessageContract, operatorMessageGoldenVectors,
+  PARSED_INTENT_SCHEMA, parsedIntentContract, parsedIntentGoldenVectors,
+  ASSISTANT_REPLY_SCHEMA, assistantReplyContract, assistantReplyGoldenVectors,
+} from "./operator-nl.contract.ts";
+import { DRIFT_SIGNAL_SCHEMA, driftSignalContract, driftSignalGoldenVectors } from "./drift-signal.contract.ts";
+import { LLM_REQUEST_SCHEMA, llmRequestContract, llmRequestGoldenVectors } from "./llm-request.contract.ts";
+import { LLM_OUTCOME_SCHEMA, llmOutcomeContract, llmOutcomeGoldenVectors } from "./llm-outcome.contract.ts";
+import { ENDPOINT_CONFIG_SCHEMA, endpointConfigContract, endpointConfigGoldenVectors } from "./endpoint-config.contract.ts";
+import { TRANSFORM_RULE_SCHEMA, transformRuleContract, transformRuleGoldenVectors } from "./transform-rule.contract.ts";
+import { RESOURCE_ALLOCATION_SCHEMA, resourceAllocationContract, resourceAllocationGoldenVectors } from "./resource-allocation.contract.ts";
+import { ROUTING_RULE_SCHEMA, routingRuleContract, routingRuleGoldenVectors } from "./routing-rule.contract.ts";
+import { NL_INTENT_SCHEMA, nlIntentContract, nlIntentGoldenVectors } from "./nl-intent.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -48,4 +61,15 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: POLICY_RULE_SCHEMA, contract: policyRuleContract, vectors: policyRuleGoldenVectors },
   { schema: ACTION_POLICY_RULE_SCHEMA, contract: actionPolicyRuleContract, vectors: actionPolicyRuleGoldenVectors },
   { schema: APPROVAL_GATE_SCHEMA, contract: approvalGateContract, vectors: approvalGateGoldenVectors },
+  { schema: OPERATOR_MESSAGE_SCHEMA, contract: operatorMessageContract, vectors: operatorMessageGoldenVectors },
+  { schema: PARSED_INTENT_SCHEMA, contract: parsedIntentContract, vectors: parsedIntentGoldenVectors },
+  { schema: ASSISTANT_REPLY_SCHEMA, contract: assistantReplyContract, vectors: assistantReplyGoldenVectors },
+  { schema: DRIFT_SIGNAL_SCHEMA, contract: driftSignalContract, vectors: driftSignalGoldenVectors },
+  { schema: LLM_REQUEST_SCHEMA, contract: llmRequestContract, vectors: llmRequestGoldenVectors },
+  { schema: LLM_OUTCOME_SCHEMA, contract: llmOutcomeContract, vectors: llmOutcomeGoldenVectors },
+  { schema: ENDPOINT_CONFIG_SCHEMA, contract: endpointConfigContract, vectors: endpointConfigGoldenVectors },
+  { schema: TRANSFORM_RULE_SCHEMA, contract: transformRuleContract, vectors: transformRuleGoldenVectors },
+  { schema: RESOURCE_ALLOCATION_SCHEMA, contract: resourceAllocationContract, vectors: resourceAllocationGoldenVectors },
+  { schema: ROUTING_RULE_SCHEMA, contract: routingRuleContract, vectors: routingRuleGoldenVectors },
+  { schema: NL_INTENT_SCHEMA, contract: nlIntentContract, vectors: nlIntentGoldenVectors },
 ] as unknown as ContractEntry[];

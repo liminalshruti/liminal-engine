@@ -5,6 +5,116 @@ this first.
 
 ---
 
+## Session: LIM-1339 design-foundation-governslate PR-ready (2026-06-28)
+
+**Did:**
+- Claimed LIM-1339 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1339` on branch
+  `agent/LIM-1339-design-foundation-governslate`.
+- Promoted the govern-slate token source to
+  `packages/ui-components/src/styles/govern-slate.css` with CSS package exports
+  `@liminal-engine/ui-components/govern-slate.css` and
+  `@liminal-engine/ui-components/design-tokens.css`.
+- Replaced the app-local `apps/desktop-demo/src/styles/design-tokens.css` with a
+  compatibility import of the shared package token source.
+- Added govern-slate aliases for slate chrome, governance states
+  (`on-track`, `at-risk`, `blocked`, `forwarded`, `held`), font/type scale,
+  spacing/radii/elevation, focus, motion durations/easings, reduced-motion,
+  light/dark theme, and presenter density.
+- Removed app CSS raw color fallbacks/literals in touched styling so app styles
+  consume tokens instead of local hardcoded colors.
+- Added LIM-1339 token tests for source-of-truth wiring, prototype/specimen parity
+  anchors, variants, and app CSS no-raw-color enforcement.
+- Fixed the existing demo-video informational test to use `t.diagnostic()` instead
+  of `console.log`, preserving the no-skip check while avoiding Node runner
+  serialization failure.
+
+**Verified:**
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `pnpm verify` green after rebase: typecheck, app typecheck, 515 tests, boundary
+  lint.
+- `./scripts/smoke.sh` green: automated test suite passed.
+- `git diff --check` clean.
+- No `packages/contracts` diff; Acme golden tests stayed byte-identical in
+  `pnpm verify`; no `App.tsx`, `steps.tsx`, or demo-path e2e changes.
+
+**Did NOT do (by design):**
+- No live integrations or demo-spine behavior changes.
+- No contract, fixture, or golden regeneration.
+- Did not merge the PR or mark Linear Done.
+
+**Next session should:**
+- Review the token migration diff for visual parity and CI.
+- Merge only after normal reviewer gates pass; then remove the worktree with
+  `pnpm wt:rm LIM-1339`.
+
+**Risks / watch:**
+- The styling diff is broad because raw fallback removal touched existing CSS
+  consumers. The added no-raw-color test should keep the app dependent on the
+  shared package token source.
+
+---
+
+## Session: LIM-1372 unbuilt real-product contracts + harnesses (2026-06-28)
+
+**Did:**
+- Created isolated worktree
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1372` on branch
+  `agent/LIM-1372-unbuilt-real-product` because no Linear ID was supplied in the
+  user request.
+- Added and registered eight shared-kernel contracts with golden vectors:
+  `DriftSignal`, `LlmRequest`, `LlmOutcome`, `EndpointConfig`, `TransformRule`,
+  `ResourceAllocation`, `RoutingRule`, and `NlIntent`. Rebased over LIM-1367,
+  LIM-1340, and LIM-1373, preserving upstream `PolicyRule`, `ActionPolicyRule`,
+  `ApprovalGate`, `OperatorMessage`, `ParsedIntent`, and `AssistantReply`
+  registry entries.
+- Added `packages/signal-harness` with real deterministic logic for requirement
+  drift detection over arbitrary active requirements, transform-rule application,
+  signal/intent routing to enabled endpoint configs, and severe-signal resource
+  allocation.
+- Strengthened `packages/eval-harness` beyond store reads: it validates read
+  results through contracts and can generate eval cases / grade requirement
+  coverage from arbitrary `GovernanceCase` + `AgentOutput` inputs while keeping
+  upstream `ruleHealthTable`.
+- Expanded `packages/ui-components` from two helpers to framework-agnostic
+  view-model helpers for drift signals, endpoint configs, NL intents, resource
+  allocations, routing rules, and eval summaries.
+- Added `GeminiRestAgentOutputSource`, a real Gemini REST adapter behind the
+  existing governance `AgentOutputSource` port that records `LlmRequest` /
+  `LlmOutcome` receipts. Upstream cache-backed `GeminiAgentOutputSource` remains
+  intact, and `FixtureAgentOutputSource` remains explicit for fixture-chosen roots.
+- Serialized the root `pnpm test` script with `--test-concurrency=1` after Node
+  26 repeatedly failed deserializing a passed child test file in the concurrent
+  full suite. The same 508 tests still run; no test was skipped or weakened.
+
+**Verified before PR open:**
+- `pnpm install` refreshed workspace metadata.
+- `pnpm regen:goldens` wrote `contracts.golden.json` with 41 vectors across 27
+  registered contracts after the rebase.
+- `pnpm verify` is green after rebasing onto current `origin/main`: typecheck,
+  app typecheck, 508 tests, and boundary lint.
+- `./scripts/smoke.sh` is green after the final rebase.
+
+**Did NOT do (by design):**
+- Did not wire live Gemini into the deterministic desktop-demo spine.
+- Did not make a real live Gemini network call because no `GEMINI_API_KEY` was
+  required/provided; the REST adapter path is tested with injected fetch over real
+  request construction/parsing code.
+- Did not merge or mark any Linear issue Done.
+
+**Risks / watch:**
+- `detectRequirementDrift` is deliberately generic and may need product tuning once
+  real operator data is available.
+- This branch now layers on top of LIM-1367's policy intercept control plane, so
+  reviewers should inspect the model split: remediation `PolicyRule`,
+  intercept `ActionPolicyRule`, and general `RoutingRule` are distinct contracts.
+- This branch also layers on LIM-1340's operator-NL contracts. `ParsedIntent`
+  models an unratified operator chat turn; `NlIntent` is the normalized
+  control-plane artifact used for routing/config/allocation workflows.
+
+---
+
 ## Session: LIM-1367 policy intercept control plane PR-ready (2026-06-28)
 
 **Did:**

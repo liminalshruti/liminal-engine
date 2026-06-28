@@ -67,21 +67,37 @@ the directive demotes.
 see surfaced drift cases over whatever data is loaded (no fixed sequence).
 → issue **«operating-surface»**
 
-### Gap 4 — Goal / AI-spend / alignment model (the executive wedge)
-The wedge ("is AI spend moving the goal?") isn't modeled. `GovernanceCase` exists,
-but there's no `Goal`/OKR entity, no agent-team/spend tracking, no goal↔work
-alignment score.
-**Build:** `Goal` + `AgentTeam`/spend contracts + an alignment score the drift case
-surfaces ("AI spend producing output, not advancing the goal").
-→ issue **«goal-alignment-model»**
+### Gap 4 — Goal + **AI-spend** + alignment model (the executive wedge) ⭐
+The wedge is *"is our AI **SPEND** moving the goal we resourced it for?"* — and the
+**spend half is in the headline pitch but 0 files model it.** `GovernanceCase`
+exists, but there's no `Goal`/OKR entity, no **budget / per-agent-run cost**
+tracking, no goal↔work alignment score.
+**Build:**
+- `Goal` (success metric + **resourced budget** + agent-team).
+- **AI-spend tracking**: cost per agent run / model call accrued against the goal.
+- An **alignment score** the drift case surfaces: *"$X of AI spend produced N
+  outputs, but the goal hasn't moved and a gating requirement was lost"* — the
+  AI-ROI / goal-alignment risk that is the demo's executive **wow**.
+→ issue **«goal-alignment-model»** (LIM-1371) — spend is first-class, not optional.
+
+### Gap 5 — OntologyPatch (correction → durable ontology update) *(follow-up)*
+The demo's correction step produces CorrectionEvent + EvalCase + PolicyUpdate
+(all on main) AND an **OntologyPatch** — the durable "the system learned this
+requirement-type matters" memory. **0 ontology files on main.** Without it the
+"continual learning / memory" theme is told but not shown.
+**Build:** an `OntologyPatch` contract + the correction pipeline emitting one, so a
+correction durably updates what Liminal knows (not just a one-off policy).
+→ issue **«ontology-patch»**
 
 ---
 
 ## Build sequence (dependency order)
-1. **Gap 2 «substrate-ingest»** — foundational; converts demo→product. *(starting now)*
+1. **Gap 2 «substrate-ingest»** — foundational; converts demo→product. *(done — on main)*
 2. **Gap 1 «live-gemini» / «live-linear»** — live inference + reads over the substrate.
-3. **Gap 4 «goal-alignment-model»** — the executive framing on top of real data.
-4. **Gap 3 «operating-surface»** — workspace + tray over all the above; retire the beat flow.
+   *(gemini live-cache partly landed; Gemini API key now in `.env.local`.)*
+3. **Gap 4 «goal-alignment-model» (+ AI-spend)** — the executive wow on real data.
+4. **Gap 5 «ontology-patch»** — durable learning artifact (parallel to Gap 4).
+5. **Gap 3 «operating-surface»** — workspace + tray over all the above; retire the beat flow.
 
 ## The directive test (apply to every gap before shipping)
 > "Could a stranger point this at **their own** data and do **real work** — with **no

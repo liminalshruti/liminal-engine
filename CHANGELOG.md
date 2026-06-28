@@ -6,6 +6,46 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1339 govern-slate design foundation (2026-06-28)
+- `packages/ui-components/src/styles/govern-slate.css` is now the shared
+  govern-slate token source, exported as
+  `@liminal-engine/ui-components/govern-slate.css` and
+  `@liminal-engine/ui-components/design-tokens.css`.
+- `apps/desktop-demo/src/styles/design-tokens.css` is reduced to a compatibility
+  import of the shared package token source, so the app and ui-components consume
+  one token file.
+- Added governance-state token bindings for `on-track`, `at-risk`, `blocked`,
+  `forwarded`, and `held`; slate surface aliases; type/font scale; spacing,
+  radii, and elevation aliases; motion/easing/reduced-motion tokens; focus tokens;
+  light/dark theme variants; and presenter density.
+- App CSS touched by this migration now uses token references instead of local raw
+  color literals/fallbacks.
+- Added token source-of-truth, prototype/specimen parity-anchor, variant, and
+  no-raw-app-color tests in `packages/ui-components`.
+- `packages/eval-harness/test/demo-video.test.ts` now reports its informational
+  missing-video note through `t.diagnostic()` instead of `console.log`, preserving
+  the no-skip/manual-artifact check while keeping the default Node runner green.
+
+### Added — LIM-1372 real-product contracts, signal harness, Gemini REST receipts (2026-06-28)
+- Added shared-kernel contracts for `DriftSignal`, `LlmRequest`, `LlmOutcome`,
+  `EndpointConfig`, `TransformRule`, `ResourceAllocation`, `RoutingRule`, and
+  `NlIntent`, all exported from `@liminal-engine/contracts`, registered in the
+  golden contract registry, and covered by invariant tests.
+- Added `packages/signal-harness`, a real deterministic harness that detects
+  requirement drift from arbitrary active requirements + agent output, applies
+  transform rules, routes signals/intents through endpoint configs, and creates
+  role resource allocations for severe open signals.
+- Expanded `packages/eval-harness` with contract-validated read results plus pure
+  eval-case generation and requirement-coverage grading from real inputs, while
+  retaining the upstream rule-health table.
+- Expanded `packages/ui-components` with framework-agnostic view-model helpers for
+  signals, endpoint configs, NL intents, resource allocations, routing rules, and
+  eval summaries.
+- Added `GeminiRestAgentOutputSource`, a real Gemini REST adapter that constructs
+  `generateContent` requests, parses contract-shaped `AgentOutput`, and records
+  `LlmRequest`/`LlmOutcome` receipts. The upstream cache-backed
+  `GeminiAgentOutputSource` and deterministic fixture source remain available.
+
 ### Added — LIM-1367 policy intercept control plane (2026-06-28)
 - `packages/contracts/src/action-policy-rule.contract.ts` — a separate learned
   allow/deny/ask action-policy contract for intercepted tool actions. This avoids

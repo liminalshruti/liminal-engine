@@ -612,6 +612,339 @@
       },
       "canonical_string": "{\"approval_context\":\"Enforce EU data residency requirement for Acme expansion\",\"approvals\":[],\"case_id\":\"gc_acme_eu\",\"created_at\":\"2026-06-27T10:03:00.000Z\",\"deal_id\":\"deal_acme\",\"gate_keeper\":\"VP Ops / Head of AI Transformation\",\"id\":\"ag_acme_eu\",\"policy_rule_id\":\"pr_acme_eu\",\"required_approvers\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.approval_gate.v1\",\"updated_at\":\"2026-06-27T10:03:00.000Z\"}",
       "sha256": "816332e03bf7528c1654aed5d7f572f2f7f659df0174f27b9faf91be5b0e4685"
+    },
+    "liminal_engine.operator_message.v1::correction-turn-with-context": {
+      "schema": "liminal_engine.operator_message.v1",
+      "purpose": "operator message sent from a selected item / current beat",
+      "input": {
+        "id": "om_1",
+        "text": "This dropped EU data residency — that's a hard requirement, don't mark it done.",
+        "at": "2026-06-28T10:00:00.000Z",
+        "context": {
+          "currentBeat": "detect",
+          "selectedItemId": "LIM-1187"
+        }
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:00:00.000Z\",\"context\":{\"current_beat\":\"detect\",\"selected_item_id\":\"LIM-1187\"},\"id\":\"om_1\",\"schema\":\"liminal_engine.operator_message.v1\",\"text\":\"This dropped EU data residency — that's a hard requirement, don't mark it done.\"}",
+      "sha256": "9ee8b5a4611e3750137c63b62325fa7337bc400481e95da0d7f72084c6fa31cf"
+    },
+    "liminal_engine.operator_message.v1::message-minimal": {
+      "schema": "liminal_engine.operator_message.v1",
+      "purpose": "minimal operator message — required fields only, no context",
+      "input": {
+        "id": "om_2",
+        "text": "What's still blocked?",
+        "at": "2026-06-28T10:01:00.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:01:00.000Z\",\"id\":\"om_2\",\"schema\":\"liminal_engine.operator_message.v1\",\"text\":\"What's still blocked?\"}",
+      "sha256": "40f1fa522bcb324b05c6a7f5394413405811b25afa108f4279480b70f7280333"
+    },
+    "liminal_engine.parsed_intent.v1::intent-correction": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "LLM reads a correction → CorrectionEvent draft, unratified",
+      "input": {
+        "kind": "correction",
+        "confidence": 0.92,
+        "args": {
+          "correction": "EU data residency is a hard requirement; honor it before any done.",
+          "caseId": "gc_acme_eu"
+        },
+        "proposedBy": "llm",
+        "ratified": false
+      },
+      "canonical_string": "{\"args\":{\"case_id\":\"gc_acme_eu\",\"correction\":\"EU data residency is a hard requirement; honor it before any done.\"},\"confidence\":0.92,\"kind\":\"correction\",\"proposed_by\":\"llm\",\"ratified\":false,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "826229585cc4ba874f5531a8ccadab4f5eebbc81fc2f4cab79f4ece5c0aab11e"
+    },
+    "liminal_engine.parsed_intent.v1::intent-verdict-disapprove": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "LLM reads a verdict on an intercept-queue item, unratified",
+      "input": {
+        "kind": "verdict",
+        "confidence": 0.81,
+        "args": {
+          "queueItemId": "ia_pr20_merge",
+          "decision": "disapprove"
+        },
+        "proposedBy": "llm",
+        "ratified": false
+      },
+      "canonical_string": "{\"args\":{\"decision\":\"disapprove\",\"queue_item_id\":\"ia_pr20_merge\"},\"confidence\":0.81,\"kind\":\"verdict\",\"proposed_by\":\"llm\",\"ratified\":false,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "ea775a0790b75932b3f4773087a7c4394dfd6f0b5ed7fbf8b4c7084c156af9cb"
+    },
+    "liminal_engine.parsed_intent.v1::intent-navigate-ratified": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "navigate intent the operator has ratified",
+      "input": {
+        "kind": "navigate",
+        "confidence": 0.99,
+        "args": {
+          "target": "audit-ledger"
+        },
+        "proposedBy": "llm",
+        "ratified": true
+      },
+      "canonical_string": "{\"args\":{\"target\":\"audit-ledger\"},\"confidence\":0.99,\"kind\":\"navigate\",\"proposed_by\":\"llm\",\"ratified\":true,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "69c56899f710e279385f030405671fdf908925e8ee516e1c784e08c5175b95cf"
+    },
+    "liminal_engine.assistant_reply.v1::reply-with-correction-intent": {
+      "schema": "liminal_engine.assistant_reply.v1",
+      "purpose": "reply carrying a proposed correction intent + audit citations",
+      "input": {
+        "id": "ar_1",
+        "messageId": "om_1",
+        "summary": "I read that as a correction on EU data residency. Ratify to compile it into a policy.",
+        "intent": {
+          "kind": "correction",
+          "confidence": 0.92,
+          "args": {
+            "correction": "EU data residency is a hard requirement; honor it before any done.",
+            "caseId": "gc_acme_eu"
+          },
+          "proposedBy": "llm",
+          "ratified": false
+        },
+        "citations": [
+          "ae_acme_1",
+          "gc_acme_eu"
+        ],
+        "at": "2026-06-28T10:00:02.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:00:02.000Z\",\"citations\":[\"ae_acme_1\",\"gc_acme_eu\"],\"id\":\"ar_1\",\"intent\":{\"args\":{\"case_id\":\"gc_acme_eu\",\"correction\":\"EU data residency is a hard requirement; honor it before any done.\"},\"confidence\":0.92,\"kind\":\"correction\",\"proposed_by\":\"llm\",\"ratified\":false},\"message_id\":\"om_1\",\"schema\":\"liminal_engine.assistant_reply.v1\",\"summary\":\"I read that as a correction on EU data residency. Ratify to compile it into a policy.\"}",
+      "sha256": "ba432a89637927cda17666251ec5b464d4bbec463595f9db58e5bceb6634f7fc"
+    },
+    "liminal_engine.assistant_reply.v1::reply-minimal": {
+      "schema": "liminal_engine.assistant_reply.v1",
+      "purpose": "minimal reply — no parsed intent, no citations",
+      "input": {
+        "id": "ar_2",
+        "messageId": "om_2",
+        "summary": "Two items are blocked on the policy-rule contract.",
+        "at": "2026-06-28T10:01:02.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:01:02.000Z\",\"id\":\"ar_2\",\"message_id\":\"om_2\",\"schema\":\"liminal_engine.assistant_reply.v1\",\"summary\":\"Two items are blocked on the policy-rule contract.\"}",
+      "sha256": "f25e94e614d114d021f8441c7faf0119ec05f2a026a532c108e74520d476993d"
+    },
+    "liminal_engine.drift_signal.v1::acme-eu-residency-drift": {
+      "schema": "liminal_engine.drift_signal.v1",
+      "purpose": "the false green emitted a high-confidence requirement-dropped signal",
+      "input": {
+        "id": "ds_acme_eu_residency",
+        "sourceType": "agent_output",
+        "sourceId": "ao_acme_p1",
+        "dealId": "deal_acme",
+        "signalKind": "requirement_dropped",
+        "severity": "critical",
+        "score": 0.98,
+        "summary": "Agent output reported on-track while EU data residency was dropped.",
+        "evidenceIds": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "observedAt": "2026-06-27T10:00:00.000Z",
+        "detectorVersion": "signal-harness.requirement-coverage.v1",
+        "status": "open",
+        "linkedRequirementId": "req_acme_eu_residency"
+      },
+      "canonical_string": "{\"deal_id\":\"deal_acme\",\"detector_version\":\"signal-harness.requirement-coverage.v1\",\"evidence_ids\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"id\":\"ds_acme_eu_residency\",\"linked_requirement_id\":\"req_acme_eu_residency\",\"observed_at\":\"2026-06-27T10:00:00.000Z\",\"schema\":\"liminal_engine.drift_signal.v1\",\"score\":0.98,\"severity\":\"critical\",\"signal_kind\":\"requirement_dropped\",\"source_id\":\"ao_acme_p1\",\"source_type\":\"agent_output\",\"status\":\"open\",\"summary\":\"Agent output reported on-track while EU data residency was dropped.\"}",
+      "sha256": "9f44e861f451191fd6b11c4c410c25755b566e8352ddb1c70c65ac92cd2c848b"
+    },
+    "liminal_engine.llm_request.v1::gemini-agent-output-json-request": {
+      "schema": "liminal_engine.llm_request.v1",
+      "purpose": "request Gemini to return contract-shaped agent output JSON",
+      "input": {
+        "id": "llm_req_acme_p1",
+        "endpointConfigId": "endpoint_gemini_agent_output",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Return AgentOutput JSON for deal_acme pass 1; include dropped requirements if any."
+          }
+        ],
+        "responseFormat": "json",
+        "responseSchema": {
+          "contract": "liminal_engine.agent_output.v1"
+        },
+        "temperature": 0,
+        "maxOutputTokens": 1024,
+        "metadata": {
+          "dealId": "deal_acme",
+          "passNumber": 1
+        },
+        "requestedAt": "2026-06-27T10:00:01.000Z"
+      },
+      "canonical_string": "{\"endpoint_config_id\":\"endpoint_gemini_agent_output\",\"id\":\"llm_req_acme_p1\",\"max_output_tokens\":1024,\"messages\":[{\"content\":\"Return AgentOutput JSON for deal_acme pass 1; include dropped requirements if any.\",\"role\":\"user\"}],\"metadata\":{\"dealId\":\"deal_acme\",\"passNumber\":1},\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"requested_at\":\"2026-06-27T10:00:01.000Z\",\"response_format\":\"json\",\"response_schema\":{\"contract\":\"liminal_engine.agent_output.v1\"},\"schema\":\"liminal_engine.llm_request.v1\",\"temperature\":0}",
+      "sha256": "cd2e488a706eb083daf822472d18458fc56746b4012e8af2f85970f31958c943"
+    },
+    "liminal_engine.llm_outcome.v1::gemini-agent-output-json-success": {
+      "schema": "liminal_engine.llm_outcome.v1",
+      "purpose": "Gemini returned parseable AgentOutput JSON",
+      "input": {
+        "id": "llm_out_acme_p1",
+        "requestId": "llm_req_acme_p1",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "status": "success",
+        "outputText": "{\"id\":\"ao_acme_p1\",\"dealId\":\"deal_acme\",\"reportedStatus\":\"on-track\"}",
+        "parsedJson": {
+          "id": "ao_acme_p1",
+          "dealId": "deal_acme",
+          "reportedStatus": "on-track"
+        },
+        "usage": {
+          "inputTokens": 42,
+          "outputTokens": 18,
+          "totalTokens": 60
+        },
+        "latencyMs": 913,
+        "finishReason": "STOP",
+        "completedAt": "2026-06-27T10:00:02.000Z"
+      },
+      "canonical_string": "{\"completed_at\":\"2026-06-27T10:00:02.000Z\",\"finish_reason\":\"STOP\",\"id\":\"llm_out_acme_p1\",\"latency_ms\":913,\"model\":\"gemini-2.0-flash\",\"output_text\":\"{\\\"id\\\":\\\"ao_acme_p1\\\",\\\"dealId\\\":\\\"deal_acme\\\",\\\"reportedStatus\\\":\\\"on-track\\\"}\",\"parsed_json\":{\"dealId\":\"deal_acme\",\"id\":\"ao_acme_p1\",\"reportedStatus\":\"on-track\"},\"provider\":\"gemini\",\"request_id\":\"llm_req_acme_p1\",\"schema\":\"liminal_engine.llm_outcome.v1\",\"status\":\"success\",\"usage\":{\"input_tokens\":42,\"output_tokens\":18,\"total_tokens\":60}}",
+      "sha256": "891ffba74e675915a101d851072136b3d9d573ee28828156e879178e2a00202e"
+    },
+    "liminal_engine.llm_outcome.v1::gemini-agent-output-error": {
+      "schema": "liminal_engine.llm_outcome.v1",
+      "purpose": "Gemini call failed and records the adapter-visible error",
+      "input": {
+        "id": "llm_out_acme_error",
+        "requestId": "llm_req_acme_p1",
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "status": "error",
+        "latencyMs": 325,
+        "error": "HTTP 429: rate limited",
+        "completedAt": "2026-06-27T10:00:02.000Z"
+      },
+      "canonical_string": "{\"completed_at\":\"2026-06-27T10:00:02.000Z\",\"error\":\"HTTP 429: rate limited\",\"id\":\"llm_out_acme_error\",\"latency_ms\":325,\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"request_id\":\"llm_req_acme_p1\",\"schema\":\"liminal_engine.llm_outcome.v1\",\"status\":\"error\"}",
+      "sha256": "a31c8e4ad7ee753d05b2bc0f9974be1e3e70603a5ca35469ce1df9122b38ae32"
+    },
+    "liminal_engine.endpoint_config.v1::gemini-agent-output-endpoint": {
+      "schema": "liminal_engine.endpoint_config.v1",
+      "purpose": "real Gemini endpoint configuration using an environment secret reference",
+      "input": {
+        "id": "endpoint_gemini_agent_output",
+        "provider": "gemini",
+        "purpose": "Generate and parse governed agent output",
+        "endpointUrl": "https://generativelanguage.googleapis.com/v1beta",
+        "model": "gemini-2.0-flash",
+        "auth": {
+          "scheme": "api-key",
+          "secretRef": "env:GEMINI_API_KEY"
+        },
+        "timeoutMs": 30000,
+        "retry": {
+          "maxAttempts": 2,
+          "backoffMs": 250
+        },
+        "enabled": true,
+        "createdAt": "2026-06-27T10:00:00.000Z",
+        "metadata": {
+          "responseFormat": "json"
+        }
+      },
+      "canonical_string": "{\"auth\":{\"scheme\":\"api-key\",\"secret_ref\":\"env:GEMINI_API_KEY\"},\"created_at\":\"2026-06-27T10:00:00.000Z\",\"enabled\":true,\"endpoint_url\":\"https://generativelanguage.googleapis.com/v1beta\",\"id\":\"endpoint_gemini_agent_output\",\"metadata\":{\"responseFormat\":\"json\"},\"model\":\"gemini-2.0-flash\",\"provider\":\"gemini\",\"purpose\":\"Generate and parse governed agent output\",\"retry\":{\"backoff_ms\":250,\"max_attempts\":2},\"schema\":\"liminal_engine.endpoint_config.v1\",\"timeout_ms\":30000}",
+      "sha256": "43c4e13a06c04d285cc0de5a62bfa3cc25df980fe8e16fdb7941f8935785924d"
+    },
+    "liminal_engine.transform_rule.v1::redact-customer-claim": {
+      "schema": "liminal_engine.transform_rule.v1",
+      "purpose": "redact sensitive customer-facing claim before audit persistence",
+      "input": {
+        "id": "tr_redact_customer_claim",
+        "name": "Redact customer claim in audit snapshots",
+        "operation": "redact",
+        "inputSchema": "liminal_engine.audit_event.v1",
+        "outputSchema": "liminal_engine.audit_event.v1",
+        "fieldPath": [
+          "beforeState",
+          "customerClaim"
+        ],
+        "pattern": "Acme[^.]*",
+        "replacement": "[redacted customer claim]",
+        "priority": 10,
+        "enabled": true,
+        "createdAt": "2026-06-27T10:05:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:05:00.000Z\",\"enabled\":true,\"field_path\":[\"beforeState\",\"customerClaim\"],\"id\":\"tr_redact_customer_claim\",\"input_schema\":\"liminal_engine.audit_event.v1\",\"name\":\"Redact customer claim in audit snapshots\",\"operation\":\"redact\",\"output_schema\":\"liminal_engine.audit_event.v1\",\"pattern\":\"Acme[^.]*\",\"priority\":10,\"replacement\":\"[redacted customer claim]\",\"schema\":\"liminal_engine.transform_rule.v1\"}",
+      "sha256": "0c9346fcffe238e9055a4f647b532637bded443395bbad257fec2a0a0ba6c013"
+    },
+    "liminal_engine.resource_allocation.v1::acme-security-owner-allocation": {
+      "schema": "liminal_engine.resource_allocation.v1",
+      "purpose": "Security owner allocated to close the EU data residency resource gap",
+      "input": {
+        "id": "ra_acme_security_owner",
+        "workItemId": "gc_acme_eu",
+        "resourceType": "role",
+        "ownerRole": "Security",
+        "status": "allocated",
+        "reason": "EU data residency requires Security ownership before customer-facing updates.",
+        "constraints": [
+          "EU data residency",
+          "customer-facing-status-update"
+        ],
+        "evidenceIds": [
+          "ds_acme_eu_residency"
+        ],
+        "allocatedAt": "2026-06-27T10:04:00.000Z"
+      },
+      "canonical_string": "{\"allocated_at\":\"2026-06-27T10:04:00.000Z\",\"constraints\":[\"EU data residency\",\"customer-facing-status-update\"],\"evidence_ids\":[\"ds_acme_eu_residency\"],\"id\":\"ra_acme_security_owner\",\"owner_role\":\"Security\",\"reason\":\"EU data residency requires Security ownership before customer-facing updates.\",\"resource_type\":\"role\",\"schema\":\"liminal_engine.resource_allocation.v1\",\"status\":\"allocated\",\"work_item_id\":\"gc_acme_eu\"}",
+      "sha256": "807ba733312fdc4c063b4697df559de35a34c94da877921d296a2dbb95b1ed13"
+    },
+    "liminal_engine.routing_rule.v1::route-requirement-drift-to-gemini": {
+      "schema": "liminal_engine.routing_rule.v1",
+      "purpose": "route a requirement-dropped signal to the Gemini evidence classifier endpoint",
+      "input": {
+        "id": "rr_requirement_drift_gemini",
+        "name": "Requirement drift evidence classification",
+        "priority": 10,
+        "enabled": true,
+        "intentTypes": [],
+        "signalKinds": [
+          "requirement_dropped"
+        ],
+        "endpointConfigIds": [
+          "endpoint_gemini_agent_output"
+        ],
+        "disposition": "send",
+        "rationale": "Classify the dropped requirement and produce contract-shaped evidence.",
+        "conditions": {
+          "minScore": 0.8
+        },
+        "createdAt": "2026-06-27T10:00:00.000Z"
+      },
+      "canonical_string": "{\"conditions\":{\"minScore\":0.8},\"created_at\":\"2026-06-27T10:00:00.000Z\",\"disposition\":\"send\",\"enabled\":true,\"endpoint_config_ids\":[\"endpoint_gemini_agent_output\"],\"id\":\"rr_requirement_drift_gemini\",\"intent_types\":[],\"name\":\"Requirement drift evidence classification\",\"priority\":10,\"rationale\":\"Classify the dropped requirement and produce contract-shaped evidence.\",\"schema\":\"liminal_engine.routing_rule.v1\",\"signal_kinds\":[\"requirement_dropped\"]}",
+      "sha256": "a53835ef1b2922986f49c3f1d92f7103f638b3e5b693d675255d39c8e127d93e"
+    },
+    "liminal_engine.nl_intent.v1::operator-approve-enforce-acme": {
+      "schema": "liminal_engine.nl_intent.v1",
+      "purpose": "operator intent to approve and enforce the correction",
+      "input": {
+        "id": "intent_acme_approve_enforce",
+        "utterance": "Approve and enforce the Acme EU data residency correction.",
+        "normalizedUtterance": "approve enforce acme eu data residency correction",
+        "actorRole": "VP Ops / Head of AI Transformation",
+        "intentType": "approve_enforce",
+        "target": "gc_acme_eu",
+        "entities": [
+          {
+            "name": "deal",
+            "value": "Acme expansion",
+            "confidence": 0.99
+          },
+          {
+            "name": "requirement",
+            "value": "EU data residency",
+            "confidence": 0.99
+          }
+        ],
+        "confidence": 0.98,
+        "source": "chat",
+        "sourceMessageId": "msg_acme_operator_1",
+        "detectedAt": "2026-06-27T10:03:00.000Z"
+      },
+      "canonical_string": "{\"actor_role\":\"VP Ops / Head of AI Transformation\",\"confidence\":0.98,\"detected_at\":\"2026-06-27T10:03:00.000Z\",\"entities\":[{\"confidence\":0.99,\"name\":\"deal\",\"value\":\"Acme expansion\"},{\"confidence\":0.99,\"name\":\"requirement\",\"value\":\"EU data residency\"}],\"id\":\"intent_acme_approve_enforce\",\"intent_type\":\"approve_enforce\",\"normalized_utterance\":\"approve enforce acme eu data residency correction\",\"schema\":\"liminal_engine.nl_intent.v1\",\"source\":\"chat\",\"source_message_id\":\"msg_acme_operator_1\",\"target\":\"gc_acme_eu\",\"utterance\":\"Approve and enforce the Acme EU data residency correction.\"}",
+      "sha256": "3ce245edc8c17d4863d14bb9406b38ca9356c3cdf077fa037efe12b0cdb72579"
     }
   }
 }

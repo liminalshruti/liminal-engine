@@ -149,6 +149,15 @@ importers:
         specifier: ^5.5.4
         version: 5.9.3
 
+  packages/goal-alignment:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+
   packages/governance:
     dependencies:
       '@liminal-engine/contracts':
@@ -309,6 +318,12 @@ importers:
       zod:
         specifier: ^3.24.1
         version: 3.25.76
+
+  packages/signal-harness:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/substrate:
     dependencies:

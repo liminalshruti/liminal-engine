@@ -20,5 +20,14 @@ export function toRows(table: EvalTable): EvalRow[] {
     .map((r) => ({ pass: r.passNumber, criterion: r.criterion, result: r.result }));
 }
 
-export { runEvals, type EvalReader } from "./use-cases.ts";
+export {
+  generateEvalCaseFromGovernanceCase,
+  gradeRequirementCoverage,
+  runEvals,
+  summarizeEvalTable,
+  type EvalHarnessClock,
+  type EvalHarnessIdGen,
+  type EvalReader,
+  type EvalSummary,
+} from "./use-cases.ts";
 export { ruleHealthTable, type RuleHealthRow } from "./rule-health.ts";
