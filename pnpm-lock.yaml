@@ -66,6 +66,10 @@ importers:
       '@liminal-engine/contracts':
         specifier: workspace:*
         version: link:../contracts
+    devDependencies:
+      '@liminal-engine/integration-eval-store':
+        specifier: workspace:*
+        version: link:../integrations/eval-store
 
   packages/governance:
     dependencies:
@@ -75,8 +79,69 @@ importers:
       '@liminal-engine/engine-core':
         specifier: workspace:*
         version: link:../engine-core
+    devDependencies:
+      '@liminal-engine/integration-action-gate-store':
+        specifier: workspace:*
+        version: link:../integrations/action-gate-store
+      '@liminal-engine/integration-audit-sink':
+        specifier: workspace:*
+        version: link:../integrations/audit-sink
+      '@liminal-engine/integration-eval-store':
+        specifier: workspace:*
+        version: link:../integrations/eval-store
+      '@liminal-engine/integration-fixture-determinism':
+        specifier: workspace:*
+        version: link:../integrations/fixture-determinism
+      '@liminal-engine/integration-gemini':
+        specifier: workspace:*
+        version: link:../integrations/gemini
+      '@liminal-engine/integration-governance-case-store':
+        specifier: workspace:*
+        version: link:../integrations/governance-case-store
+
+  packages/integrations/action-gate-store:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+
+  packages/integrations/audit-sink:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+
+  packages/integrations/eval-store:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+
+  packages/integrations/fixture-determinism:
+    dependencies:
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
 
   packages/integrations/gemini:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+
+  packages/integrations/governance-case-store:
     dependencies:
       '@liminal-engine/contracts':
         specifier: workspace:*

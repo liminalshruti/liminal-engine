@@ -20,5 +20,4 @@ export function toRows(table: EvalTable): EvalRow[] {
     .map((r) => ({ pass: r.passNumber, criterion: r.criterion, result: r.result }));
 }
 
-// TODO(agent, P0): runEvals(evalStore, dealId) -> EvalTable showing fail (pass 1)
-// then pass (pass 2) on the EU-data-residency criterion, from deterministic fixtures.
+export { runEvals, type EvalReader } from "./use-cases.ts";

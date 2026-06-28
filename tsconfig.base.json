@@ -23,7 +23,12 @@
       "@liminal-engine/ui-components": ["packages/ui-components/src/index.ts"],
       "@liminal-engine/integration-gemini": ["packages/integrations/gemini/src/index.ts"],
       "@liminal-engine/integration-linear": ["packages/integrations/linear/src/index.ts"],
-      "@liminal-engine/integration-livekit": ["packages/integrations/livekit/src/index.ts"]
+      "@liminal-engine/integration-livekit": ["packages/integrations/livekit/src/index.ts"],
+      "@liminal-engine/integration-governance-case-store": ["packages/integrations/governance-case-store/src/index.ts"],
+      "@liminal-engine/integration-audit-sink": ["packages/integrations/audit-sink/src/index.ts"],
+      "@liminal-engine/integration-action-gate-store": ["packages/integrations/action-gate-store/src/index.ts"],
+      "@liminal-engine/integration-eval-store": ["packages/integrations/eval-store/src/index.ts"],
+      "@liminal-engine/integration-fixture-determinism": ["packages/integrations/fixture-determinism/src/index.ts"]
     }
   }
 }

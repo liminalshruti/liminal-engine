@@ -1,0 +1,11 @@
+{
+  "name": "@liminal-engine/integration-eval-store",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/governance": "workspace:*"
+  }
+}

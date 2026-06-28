@@ -8,9 +8,4 @@
  * loop.
  */
 export * from "./ports.ts";
-
-// Use cases land here. Suggested signatures (see ops/linear/P0_ISSUES.md):
-//   detectMiss(source, caseStore, dealId): Promise<GovernanceCase | null>
-//   enforceCorrection(caseId, deps, actor): Promise<{ action: EnforcementAction; audit: AuditEvent }>  // flips on-track -> at-risk
-//   gateDownstreamAction(actionGateStore, action, caseId): Promise<ActionGate>
-//   runGovernanceLoop(deps, dealId): Promise<{ evalCase: EvalCase; evals: EvalResult[] }>
+export * from "./use-cases.ts";
