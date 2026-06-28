@@ -100,22 +100,32 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
   }
 }
 
-// Create and start server
+// Create the server. Export it so tests can drive it without a real listen().
 const server = createServer(handleRequest);
+export { server };
 
-server.listen(PORT, () => {
-  console.log(`Liminal Engine API server listening on http://localhost:${PORT}`);
-  console.log(`POST /governance/detect — run detect phase`);
-  console.log(`POST /governance/enforce — run enforce phase`);
-  console.log(`POST /governance/eval — run eval phase`);
-  console.log(`POST /governance/loop — run full loop`);
-  console.log(`GET /health — health check`);
-});
+// Only start listening when run as the entry point — NOT when imported (e.g. by
+// the test suite, which imports `apiState`). Importing must not bind a port, or
+// it leaks a real :3000 server past the test (EADDRINUSE / async-after-test).
+const isEntryPoint =
+  process.argv[1] !== undefined &&
+  import.meta.url === new URL(`file://${process.argv[1]}`).href;
 
-// Graceful shutdown
-process.on("SIGINT", () => {
-  console.log("Shutting down server...");
-  server.close(() => {
-    process.exit(0);
+if (isEntryPoint) {
+  server.listen(PORT, () => {
+    console.log(`Liminal Engine API server listening on http://localhost:${PORT}`);
+    console.log(`POST /governance/detect — run detect phase`);
+    console.log(`POST /governance/enforce — run enforce phase`);
+    console.log(`POST /governance/eval — run eval phase`);
+    console.log(`POST /governance/loop — run full loop`);
+    console.log(`GET /health — health check`);
   });
-});
+
+  // Graceful shutdown
+  process.on("SIGINT", () => {
+    console.log("Shutting down server...");
+    server.close(() => {
+      process.exit(0);
+    });
+  });
+}
