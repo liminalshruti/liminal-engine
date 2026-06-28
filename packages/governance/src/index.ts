@@ -15,6 +15,7 @@ export * from "./compile-correction.ts"; // correct  (STUB — «gov-correct»)
 export * from "./enforce.ts"; // enforce
 export * from "./proxy-gate.ts"; // enforce: downstream gate (fail-closed)
 export * from "./second-pass.ts"; // improve
+export * from "./redact.ts"; // audit: data-residency redaction (LIM-1248)
 export * from "./audit-ledger.ts"; // audit: hash-chained ledger
 export * from "./audit-reconstruction.ts"; // audit: case reconstruction
 

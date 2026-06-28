@@ -47,6 +47,8 @@ export const SCREEN_COPY = {
   auditTrail: {
     title: "Audit trail",
     intro: "The correction and the deciding actor, recorded as tamper-evident audit evidence.",
+    dataResidencyNote:
+      "Sensitive customer data is recorded in the audit ledger by reference (canonical-hash), never stored raw — so the trail can be replicated across regions without moving EU-personal data.",
   },
   secondPassEval: {
     title: "Second pass + eval",

@@ -616,6 +616,29 @@ button { touch-action: manipulation; }
   font-family: var(--font-mono, monospace);
 }
 
+/* Data-residency / redaction proof (LIM-1248) — sensitive data shown by reference. */
+.redaction-ref {
+  display: flex; flex-direction: column; gap: var(--space-2, 8px); margin: 0;
+}
+.redaction-ref__row {
+  display: grid; grid-template-columns: 120px minmax(0, 1fr);
+  gap: var(--space-3, 12px); align-items: baseline; min-width: 0;
+}
+.redaction-ref__label {
+  margin: 0; color: var(--text-faint, #8A8780); font-size: 0.68rem;
+  letter-spacing: 0; text-transform: uppercase;
+}
+.redaction-ref__value {
+  margin: 0; color: var(--text-soft, #B8B5AE); font-size: 0.86rem; line-height: 1.4;
+}
+.redaction-ref__hash {
+  font-family: var(--font-mono, monospace); font-size: 0.78rem;
+  color: var(--judgment, #C9A961); overflow-wrap: anywhere; word-break: break-all;
+}
+@media (max-width: 640px) {
+  .redaction-ref__row { grid-template-columns: 1fr; gap: var(--space-1, 4px); }
+}
+
 @media (max-width: 900px) {
   .app { height: auto; min-height: 100vh; }
   .app__bar { flex-wrap: wrap; align-items: flex-start; }
