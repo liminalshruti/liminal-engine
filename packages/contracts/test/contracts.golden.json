@@ -170,6 +170,187 @@
       },
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
+    },
+    "liminal_engine.stream.v1::acme-two-pass-stream": {
+      "schema": "liminal_engine.stream.v1",
+      "purpose": "the complete Acme workflow stream: first-pass false-green + second-pass correction",
+      "input": {
+        "id": "stream_acme",
+        "goalId": "goal_acme_expansion",
+        "name": "Acme $1.2M expansion workflow",
+        "agentRuns": [
+          {
+            "id": "run_product_p1",
+            "agentRole": "Product",
+            "passNumber": 1,
+            "outputId": "ao_acme_p1",
+            "executedAt": "2026-06-27T09:00:00.000Z",
+            "dependsOn": []
+          },
+          {
+            "id": "run_security_p1",
+            "agentRole": "Security",
+            "passNumber": 1,
+            "outputId": "ao_acme_p1",
+            "executedAt": "2026-06-27T09:05:00.000Z",
+            "dependsOn": []
+          },
+          {
+            "id": "run_engineering_p1",
+            "agentRole": "Engineering",
+            "passNumber": 1,
+            "outputId": "ao_acme_p1",
+            "executedAt": "2026-06-27T09:10:00.000Z",
+            "dependsOn": []
+          },
+          {
+            "id": "run_product_p2",
+            "agentRole": "Product",
+            "passNumber": 2,
+            "outputId": "ao_acme_p2",
+            "executedAt": "2026-06-27T10:00:00.000Z",
+            "dependsOn": [
+              "run_product_p1",
+              "run_security_p1",
+              "run_engineering_p1"
+            ]
+          },
+          {
+            "id": "run_security_p2",
+            "agentRole": "Security",
+            "passNumber": 2,
+            "outputId": "ao_acme_p2",
+            "executedAt": "2026-06-27T10:05:00.000Z",
+            "dependsOn": [
+              "run_product_p1",
+              "run_security_p1",
+              "run_engineering_p1"
+            ]
+          },
+          {
+            "id": "run_engineering_p2",
+            "agentRole": "Engineering",
+            "passNumber": 2,
+            "outputId": "ao_acme_p2",
+            "executedAt": "2026-06-27T10:10:00.000Z",
+            "dependsOn": [
+              "run_product_p1",
+              "run_security_p1",
+              "run_engineering_p1"
+            ]
+          }
+        ],
+        "artifacts": [
+          {
+            "id": "art_customer_call_transcript",
+            "type": "transcript",
+            "label": "Customer call transcript",
+            "producedByRunId": "run_product_p1",
+            "derivedFrom": []
+          },
+          {
+            "id": "art_requirements_list",
+            "type": "requirement",
+            "label": "Extracted requirements (including EU data residency)",
+            "producedByRunId": "run_product_p1",
+            "derivedFrom": [
+              "art_customer_call_transcript"
+            ]
+          },
+          {
+            "id": "art_commercial_analysis_p1",
+            "type": "analysis",
+            "label": "Commercial feasibility analysis (pass 1)",
+            "producedByRunId": "run_product_p1",
+            "derivedFrom": [
+              "art_requirements_list"
+            ]
+          },
+          {
+            "id": "art_security_assessment_p1",
+            "type": "analysis",
+            "label": "Security assessment (pass 1)",
+            "producedByRunId": "run_security_p1",
+            "derivedFrom": [
+              "art_requirements_list"
+            ]
+          },
+          {
+            "id": "art_technical_analysis_p1",
+            "type": "analysis",
+            "label": "Technical feasibility analysis (pass 1)",
+            "producedByRunId": "run_engineering_p1",
+            "derivedFrom": [
+              "art_requirements_list"
+            ]
+          },
+          {
+            "id": "art_governance_case_id",
+            "type": "evidence",
+            "label": "Governance case: dropped EU data residency requirement",
+            "producedByRunId": "run_engineering_p1",
+            "derivedFrom": [
+              "art_requirements_list",
+              "art_security_assessment_p1"
+            ]
+          },
+          {
+            "id": "art_enforcement_action",
+            "type": "evidence",
+            "label": "Enforcement action: activate correction policy",
+            "producedByRunId": "run_engineering_p1",
+            "derivedFrom": [
+              "art_governance_case_id"
+            ]
+          },
+          {
+            "id": "art_commercial_analysis_p2",
+            "type": "analysis",
+            "label": "Commercial feasibility analysis (pass 2, corrected)",
+            "producedByRunId": "run_product_p2",
+            "derivedFrom": [
+              "art_requirements_list",
+              "art_enforcement_action"
+            ]
+          },
+          {
+            "id": "art_security_assessment_p2",
+            "type": "analysis",
+            "label": "Security assessment (pass 2, with EU residency owner assigned)",
+            "producedByRunId": "run_security_p2",
+            "derivedFrom": [
+              "art_requirements_list",
+              "art_enforcement_action"
+            ]
+          },
+          {
+            "id": "art_technical_analysis_p2",
+            "type": "analysis",
+            "label": "Technical feasibility (pass 2, EU data residency plan)",
+            "producedByRunId": "run_engineering_p2",
+            "derivedFrom": [
+              "art_requirements_list",
+              "art_enforcement_action"
+            ]
+          },
+          {
+            "id": "art_eval_case",
+            "type": "evidence",
+            "label": "Eval case: second pass passes all governance checks",
+            "producedByRunId": "run_engineering_p2",
+            "derivedFrom": [
+              "art_governance_case_id",
+              "art_commercial_analysis_p2",
+              "art_security_assessment_p2",
+              "art_technical_analysis_p2"
+            ]
+          }
+        ],
+        "createdAt": "2026-06-27T08:00:00.000Z",
+        "notes": "Two-pass workflow: first pass produced a false green (EU residency missed); governance correction enforced a second pass with the requirement honored. Agents: Product (commercial), Security (data/compliance), Engineering (infrastructure). This stream captures the complete artifact lineage and inter-run dependencies."
+      },
+      "canonical_string": "{\"agent_runs\":[{\"agent_role\":\"Product\",\"depends_on\":[],\"executed_at\":\"2026-06-27T09:00:00.000Z\",\"id\":\"run_product_p1\",\"output_id\":\"ao_acme_p1\",\"pass_number\":1},{\"agent_role\":\"Security\",\"depends_on\":[],\"executed_at\":\"2026-06-27T09:05:00.000Z\",\"id\":\"run_security_p1\",\"output_id\":\"ao_acme_p1\",\"pass_number\":1},{\"agent_role\":\"Engineering\",\"depends_on\":[],\"executed_at\":\"2026-06-27T09:10:00.000Z\",\"id\":\"run_engineering_p1\",\"output_id\":\"ao_acme_p1\",\"pass_number\":1},{\"agent_role\":\"Product\",\"depends_on\":[\"run_engineering_p1\",\"run_product_p1\",\"run_security_p1\"],\"executed_at\":\"2026-06-27T10:00:00.000Z\",\"id\":\"run_product_p2\",\"output_id\":\"ao_acme_p2\",\"pass_number\":2},{\"agent_role\":\"Security\",\"depends_on\":[\"run_engineering_p1\",\"run_product_p1\",\"run_security_p1\"],\"executed_at\":\"2026-06-27T10:05:00.000Z\",\"id\":\"run_security_p2\",\"output_id\":\"ao_acme_p2\",\"pass_number\":2},{\"agent_role\":\"Engineering\",\"depends_on\":[\"run_engineering_p1\",\"run_product_p1\",\"run_security_p1\"],\"executed_at\":\"2026-06-27T10:10:00.000Z\",\"id\":\"run_engineering_p2\",\"output_id\":\"ao_acme_p2\",\"pass_number\":2}],\"artifacts\":[{\"derived_from\":[],\"id\":\"art_customer_call_transcript\",\"label\":\"Customer call transcript\",\"produced_by_run_id\":\"run_product_p1\",\"type\":\"transcript\"},{\"derived_from\":[\"art_customer_call_transcript\"],\"id\":\"art_requirements_list\",\"label\":\"Extracted requirements (including EU data residency)\",\"produced_by_run_id\":\"run_product_p1\",\"type\":\"requirement\"},{\"derived_from\":[\"art_requirements_list\"],\"id\":\"art_commercial_analysis_p1\",\"label\":\"Commercial feasibility analysis (pass 1)\",\"produced_by_run_id\":\"run_product_p1\",\"type\":\"analysis\"},{\"derived_from\":[\"art_requirements_list\"],\"id\":\"art_security_assessment_p1\",\"label\":\"Security assessment (pass 1)\",\"produced_by_run_id\":\"run_security_p1\",\"type\":\"analysis\"},{\"derived_from\":[\"art_requirements_list\"],\"id\":\"art_technical_analysis_p1\",\"label\":\"Technical feasibility analysis (pass 1)\",\"produced_by_run_id\":\"run_engineering_p1\",\"type\":\"analysis\"},{\"derived_from\":[\"art_requirements_list\",\"art_security_assessment_p1\"],\"id\":\"art_governance_case_id\",\"label\":\"Governance case: dropped EU data residency requirement\",\"produced_by_run_id\":\"run_engineering_p1\",\"type\":\"evidence\"},{\"derived_from\":[\"art_governance_case_id\"],\"id\":\"art_enforcement_action\",\"label\":\"Enforcement action: activate correction policy\",\"produced_by_run_id\":\"run_engineering_p1\",\"type\":\"evidence\"},{\"derived_from\":[\"art_enforcement_action\",\"art_requirements_list\"],\"id\":\"art_commercial_analysis_p2\",\"label\":\"Commercial feasibility analysis (pass 2, corrected)\",\"produced_by_run_id\":\"run_product_p2\",\"type\":\"analysis\"},{\"derived_from\":[\"art_enforcement_action\",\"art_requirements_list\"],\"id\":\"art_security_assessment_p2\",\"label\":\"Security assessment (pass 2, with EU residency owner assigned)\",\"produced_by_run_id\":\"run_security_p2\",\"type\":\"analysis\"},{\"derived_from\":[\"art_enforcement_action\",\"art_requirements_list\"],\"id\":\"art_technical_analysis_p2\",\"label\":\"Technical feasibility (pass 2, EU data residency plan)\",\"produced_by_run_id\":\"run_engineering_p2\",\"type\":\"analysis\"},{\"derived_from\":[\"art_commercial_analysis_p2\",\"art_governance_case_id\",\"art_security_assessment_p2\",\"art_technical_analysis_p2\"],\"id\":\"art_eval_case\",\"label\":\"Eval case: second pass passes all governance checks\",\"produced_by_run_id\":\"run_engineering_p2\",\"type\":\"evidence\"}],\"created_at\":\"2026-06-27T08:00:00.000Z\",\"goal_id\":\"goal_acme_expansion\",\"id\":\"stream_acme\",\"name\":\"Acme $1.2M expansion workflow\",\"notes\":\"Two-pass workflow: first pass produced a false green (EU residency missed); governance correction enforced a second pass with the requirement honored. Agents: Product (commercial), Security (data/compliance), Engineering (infrastructure). This stream captures the complete artifact lineage and inter-run dependencies.\",\"schema\":\"liminal_engine.stream.v1\"}",
+      "sha256": "680b5a7d846b94a640feb47711c6e139bc79d77c518e1ce9a3b73436b93fa3aa"
     }
   }
 }
