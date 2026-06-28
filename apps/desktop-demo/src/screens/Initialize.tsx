@@ -17,13 +17,13 @@
  * the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
 import { Card } from "../components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import { OPERATOR_ROLE, SCREEN_COPY } from "../lib/copy.ts";
 
 export function Initialize() {
   // Neutral facts only: the deal/workspace subject (`dealName`) and the goal — never
   // the pass-1 false-green claim, which is the later reveal (beat #3, AgentActivity).
-  const { businessGoal, agentOutputPass1 } = acmeScenario;
+  const { businessGoal, agentOutputPass1 } = useDemo();
   const copy = SCREEN_COPY.initialize;
 
   return (

@@ -31,7 +31,7 @@
  */
 import type { ReactNode } from "react";
 import { Card, StatusBadge } from "../components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import { falseGreenBanner } from "@liminal-engine/ui-components";
 import { SCREEN_COPY } from "../lib/copy.ts";
 import "./ContextTray.css";
@@ -67,7 +67,7 @@ interface SourceDocument {
 
 export function ContextTray() {
   // Load-bearing facts come ONLY from the locked Acme fixtures.
-  const { businessGoal, agentOutputPass1, governanceCase, auditEvent } = acmeScenario;
+  const { businessGoal, agentOutputPass1, governanceCase, auditEvent } = useDemo();
   const copy = SCREEN_COPY.contextTray;
   const missedRequirement = governanceCase.missedRequirement;
   const trace = falseGreenBanner(agentOutputPass1);
