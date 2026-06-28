@@ -5,3 +5,4 @@
  */
 export * from "./substrate.ts";
 export * from "./detect-lost-context.ts";
+export * from "./substrate-source.ts";
