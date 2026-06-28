@@ -3,6 +3,8 @@
  *
  * Beat #6: the compiled EnforcementAction preview (EnforcementPreview, LIM-1234) —
  * the operator approves the *rule*, not just the text.
+ * Optional: voice-based correction capture (VoiceCorrection, LIM-1260) showing
+ * the workflow: "Voice captured → CorrectionEvent → EvalCase → Second pass improved".
  * Then the enforced result: status flip On Track → At Risk (StatusBadge, MNC#3) →
  * simulated Linear workstream (LinearPayloadView, MNC#4) → required owners → blocked
  * customer update (the 3-part BlockedActionBanner, MNC#5 / LIM-1235).
@@ -13,6 +15,7 @@ import {
   EnforcementPreview,
   LinearPayloadView,
   StatusBadge,
+  VoiceCorrection,
 } from "../components";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
@@ -32,6 +35,9 @@ export function EnforcementPanel() {
 
       {/* Beat #6 — preview the compiled actions before Approve + Enforce. */}
       <EnforcementPreview actions={[enforcementAction]} />
+
+      {/* LIM-1260: Voice-based correction capture (optional, fallback-safe). */}
+      <VoiceCorrection />
 
       <div className="enforcement-panel__approval">
         <div className="enforcement-panel__approval-copy">
