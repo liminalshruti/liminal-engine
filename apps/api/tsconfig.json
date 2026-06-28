@@ -1,9 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
-  },
+  "comment": [
+    "No rootDir/outDir: the app imports sibling workspace sources via tsconfig",
+    "`paths` (packages/*), which live outside any local rootDir — setting one",
+    "triggers TS6059. The base config sets allowImportingTsExtensions + noEmit, so",
+    "the .ts-extension imports across this app mean `tsc` is a type-check (no emit);",
+    "the service runs directly from TypeScript (`node src/index.ts`)."
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }
