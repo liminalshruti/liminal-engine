@@ -88,7 +88,7 @@ function EnforcementPanelContent() {
           <span className="enforcement-panel__arrow" aria-hidden="true">→</span>
           <div className="enforcement-panel__status-node">
             <span className="enforcement-panel__label">After</span>
-            <StatusBadge status={enforcementAction.toStatus} />
+            <StatusBadge status={enforcementAction.toStatus} className="is-new" />
           </div>
         </div>
       </div>
