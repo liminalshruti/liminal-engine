@@ -38,4 +38,5 @@ export * from "./transform-rule.contract.ts";
 export * from "./resource-allocation.contract.ts";
 export * from "./routing-rule.contract.ts";
 export * from "./nl-intent.contract.ts";
+export * from "./request-transform.contract.ts";
 export { CONTRACT_REGISTRY, type ContractEntry } from "./registry.ts";
