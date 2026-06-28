@@ -6,6 +6,14 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Fixed — SCOPE_SPEC.md: PolicyRule/ApprovalGate COVERED, not P0-build (LIM-1251, 2026-06-28)
+- Last spec contradiction reconciled. `SCOPE_SPEC.md` still listed `PolicyRule` +
+  `ApprovalGate` as "P0 entities to extend in contracts," but LIM-1251 / PR #26
+  established they're **covered by existing contracts, no new build** (demo steps
+  9/11 render from `EnforcementAction.actionType` `require_approval`/`activate_policy`
+  + `AuditEvent` + `LinearWorkstreamPayload.requiredOwners`). SCOPE_SPEC now matches
+  SPEC.md; first-class entities are post-hack. Docs-only.
+
 ### Added — LIM-1238 second-pass causal narration + checks table (2026-06-28)
 - `apps/desktop-demo/src/screens/SecondPassEval.tsx` now renders beats #12-#14
   from Acme fixtures: EvalCase generated, improved second-pass output, causal
