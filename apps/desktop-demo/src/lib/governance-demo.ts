@@ -27,7 +27,6 @@ import type {
   RedactedRef,
   AgentOutput,
   LinearWorkstreamPayload,
-  RedactedRef,
 } from "@liminal-engine/contracts";
 import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";
 import {
@@ -63,8 +62,6 @@ export interface GovernanceDemo {
   enforcementAction: EnforcementAction;
   /** beat 8/9: the simulated Linear remediation workstream payload + required owners. */
   linearWorkstreamPayload: LinearWorkstreamPayload;
-  /** beat 11: data residency reference (redacted storage proof). */
-  dataResidencyRef: RedactedRef;
   /** beat 10: the full gate the loop produced (deny verdict + reasons). */
   gate: ActionGate;
   /** beat 10: the LIVE fail-closed decision on the gated action (allowed:false). */
@@ -143,7 +140,6 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
     governanceCase,
     enforcementAction,
     linearWorkstreamPayload: acmeScenario.linearWorkstreamPayload,
-    dataResidencyRef: acmeScenario.dataResidencyRef,
     gate,
     gateDecision,
     gatedAction: GATED_CUSTOMER_ACTION,
