@@ -7,5 +7,13 @@
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/engine-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@liminal-engine/integration-gemini": "workspace:*",
+    "@liminal-engine/integration-governance-case-store": "workspace:*",
+    "@liminal-engine/integration-audit-sink": "workspace:*",
+    "@liminal-engine/integration-action-gate-store": "workspace:*",
+    "@liminal-engine/integration-eval-store": "workspace:*",
+    "@liminal-engine/integration-fixture-determinism": "workspace:*"
   }
 }
