@@ -1,0 +1,11 @@
+{
+  "name": "@liminal-engine/governance",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/engine-core": "workspace:*"
+  }
+}

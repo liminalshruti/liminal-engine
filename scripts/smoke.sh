@@ -27,14 +27,14 @@ bold "1. Build / test (best-effort)"
 
 if [ -f package.json ]; then
   if grep -q '"build"' package.json 2>/dev/null; then
-    echo "  running: npm run build"
-    npm run build && ok "build passed" || fail "build failed"
+    echo "  running: pnpm build"
+    pnpm build && ok "build passed" || fail "build failed"
   else
     skip "no build script in package.json"
   fi
   if grep -q '"test"' package.json 2>/dev/null; then
-    echo "  running: npm test"
-    npm test && ok "tests passed" || fail "tests failed"
+    echo "  running: pnpm test"
+    pnpm test && ok "tests passed" || fail "tests failed"
   else
     skip "no test script in package.json"
   fi

@@ -5,6 +5,42 @@ this first.
 
 ---
 
+## Session: development control harness (2026-06-27)
+
+**Did:**
+- Pulled `origin/main` (the public-repo-setup + demo-contract-alignment commits)
+  and reconciled with a control harness built on the prior base (fast-forward; my
+  new files preserved, hygiene notes re-applied).
+- Layered a spec-to-task-to-PR **control harness** (additive; DEMO_CONTRACT/CLAUDE
+  locks untouched). Materialized the pnpm/TS workspace.
+- **Reconciled contracts to the updated 14-step / 7-must-not-cut demo contract:**
+  `packages/contracts` now models AgentOutput, GovernanceCase, **EnforcementAction**,
+  AuditEvent, ActionGate, **EvalCase**, EvalResult (zod + canonical-hash golden
+  tests). Acme fixtures assert every must-not-cut item (incl. Linear required
+  owners + business goal).
+- Hexagonal package members; integrations are fixture stubs. Enforceable gates:
+  boundary lint (`spine-no-live-integrations`), CI, lefthook hooks, PR template,
+  matrix + linear-id checks. Added `AGENTS.md` + nested AGENTS.md + 5 agent roles;
+  filled `ops/linear/AGENT_PACKETS.md` + `ISSUES.md`.
+- **Verified green:** 43 tests, typecheck, boundary lint; gates proven to reject
+  violations (spine→integration import; contract drift). Not pushed.
+
+**Decided:** commits = allsmog only, never Claude/AI (hooks enforce); overnight = PR-only.
+
+**Did NOT do (by design):** no app/UI (the demo spine — needs a UI-stack decision);
+no live Gemini/LiveKit/Linear; did not push (awaiting your go).
+
+**Next session should:**
+1. Decide demo-app UI stack; build the static clickable spine on the Acme fixtures.
+2. Implement governance use cases + eval harness per the packets.
+3. Auth Linear MCP; file `ops/linear/ISSUES.md` as real `LIM-` issues under LIM-1199.
+
+**Risks / watch:** persona name must NOT be invented (persona issue is yellow); keep the spine
+deterministic; `pnpm install` pins local `core.hooksPath` so lefthook doesn't
+clobber the global attribution hook — keep that in `prepare`.
+
+---
+
 ## Session: standalone public repo setup
 
 **Did:**

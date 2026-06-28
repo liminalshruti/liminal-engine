@@ -1,0 +1,22 @@
+# Git hooks (installed by `pnpm install`). Gates fire locally before CI.
+
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      glob: "*.{ts,tsx}"
+      run: pnpm typecheck
+    boundaries:
+      glob: "*.{ts,tsx}"
+      run: pnpm lint:boundaries
+
+pre-push:
+  commands:
+    test:
+      run: pnpm test
+
+# Commits are attributed to the user only — never Claude/AI (global rule).
+commit-msg:
+  commands:
+    strip-ai-attribution:
+      run: node tools/strip-ai-attribution.mjs {1}

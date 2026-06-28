@@ -1,0 +1,123 @@
+{
+  "_generator": "tools/regen-goldens.ts",
+  "vectors": {
+    "liminal_engine.agent_output.v1::false-green-pass1": {
+      "schema": "liminal_engine.agent_output.v1",
+      "purpose": "the false green — on-track while a requirement was dropped",
+      "input": {
+        "id": "ao_acme_p1",
+        "dealId": "deal_acme",
+        "dealName": "Acme expansion",
+        "passNumber": 1,
+        "reportedStatus": "on-track",
+        "summary": "Acme $1.2M expansion on track; all workstreams green.",
+        "droppedRequirements": [
+          "EU data residency"
+        ]
+      },
+      "canonical_string": "{\"deal_id\":\"deal_acme\",\"deal_name\":\"Acme expansion\",\"dropped_requirements\":[\"EU data residency\"],\"id\":\"ao_acme_p1\",\"pass_number\":1,\"reported_status\":\"on-track\",\"schema\":\"liminal_engine.agent_output.v1\",\"summary\":\"Acme $1.2M expansion on track; all workstreams green.\"}",
+      "sha256": "ed51039927c7b825093706f8c5acad5ff7468b6aa0367d953b691ac81b0bb5ac"
+    },
+    "liminal_engine.governance_case.v1::acme-eu-residency-open": {
+      "schema": "liminal_engine.governance_case.v1",
+      "purpose": "the detection — dropped EU data residency, blocking, open",
+      "input": {
+        "id": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "missedRequirement": "EU data residency",
+        "category": "data-governance",
+        "severity": "blocking",
+        "status": "open",
+        "detectedAt": "2026-06-27T10:00:00.000Z"
+      },
+      "canonical_string": "{\"category\":\"data-governance\",\"deal_id\":\"deal_acme\",\"detected_at\":\"2026-06-27T10:00:00.000Z\",\"id\":\"gc_acme_eu\",\"missed_requirement\":\"EU data residency\",\"schema\":\"liminal_engine.governance_case.v1\",\"severity\":\"blocking\",\"status\":\"open\"}",
+      "sha256": "bede4bf42cd531f171121c2334049fb1e3b6c50a3bda849ee6f505a522e40291"
+    },
+    "liminal_engine.enforcement_action.v1::acme-approve-enforce": {
+      "schema": "liminal_engine.enforcement_action.v1",
+      "purpose": "Approve + Enforce flips on-track -> at-risk",
+      "input": {
+        "id": "ea_acme_enforce",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "fromStatus": "on-track",
+        "toStatus": "at-risk",
+        "actor": "VP Ops / Head of AI Transformation",
+        "enforcedAt": "2026-06-27T10:04:00.000Z"
+      },
+      "canonical_string": "{\"actor\":\"VP Ops / Head of AI Transformation\",\"case_id\":\"gc_acme_eu\",\"deal_id\":\"deal_acme\",\"enforced_at\":\"2026-06-27T10:04:00.000Z\",\"from_status\":\"on-track\",\"id\":\"ea_acme_enforce\",\"schema\":\"liminal_engine.enforcement_action.v1\",\"to_status\":\"at-risk\"}",
+      "sha256": "8b94a52daffdcf83f4ae6a26b8de10bbb84cc862c8011dcf8037617f7a17bdf7"
+    },
+    "liminal_engine.audit_event.v1::acme-correction-enforced": {
+      "schema": "liminal_engine.audit_event.v1",
+      "purpose": "correction recorded — status flips on-track -> at-risk, actor is a role",
+      "input": {
+        "id": "ae_acme_1",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "action": "correction-enforced",
+        "decidingActor": "VP Ops / Head of AI Transformation",
+        "previousStatus": "on-track",
+        "newStatus": "at-risk",
+        "recordedAt": "2026-06-27T10:05:00.000Z"
+      },
+      "canonical_string": "{\"action\":\"correction-enforced\",\"case_id\":\"gc_acme_eu\",\"deal_id\":\"deal_acme\",\"deciding_actor\":\"VP Ops / Head of AI Transformation\",\"id\":\"ae_acme_1\",\"new_status\":\"at-risk\",\"previous_status\":\"on-track\",\"recorded_at\":\"2026-06-27T10:05:00.000Z\",\"schema\":\"liminal_engine.audit_event.v1\"}",
+      "sha256": "e12174d56c558658d5de04a6df0709fd6fea65096ffe96f4f22ca783d1de0f2e"
+    },
+    "liminal_engine.action_gate.v1::acme-customer-update-blocked": {
+      "schema": "liminal_engine.action_gate.v1",
+      "purpose": "customer-facing update blocked until EU residency corrected",
+      "input": {
+        "id": "ag_acme_update",
+        "caseId": "gc_acme_eu",
+        "action": "Send customer-facing status update to Acme",
+        "blocked": true,
+        "reason": "Blocked: open governance case (EU data residency) must be corrected first.",
+        "unblockedByCaseCorrection": true
+      },
+      "canonical_string": "{\"action\":\"Send customer-facing status update to Acme\",\"blocked\":true,\"case_id\":\"gc_acme_eu\",\"id\":\"ag_acme_update\",\"reason\":\"Blocked: open governance case (EU data residency) must be corrected first.\",\"schema\":\"liminal_engine.action_gate.v1\",\"unblocked_by_case_correction\":true}",
+      "sha256": "4152c3b6ffac780aac90620918cb2b9cfb5c6cc3018d6bfad4aaadb695a53908"
+    },
+    "liminal_engine.eval_case.v1::acme-eu-residency-case": {
+      "schema": "liminal_engine.eval_case.v1",
+      "purpose": "eval case generated from the EU-residency governance case",
+      "input": {
+        "id": "ec_acme_eu",
+        "dealId": "deal_acme",
+        "governanceCaseId": "gc_acme_eu",
+        "criterion": "EU data residency requirement honored",
+        "createdAt": "2026-06-27T10:06:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:06:00.000Z\",\"criterion\":\"EU data residency requirement honored\",\"deal_id\":\"deal_acme\",\"governance_case_id\":\"gc_acme_eu\",\"id\":\"ec_acme_eu\",\"schema\":\"liminal_engine.eval_case.v1\"}",
+      "sha256": "bcf6cb9dfa932f5a4b288855dcac8b5ee03cf55820147bde298b2f0ae87309f3"
+    },
+    "liminal_engine.eval_result.v1::pass1-fail": {
+      "schema": "liminal_engine.eval_result.v1",
+      "purpose": "first pass fails the EU residency criterion",
+      "input": {
+        "id": "ev_acme_p1",
+        "dealId": "deal_acme",
+        "evalCaseId": "ec_acme_eu",
+        "passNumber": 1,
+        "criterion": "EU data residency requirement honored",
+        "result": "fail"
+      },
+      "canonical_string": "{\"criterion\":\"EU data residency requirement honored\",\"deal_id\":\"deal_acme\",\"eval_case_id\":\"ec_acme_eu\",\"id\":\"ev_acme_p1\",\"pass_number\":1,\"result\":\"fail\",\"schema\":\"liminal_engine.eval_result.v1\"}",
+      "sha256": "88cb847418e0c52e9fbd28fffb2bf513cdb3ad9d2fe05ac8c5a9e5c0d55e2c5e"
+    },
+    "liminal_engine.eval_result.v1::pass2-pass": {
+      "schema": "liminal_engine.eval_result.v1",
+      "purpose": "second pass passes after enforcement",
+      "input": {
+        "id": "ev_acme_p2",
+        "dealId": "deal_acme",
+        "evalCaseId": "ec_acme_eu",
+        "passNumber": 2,
+        "criterion": "EU data residency requirement honored",
+        "result": "pass"
+      },
+      "canonical_string": "{\"criterion\":\"EU data residency requirement honored\",\"deal_id\":\"deal_acme\",\"eval_case_id\":\"ec_acme_eu\",\"id\":\"ev_acme_p2\",\"pass_number\":2,\"result\":\"pass\",\"schema\":\"liminal_engine.eval_result.v1\"}",
+      "sha256": "67f27d87995065c618b9e30359b414384d74f970b58ab1f92664a9911f22f265"
+    }
+  }
+}
