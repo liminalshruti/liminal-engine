@@ -3,9 +3,10 @@
 # smoke.sh — Liminal Engine — Agentic Work Governance MVP
 # Hackathon: Liminal Engine Governance Hack 2026
 #
-# Runs whatever build/test commands are available, then prints the manual demo
-# checklist a human walks before declaring the demo ready. Safe to run anytime;
-# missing build tooling is reported, not fatal — the manual checklist always prints.
+# Automated product checks only. Per DIRECTIVE.md (NO DEMO FLOWS) there is NO
+# manual demo checklist: the governance loop (observe→detect→correct→enforce→
+# audit→improve) is real product behavior, exercised by the automated test suite
+# against real engine output — not a hand-walked, narrated sequence.
 
 set -uo pipefail
 
@@ -17,14 +18,12 @@ ok()   { printf '  \033[32m✓\033[0m %s\n' "$1"; }
 skip() { printf '  \033[33m–\033[0m %s\n' "$1"; }
 fail() { printf '  \033[31m✗\033[0m %s\n' "$1"; }
 
-bold "Liminal Engine — smoke test"
+bold "Liminal Engine — smoke test (automated)"
 echo
 
 # ----------------------------------------------------------------------------
-# 1. Automated build/test (best-effort — only runs what exists)
+# Automated build / test (best-effort — only runs what exists)
 # ----------------------------------------------------------------------------
-bold "1. Build / test (best-effort)"
-
 if [ -f package.json ]; then
   if grep -q '"build"' package.json 2>/dev/null; then
     echo "  running: pnpm build"
@@ -41,30 +40,4 @@ if [ -f package.json ]; then
 else
   skip "no root package.json yet (scaffold stage — expected)"
 fi
-echo
-
-# ----------------------------------------------------------------------------
-# 2. Manual demo checklist
-# ----------------------------------------------------------------------------
-bold "2. Manual demo checklist — walk each item in the running demo"
-cat <<'CHECKLIST'
-
-   [ ]  1. App starts locally.
-   [ ]  2. Initialize screen loads.
-   [ ]  3. Context cards appear.
-   [ ]  4. Agent output says Acme appears on track.
-   [ ]  5. GovernanceCase appears with EU data residency.
-   [ ]  6. Approve + Enforce changes status to At Risk.
-   [ ]  7. Simulated Linear workstream appears.
-   [ ]  8. Blocked customer update appears.
-   [ ]  9. Audit trail appears.
-   [ ] 10. Eval table shows Fail → Pass.
-   [ ] 11. Demo can be completed in under 3 minutes.
-
-CHECKLIST
-
-bold "Reminder"
-echo "  - No invented persona name on screen or in narration."
-echo "  - Every must-not-cut item in DEMO_CONTRACT.md must be visible."
-echo "  - Spine must be deterministic (no live-call flakiness)."
 echo

@@ -1,3 +1,5 @@
+> ⛔ Read [`DIRECTIVE.md`](./DIRECTIVE.md) FIRST — NO DEMO FLOWS. Per the directive, the "14-step path" / beats below describe the governance loop's REAL behavior as it runs in the product on real, arbitrary data — they are NOT a scripted walkthrough to build. Build the real product; do not build a guided single-scenario flow.
+
 # DEMO CONTRACT — Liminal Engine — Agentic Work Governance MVP
 
 > Hackathon: Liminal Engine Governance Hack 2026
