@@ -125,18 +125,19 @@ loop, eval Fail→Pass, audit-ledger, and fail-closed gate are merged to `main`)
 
 | Criterion | Weight | Status | Note / residual |
 |---|---|---|---|
-| Technicality | 40% | **Covered** | The governance loop emits + the spine renders every artifact — `GovernanceCase`, `EnforcementAction`, the On Track→At Risk flip, the blocked action, hash-chained `AuditEvent`, `EvalCase`, Fail→Pass — across all 14 beats (all 7 screens filled). Determinism + fail-closed gate + audit reconstruction are tested on `main`. **Residual:** screens currently read the locked fixtures directly; LIM-1245 (#34, code-ready, in review) re-wires them to the live `runGovernanceLoop`/`runEvals` output so the UI provably *is* the engine. Same values either way — #34 upgrades the *provenance*, not the content. |
+| Technicality | 40% | **Covered** | The governance loop emits + the spine renders every artifact — `GovernanceCase`, `EnforcementAction`, the On Track→At Risk flip, the blocked action, hash-chained `AuditEvent`, `EvalCase`, Fail→Pass — across all 14 beats (all 7 screens filled). Determinism + fail-closed gate + audit reconstruction are tested on `main`. The live single-source-of-truth provider (`buildGovernanceDemo`, LIM-1245 / #34) is **merged** — `runGovernanceLoop` returns its full result and the demo renders the loop's real output. **Residual (mechanical):** individual screens swap their import from the fixtures to that provider (one line each). |
 | Creativity / Originality | 25% | **Covered** | The before/after category shift is on screen: enforcement is *visible* (status flip + blocked customer update + Linear workstream with required owners), not alerting. |
 | Live Demo | 20% | **Covered** | All 14 beats render in order across the 7 screens; a written fallback walkthrough is on `main` (`demos/fallback/WALKTHROUGH.md`). **Residual (manual, founder):** record the fallback *video* + walk `scripts/smoke.sh` to confirm < 3 min end to end (SUBMISSION.md open items). |
 | Future Potential / AI Impact | 15% | **Covered (narrative)** | Carried by framing in `README`/`SUBMISSION`; needs no new demo beat. Do not over-build real integrations at the spine's expense. |
 
 ### Residuals to close (the spine is built; these are what's left)
 
-1. **Re-wire screens to the live loop (LIM-1245 / #34).** Code-ready + in review.
-   Screens render the right artifacts today, but from the fixtures directly; #34
-   makes them render `runGovernanceLoop`/`runEvals` output so the UI *is* the
-   engine (the strongest answer to "is this real or scripted?"). Content
-   unchanged — provenance upgraded. Land it before the final cut.
+1. **Point screens at the live provider (LIM-1245 / #34 — MERGED).** The
+   `buildGovernanceDemo` single-source-of-truth provider is on `main` (the loop
+   returns its full result; the demo renders real `runGovernanceLoop`/`runEvals`
+   output). Remaining is mechanical: each screen swaps its import from
+   `@contracts/fixtures` to `../lib/governance-demo` (one line each) so the UI
+   provably *is* the engine — the strongest answer to "is this real or scripted?"
 2. **Record the fallback video + walk `scripts/smoke.sh`** (manual, founder).
    The written `demos/fallback/WALKTHROUGH.md` is on `main`; the *recording* and a
    timed < 3-min smoke pass are the open SUBMISSION.md items. A flaky live run with
