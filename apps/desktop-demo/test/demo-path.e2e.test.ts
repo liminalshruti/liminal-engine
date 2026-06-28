@@ -48,7 +48,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";
 import { canonicalHash, isAllowed, actionGateDecision } from "@liminal-engine/contracts";
 import type {
   AgentOutput,
@@ -193,6 +193,9 @@ async function runGovernanceEngine() {
     evalStore: new InMemoryEvalStore(),
     clock: createDeterministicClock(),
     idGen: createDeterministicIdGen(),
+    // inject the locked case evidence so the loop produces the ENRICHED case
+    // (LIM-1254) — the beat-#5 round-trip below asserts engine output == fixture.
+    caseEvidence: acmeCaseEvidence,
   };
 
   const { evalCase, evals } = await runGovernanceLoop(deps, DEAL);

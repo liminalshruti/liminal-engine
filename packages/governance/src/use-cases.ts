@@ -27,7 +27,7 @@ import type {
   ActionGateStore,
   EvalStore,
 } from "./ports.ts";
-import { type Clock, type IdGen, detectMiss } from "./detect-miss.ts";
+import { type Clock, type IdGen, type CaseEvidence, detectMiss } from "./detect-miss.ts";
 import { enforceCorrection } from "./enforce.ts";
 import { gateDownstreamAction, GATED_CUSTOMER_ACTION } from "./proxy-gate.ts";
 import { gradeSecondPass } from "./second-pass.ts";
@@ -50,6 +50,13 @@ export interface GovernanceLoopDeps {
   evalStore: EvalStore;
   clock: Clock;
   idGen: IdGen;
+  /**
+   * Optional case evidence (business impact / missing-from / recommended actions)
+   * the detector attaches to the opened case (LIM-1254). Injected scenario
+   * knowledge, not derivable from agent output — see CaseEvidence. Omitted ⇒
+   * the loop produces a minimal case (existing behavior unchanged).
+   */
+  caseEvidence?: CaseEvidence;
 }
 
 /** Everything the loop produces — the full result a UI/audit can render. */
@@ -81,6 +88,7 @@ export async function runGovernanceLoop(
     1,
     deps.clock,
     deps.idGen,
+    deps.caseEvidence,
   );
   if (!governanceCase) {
     throw new Error(`no governance case detected for deal ${dealId}`);

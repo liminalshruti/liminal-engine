@@ -20,6 +20,20 @@ export interface IdGen {
   next(): string;
 }
 
+/**
+ * Optional evidence the composition root attaches to a detected case (LIM-1254).
+ * The dropped requirement alone doesn't carry business impact / where it went
+ * missing / recommended enforcement — that's scenario knowledge, INJECTED here so
+ * the generic detector stays free of demo-specific copy. When supplied, the loop
+ * genuinely PRODUCES the enriched case (it's not a fixture passthrough), so the
+ * GovernanceCase screen's evidence sections render real engine output.
+ */
+export interface CaseEvidence {
+  businessImpact?: string;
+  missingFrom?: string[];
+  recommendedActions?: string[];
+}
+
 export async function detectMiss(
   source: AgentOutputSource,
   caseStore: GovernanceCaseStore,
@@ -27,6 +41,7 @@ export async function detectMiss(
   passNumber: number,
   clock: Clock,
   idGen: IdGen,
+  evidence?: CaseEvidence,
 ): Promise<GovernanceCase | null> {
   const output = await source.getOutput(dealId, passNumber);
   const missed = output.droppedRequirements[0];
@@ -40,6 +55,14 @@ export async function detectMiss(
     severity: "blocking",
     status: "open",
     detectedAt: clock.now(),
+    // Spread only the keys that were provided — absent evidence leaves the case
+    // minimal (and its canonical hash unchanged), matching the contract's
+    // "optional ⇒ absent ⇒ hash unchanged" rule.
+    ...(evidence?.businessImpact !== undefined ? { businessImpact: evidence.businessImpact } : {}),
+    ...(evidence?.missingFrom !== undefined ? { missingFrom: evidence.missingFrom } : {}),
+    ...(evidence?.recommendedActions !== undefined
+      ? { recommendedActions: evidence.recommendedActions }
+      : {}),
   };
   await caseStore.open(governanceCase);
   return governanceCase;
