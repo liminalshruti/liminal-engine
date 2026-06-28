@@ -32,6 +32,21 @@ importers:
       '@liminal-engine/governance':
         specifier: workspace:*
         version: link:../../packages/governance
+      '@liminal-engine/integration-action-gate-store':
+        specifier: workspace:*
+        version: link:../../packages/integrations/action-gate-store
+      '@liminal-engine/integration-audit-sink':
+        specifier: workspace:*
+        version: link:../../packages/integrations/audit-sink
+      '@liminal-engine/integration-eval-store':
+        specifier: workspace:*
+        version: link:../../packages/integrations/eval-store
+      '@liminal-engine/integration-fixture-determinism':
+        specifier: workspace:*
+        version: link:../../packages/integrations/fixture-determinism
+      '@liminal-engine/integration-governance-case-store':
+        specifier: workspace:*
+        version: link:../../packages/integrations/governance-case-store
       '@liminal-engine/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
