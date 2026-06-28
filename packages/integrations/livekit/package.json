@@ -4,5 +4,7 @@
   "private": true,
   "type": "module",
   "exports": { ".": "./src/index.ts" },
-  "dependencies": {}
+  "dependencies": {
+    "livekit-server-sdk": "^2.15.5"
+  }
 }
