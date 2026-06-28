@@ -5,6 +5,10 @@
  *       evidence (severity, category, when it was detected, and — when present — the
  *       business impact / where it went missing / recommended actions).
  *
+ * STRETCH (lim-correction-template-ui): optionally display the CorrectionTemplateForm
+ * below the case details, gated by feature flag, for the operator to select structured
+ * templates + fill arguments instead of free-form text.
+ *
  * Fills the LIM-1226 «spine-shell-v2» stub (task LIM-1218 «screen-governance-case»).
  * Refined case-detail hub layout per LIM-1256 (inline-highlighted violations, evidence
  * badges, cited-in-audit indicators).
@@ -21,8 +25,9 @@
  * recommendedActions) are optional on the contract, so each renders only when the
  * fixture carries it — absent fields are skipped, never faked.
  */
-import { Card } from "../components";
-import { ViolationHighlight } from "../components/ViolationHighlight";
+import { useState } from "react";
+import { Card, ViolationHighlight, CorrectionTemplateForm, CORRECTION_TEMPLATES } from "../components";
+import type { TemplateSelection } from "../components";
 import { caseHeadline } from "@liminal-engine/ui-components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
@@ -38,6 +43,27 @@ export function GovernanceCase() {
   // The false-green agent output (first pass)
   const agentClaim = agentOutputPass1?.summary || "";
   const droppedRequirements = agentOutputPass1?.droppedRequirements || [];
+
+  // STRETCH: feature flag for correction template UI (lim-correction-template-ui).
+  // Disable by default; can be enabled for judges via SUBMISSION.md.
+  const [showCorrectionForm, setShowCorrectionForm] = useState(false);
+
+  const handleCorrectionSubmit = (
+    selections: TemplateSelection[],
+    freeTextReason: string,
+  ) => {
+    // STUB: In a real implementation, this would compile the correction
+    // into enforcement actions via the gov-correct compiler.
+    console.log("Correction submitted:", {
+      selections,
+      reason: freeTextReason,
+      caseId: c.id,
+    });
+
+    // For demo purposes, acknowledge submission and hide the form.
+    alert(`Correction saved for case ${c.id}. Templates: ${selections.length}`);
+    setShowCorrectionForm(false);
+  };
 
   return (
     <section className="screen screen--governance-case" aria-label={copy.title}>
@@ -134,6 +160,31 @@ export function GovernanceCase() {
           </div>
         )}
       </Card>
+
+      {/* STRETCH: CorrectionTemplateForm (lim-correction-template-ui, feature flag gated) */}
+      {showCorrectionForm && (
+        <CorrectionTemplateForm
+          governanceCase={c}
+          templates={CORRECTION_TEMPLATES}
+          onSubmit={handleCorrectionSubmit}
+        />
+      )}
+
+      {/* STRETCH: Toggle button for correction form (demo / judge-friendly). */}
+      {!showCorrectionForm && (
+        <div className="governance-case__correction-toggle">
+          <button
+            onClick={() => setShowCorrectionForm(true)}
+            className="governance-case__toggle-btn"
+            aria-label="Open structured correction template form"
+          >
+            Add Structured Correction (STRETCH)
+          </button>
+          <p className="governance-case__toggle-note">
+            Feature: constrained templates + structured args instead of free text.
+          </p>
+        </div>
+      )}
     </section>
   );
 }
