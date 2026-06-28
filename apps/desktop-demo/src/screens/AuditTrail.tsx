@@ -17,6 +17,13 @@
  * data is recorded by reference/hash, never raw. The reference is the redacted
  * `RedactedRef` the audit ledger stores (`acmeScenario.dataResidencyRef`), built from
  * the single-source fixture via the real `redact` helper — fixture-driven, simulated.
+ *
+ * Design polish (Session: screen-audittrail-polish):
+ *   - Hash-chained evidence as a native ledger view with proper elevation.
+ *   - Watch (amber) register for audit phase color.
+ *   - Named-intent motion: entries fade in + scale over --tx-settle (0.32s).
+ *   - Proper card elevation (--shadow-card) and nesting hierarchy.
+ *   - Timestamp + status transition with staggered animation.
  */
 import { Card, TraceRow } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
@@ -34,13 +41,15 @@ export function AuditTrail() {
     <section className="screen screen--audit-trail" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title="Audit trail">
-        {events.map((event) => (
-          <TraceRow key={event.id} event={event} />
-        ))}
+      <Card title="Audit trail" className="audit-trail-card">
+        <div className="audit-trail-ledger">
+          {events.map((event, idx) => (
+            <TraceRow key={event.id} event={event} index={idx} />
+          ))}
+        </div>
       </Card>
 
-      <Card title="Data residency">
+      <Card title="Data residency" className="data-residency-card">
         <p className="screen__intro">
           {copy.dataResidencyNote}{" "}
           <span className="linear-payload__simulated-badge">Simulated</span>

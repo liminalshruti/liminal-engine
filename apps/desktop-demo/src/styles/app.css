@@ -118,8 +118,10 @@ button { touch-action: manipulation; }
   display: flex; flex-direction: column; gap: var(--space-3, 12px);
   padding: var(--space-6, 32px); border: 1px solid var(--card-border-2, #2A2A2F);
   border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
 }
-.screen__intro { margin: 0; font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.5; }
+.screen__intro { margin: 0; font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.55; }
+.screen--audit-trail .screen__intro { margin-bottom: var(--space-2, 8px); font-size: 0.95rem; }
 .screen__fact { margin: 0; font-size: 0.95rem; color: var(--text, #E8E6E1); line-height: 1.5; }
 .screen__fact strong { color: var(--judgment, #C9A961); }
 .screen__stub-note {
@@ -297,15 +299,19 @@ button { touch-action: manipulation; }
 
 /* ── components: Card ── */
 .card {
-  padding: var(--space-6, 32px); border: 1px solid var(--card-border, #232327);
+  padding: var(--space-6, 32px); border: 1px solid var(--card-border-2, #2A2A2F);
   border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
   margin-bottom: var(--space-6, 32px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
 }
 .card__title {
   font-family: var(--font-display, var(--font-serif, serif)); font-size: 1.4rem;
   line-height: 1.2; margin: 0 0 var(--space-4, 16px); color: var(--text, #E8E6E1);
+  font-weight: 600;
 }
 .card__content { color: var(--text-soft, #B8B5AE); }
+.audit-trail-card .card__title { color: var(--watch, #FDC237); }
+.data-residency-card .card__title { color: var(--text, #E8E6E1); }
 
 /* ── components: StatusBadge ── */
 .status-badge {
@@ -579,41 +585,96 @@ button { touch-action: manipulation; }
   display: grid; grid-template-columns: 100px 1fr; gap: var(--space-4, 16px);
   padding: var(--space-4, 16px) var(--space-5, 20px); border-bottom: 1px solid var(--card-border-2, #2A2A2F);
   align-items: start;
+  animation: trace-row-fade-in var(--tx-settle, 0.32s) cubic-bezier(0.4, 0, 0.2, 1) var(--stagger-delay, 0ms) backwards;
 }
 .trace-row:last-child { border-bottom: none; }
-.trace-row__timestamp { text-align: right; }
+.trace-row__timestamp {
+  text-align: right;
+  animation: trace-timestamp-reveal var(--tx-settle, 0.32s) cubic-bezier(0.4, 0, 0.2, 1) var(--stagger-delay, 0ms) backwards;
+}
 .trace-row__time {
   font-family: var(--font-mono, monospace); font-size: 0.8rem;
-  color: var(--text-faint, #8A8780);
+  color: var(--watch, #FDC237);
+  font-weight: 600;
 }
-.trace-row__content { display: flex; flex-direction: column; gap: var(--space-2, 8px); }
-.trace-row__header { display: flex; gap: var(--space-2, 8px); }
+.trace-row__content {
+  display: flex; flex-direction: column; gap: var(--space-2, 8px);
+  animation: trace-content-float var(--tx-settle, 0.32s) cubic-bezier(0.4, 0, 0.2, 1) var(--stagger-delay, 0ms) backwards;
+}
+.trace-row__header { display: flex; gap: var(--space-2, 8px); align-items: center; }
 .trace-row__actor {
   display: inline-block; padding: var(--space-1, 4px) var(--space-2, 8px);
-  background: var(--frame-bg, #0E0E11); border-radius: var(--radius-1, 4px);
-  font-size: 0.8rem; color: var(--text-faint, #8A8780); font-weight: 500;
+  background: var(--frame-bg, #0E0E11); border: 1px solid var(--card-border, #232327);
+  border-radius: var(--radius-1, 4px);
+  font-size: 0.75rem; color: var(--text-faint, #8A8780); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0;
+  flex-shrink: 0;
 }
 .trace-row__action {
-  font-size: 0.95rem; color: var(--text-soft, #B8B5AE); font-weight: 500;
+  font-size: 0.95rem; color: var(--text, #E8E6E1); font-weight: 500;
 }
 .trace-row__transition {
   display: flex; align-items: center; gap: var(--space-2, 8px); font-size: 0.9rem;
 }
 .trace-row__status {
-  display: inline-block; padding: var(--space-1, 4px) var(--space-2, 8px);
-  background: var(--frame-bg-2, #0C0C0F); border-radius: var(--radius-1, 4px);
-  font-family: var(--font-mono, monospace); font-size: 0.8rem;
-  text-transform: capitalize;
+  display: inline-block; padding: var(--space-1, 4px) var(--space-3, 12px);
+  background: var(--frame-bg-2, #0C0C0F); border: 1px solid var(--card-border, #232327);
+  border-radius: var(--radius-1, 4px);
+  font-family: var(--font-mono, monospace); font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0; font-weight: 600;
 }
-.trace-row__status--from { color: var(--demo-pass-text); }
-.trace-row__status--to { color: var(--demo-fail-text); }
-.trace-row__arrow { color: var(--text-faint, #8A8780); font-weight: bold; }
+.trace-row__status--from {
+  color: var(--demo-pass-text);
+  background: rgba(168,221,185,0.08);
+  border-color: rgba(168,221,185,0.24);
+}
+.trace-row__status--to {
+  color: var(--demo-fail-text);
+  background: rgba(255,154,144,0.08);
+  border-color: rgba(255,154,144,0.24);
+  animation: trace-status-flip var(--tx-emphasize, 0.25s) cubic-bezier(0.4, 0, 0.2, 1) calc(var(--stagger-delay, 0ms) + 60ms);
+}
+.trace-row__arrow {
+  color: var(--watch, #FDC237); font-weight: bold;
+  animation: trace-arrow-brighten var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1) calc(var(--stagger-delay, 0ms) + 80ms);
+}
 .trace-row__metadata {
-  display: flex; gap: var(--space-3, 12px); font-size: 0.75rem;
+  display: flex; gap: var(--space-3, 12px); font-size: 0.7rem;
   color: var(--text-faint, #8A8780); text-transform: uppercase; letter-spacing: 0;
 }
 .trace-row__case-ref, .trace-row__deal-ref {
   font-family: var(--font-mono, monospace);
+}
+
+/* Audit trail polish: ledger container */
+.audit-trail-ledger {
+  display: flex; flex-direction: column;
+}
+.audit-trail-card { margin-bottom: var(--space-6, 32px); }
+
+/* Data residency card polish */
+.data-residency-card { margin-bottom: 0; }
+
+/* ── animations: AuditTrail ── */
+@keyframes trace-row-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes trace-timestamp-reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes trace-content-float {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes trace-status-flip {
+  from { opacity: 0.5; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes trace-arrow-brighten {
+  from { opacity: 0.3; }
+  to { opacity: 0.7; }
 }
 
 /* Data-residency / redaction proof (LIM-1248) — sensitive data shown by reference. */
