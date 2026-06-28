@@ -6,6 +6,33 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1197 demo video infrastructure (2026-06-28)
+- `demos/recordings/README.md` — guide for judges explaining the demo video,
+  verification checklist, and fallback reference to `demos/fallback/WALKTHROUGH.md`.
+  Judge-facing: where and how to watch the recording.
+- `scripts/record-demo-help.md` — detailed step-by-step instructions for recording
+  the demo (QuickTime / OBS / Windows Game Bar). Lists all 14 beats, timing guidance
+  (target: under 3 minutes), and verification steps.
+- `scripts/verify-demo-video.sh` — bash script to verify the video file exists,
+  is readable, and is non-zero size. Run before final submission to confirm the
+  recording is in place (`demos/recordings/acme-governance-demo.mp4`).
+- `packages/eval-harness/test/demo-video.test.ts` — Node test that verifies:
+  - The `demos/recordings/` directory exists
+  - A video file (mp4/mov/webm/mkv/avi) exists (if present; skips gracefully if not)
+  - The file is readable and non-zero size
+  - The recording README exists
+  
+  The test runs as part of `pnpm verify`. It's informational (skips if video not
+  yet recorded) but will confirm the video is ready before submission.
+
+The video is the **manual recording step** for LIM-1197 — a single operator clicks
+through the 14-step demo in the live app (apps/desktop-demo/), capturing the full
+governance loop `observe → detect → correct → enforce → audit → improve` on the Acme
+$1.2M false-green scenario. Target: under 3 minutes, deterministic (no flakiness),
+no invented persona names. The video serves the **Live Demo criterion** (20% of rubric).
+
+**Next:** Record the demo video and place it in `demos/recordings/acme-governance-demo.mp4`.
+
 ### Added — LIM-1248 data-residency / redaction proof surface (STRETCH) (2026-06-27)
 - `packages/contracts/src/redact.ts` — a pure `redact(value) → RedactedRef` helper
   (marker + scheme + `canonical-hash` digest, no new hash invented), plus

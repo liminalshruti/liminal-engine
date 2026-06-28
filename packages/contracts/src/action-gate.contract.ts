@@ -7,6 +7,15 @@
  * `requiredBeforeSend[]` (what must be true to release it). `allowed` is
  * DERIVED from the verdict — a gate with any `reasons` is not allowed — so we do
  * NOT persist a contradictory `blocked` boolean. Use `isAllowed(gate)` to read it.
+ *
+ * Provenance (additive — LIM-1269 / specs/GOAL-self-learning-policy-loop.md §4): an
+ * optional `source` ("operator" | "policy" | "default-deny") and optional
+ * `sourceRuleId` attribute every verdict to WHAT decided it — an operator
+ * ratification, an auto-verdict from a learned PolicyRule, or a fail-closed
+ * default-deny. Both are OPTIONAL and enter the canonical projection ONLY when
+ * present, so existing source-less gates keep a byte-identical canonical
+ * projection/hash (back-compat). The derived-`allowed` semantics and the
+ * deny-needs-reasons invariant below are unchanged.
  */
 import { z } from "zod";
 import { defineContract } from "./define-contract.ts";
@@ -15,6 +24,13 @@ export const ACTION_GATE_SCHEMA = "liminal_engine.action_gate.v2";
 
 export const actionGateVerdictShape = z.enum(["allow", "deny"]);
 
+/**
+ * Verdict provenance — who/what produced this gate: an operator ratification, an
+ * auto-verdict from a learned PolicyRule, or a fail-closed default-deny.
+ */
+export const actionGateSourceShape = z.enum(["operator", "policy", "default-deny"]);
+export type ActionGateSource = z.infer<typeof actionGateSourceShape>;
+
 export const actionGateShape = z.object({
   id: z.string().min(1),
   caseId: z.string().min(1),
@@ -22,6 +38,10 @@ export const actionGateShape = z.object({
   verdict: actionGateVerdictShape,
   reasons: z.array(z.string().min(1)),
   requiredBeforeSend: z.array(z.string().min(1)),
+  // Provenance — optional but typed; lets every verdict be attributed to its
+  // source. Omitted on existing source-less gates (back-compat).
+  source: actionGateSourceShape.optional(),
+  sourceRuleId: z.string().min(1).optional(),
 }).strict().superRefine((gate, ctx) => {
   if (gate.verdict === "deny" && gate.reasons.length === 0) {
     ctx.addIssue({
@@ -85,6 +105,10 @@ export const actionGateContract = defineContract({
     verdict: g.verdict,
     reasons: g.reasons,
     required_before_send: g.requiredBeforeSend,
+    // Provenance — only projected into the hash when present, so existing
+    // source-less gates keep a byte-identical canonical projection (back-compat).
+    ...(g.source !== undefined ? { source: g.source } : {}),
+    ...(g.sourceRuleId !== undefined ? { source_rule_id: g.sourceRuleId } : {}),
   }),
 });
 
@@ -105,6 +129,57 @@ export const actionGateGoldenVectors = [
         "Assign Product, Security, and Engineering owners.",
         "Pass the EU data residency EvalCase.",
       ],
+    } satisfies ActionGate,
+  },
+  {
+    name: "policy-auto-deny-from-learned-rule",
+    purpose:
+      "auto-verdict from a learned policy rule — carries source:policy + sourceRuleId (the PR-#20 replay decay step)",
+    input: {
+      id: "ag_pr20_replay",
+      caseId: "gc_pr20_dual_review",
+      action: "Merge PR#35 without dual reviewer approval",
+      verdict: "deny",
+      reasons: [
+        "Learned policy rule denies merging a pull request without both required reviewers approving.",
+      ],
+      requiredBeforeSend: [
+        "Obtain approval from both required reviewers before merging.",
+      ],
+      source: "policy",
+      sourceRuleId: "pr_rule_dual_review_v1",
+    } satisfies ActionGate,
+  },
+  {
+    name: "default-deny-fail-closed",
+    purpose:
+      "fail-closed verdict — policy store/gateway unreachable, so a consequential action defaults to deny with source:default-deny",
+    input: {
+      id: "ag_fail_closed",
+      caseId: "gc_store_unreachable",
+      action: "Force-push to a protected branch",
+      verdict: "deny",
+      reasons: [
+        "Policy store unreachable — failing closed on a consequential action.",
+      ],
+      requiredBeforeSend: [
+        "Restore policy store connectivity, then re-evaluate the action.",
+      ],
+      source: "default-deny",
+    } satisfies ActionGate,
+  },
+  {
+    name: "operator-ratified-allow",
+    purpose:
+      "operator-ratified allow — verdict allow with source:operator; proves source provenance does not alter derived allowance",
+    input: {
+      id: "ag_operator_allow",
+      caseId: "gc_pr20_dual_review",
+      action: "Merge PR#41 with both required reviewers approving",
+      verdict: "allow",
+      reasons: [],
+      requiredBeforeSend: [],
+      source: "operator",
     } satisfies ActionGate,
   },
 ];

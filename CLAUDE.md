@@ -1,3 +1,16 @@
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- ⛔⛔⛔  NO DEMO FLOWS. BUILD A REAL PRODUCT.  ⛔⛔⛔                          -->
+<!--                                                                          -->
+<!-- READ `DIRECTIVE.md` FIRST. Scripted / guided / click-through "demo flows" -->
+<!-- are FORBIDDEN and will NOT win. The output must be a REAL PRODUCT that    -->
+<!-- does real work on real data — not a narrated, pre-arranged experience.    -->
+<!-- This OVERRIDES any demo-path / "14-step" / DEMO_CONTRACT.md framing below. -->
+<!-- The test: could a stranger use this on THEIR data with no narrator and no  -->
+<!-- fixed sequence? If no → it's a demo flow → STOP and rebuild.               -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+
+> # ⛔ NO DEMO FLOWS — BUILD A REAL PRODUCT — see [`DIRECTIVE.md`](./DIRECTIVE.md) ⛔
+
 # CLAUDE.md — Liminal Engine — Agentic Work Governance MVP
 
 > Hackathon: Liminal Engine Governance Hack 2026

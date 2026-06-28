@@ -1,0 +1,16 @@
+{
+  "name": "@liminal-engine/eval-library",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./registry": "./src/registry.ts"
+  },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
