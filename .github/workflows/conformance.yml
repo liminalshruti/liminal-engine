@@ -25,10 +25,12 @@ jobs:
         run: pnpm test
       - name: App production build (catches bundle breaks tsc misses)
         run: pnpm --filter @liminal-engine/desktop-demo build
-      - name: Boundary lint (hexagonal + no live integrations on spine)
+      - name: Boundary lint (hexagonal — engine-core stays pure)
         run: pnpm lint:boundaries
-      - name: Spine guard (14 beats · 7 must-not-cut · no skipped tests)
-        run: node tools/check-spine-guard.mjs
+      # DIRECTIVE.md: the 14-beat demo flow is REFERENCE, not a gate. Spine-guard
+      # still runs for visibility but must NOT block real-product integration work.
+      - name: Spine guard (reference — 14 beats · 7 MNC · non-blocking)
+        run: node tools/check-spine-guard.mjs || echo "::warning::spine-guard reported drift (non-blocking per DIRECTIVE.md — demo flow is reference, not a gate)"
       - name: Goldens committed & up to date
         run: |
           pnpm regen:goldens
@@ -37,10 +39,12 @@ jobs:
             git --no-pager diff -- packages/contracts
             exit 1
           fi
-      - name: Conformance matrix present & filled
+      # DIRECTIVE.md: the DEMO_CONTRACT conformance matrix is reference, not a gate.
+      # Runs for visibility but must not block real-product PRs.
+      - name: Conformance matrix (reference — non-blocking)
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
-        run: node tools/check-conformance-matrix.mjs
+        run: node tools/check-conformance-matrix.mjs || echo "::warning::no conformance matrix (non-blocking per DIRECTIVE.md)"
       - name: Linear issue ID present
         env:
           BRANCH: ${{ github.head_ref }}
