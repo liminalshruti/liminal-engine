@@ -34,6 +34,9 @@ test("the live loop reproduces the locked Acme artifacts (UI == engine)", async 
   );
   // beat 11 — audit evidence
   assert.deepEqual(demo.auditEvent, acmeScenario.auditEvent);
+  // beat 11 — data-residency redacted ref is produced LIVE via the real redact()
+  // helper, byte-identical to the locked fixture (no raw fixture read on screen)
+  assert.deepEqual(demo.dataResidencyRef, acmeScenario.dataResidencyRef);
   // beat 12/14 — eval case + Fail → Pass
   assert.deepEqual(demo.evalCase, acmeScenario.evalCase);
   assert.deepEqual([...demo.evalResults], [acmeScenario.evalPass1, acmeScenario.evalPass2]);
