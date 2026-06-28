@@ -25,6 +25,21 @@ body {
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes screen-title-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
 .skip-link {
   position: absolute; top: var(--space-2, 8px); left: var(--space-2, 8px);
   z-index: 10; min-height: 44px; display: inline-flex; align-items: center;
@@ -226,25 +241,62 @@ button { touch-action: manipulation; }
   letter-spacing: 0.06em; text-transform: uppercase;
 }
 /* ── screen: GovernanceCase (beat #5 · MNC#2) ── */
-.case__headline { margin: 0 0 var(--space-4, 16px); font-size: 1.05rem; line-height: 1.45; }
-.case__headline strong { color: var(--alarm, #D98A7A); }
+.case__headline {
+  margin: 0 0 var(--space-4, 16px) 0;
+  font-family: var(--font-serif, serif);
+  font-size: var(--fs-2xl, 28px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--outreach, #31E682);
+  letter-spacing: 0;
+}
 .case__facts {
-  display: grid; grid-template-columns: max-content minmax(0, 1fr);
-  gap: var(--space-2, 8px) var(--space-4, 16px); margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--space-3, 12px) var(--space-4, 16px);
+  margin: 0;
+  padding-bottom: var(--space-4, 16px);
 }
 .case__fact { display: contents; }
 .case__fact dt {
-  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-faint, #8A8780); font-weight: 600; align-self: baseline;
+  font-size: var(--fs-eyebrow, 9px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint, #807D78);
+  font-weight: 600;
+  align-self: baseline;
 }
-.case__fact dd { margin: 0; font-size: 0.95rem; color: var(--text, #E8E6E1); }
-.case__evidence { margin-top: var(--space-4, 16px); }
+.case__fact dd {
+  margin: 0;
+  font-size: var(--fs-base, 15px);
+  color: var(--text, #F4F2EE);
+  line-height: var(--lh-normal, 1.45);
+}
+.case__evidence {
+  margin-top: var(--space-4, 16px);
+  padding-top: var(--space-4, 16px);
+  border-top: 1px solid var(--card-border-2, #2A2A2F);
+}
 .case__evidence-title {
-  margin: 0 0 var(--space-2, 8px); font-size: 0.72rem; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--text-faint, #8A8780); font-weight: 600;
+  margin: 0 0 var(--space-2, 8px);
+  font-size: var(--fs-eyebrow, 9px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint, #807D78);
+  font-weight: 600;
 }
-.case__evidence ul { margin: 0; padding-left: var(--space-5, 20px); }
-.case__evidence li { font-size: 0.95rem; color: var(--text, #E8E6E1); line-height: 1.5; }
+.case__evidence ul {
+  margin: 0;
+  padding-left: var(--space-5, 20px);
+  list-style: disc;
+}
+.case__evidence li {
+  font-size: var(--fs-base, 15px);
+  color: var(--text-soft, #B8B5AE);
+  line-height: var(--lh-normal, 1.45);
+  margin-bottom: var(--space-2, 8px);
+}
+.case__evidence li:last-child { margin-bottom: 0; }
 
 /* ── screen: EnforcementPanel ── */
 .screen--enforcement-panel { gap: var(--space-4, 16px); }
@@ -297,13 +349,20 @@ button { touch-action: manipulation; }
 
 /* ── components: Card ── */
 .card {
-  padding: var(--space-6, 32px); border: 1px solid var(--card-border, #232327);
-  border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
+  padding: var(--space-6, 32px);
+  border: 1px solid var(--card-border, #232327);
+  border-radius: var(--radius-3, 10px);
+  background: var(--frame-bg-2, #0C0C0F);
   margin-bottom: var(--space-6, 32px);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.35));
+  animation: fade-in-up var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
 }
 .card__title {
-  font-family: var(--font-display, var(--font-serif, serif)); font-size: 1.4rem;
-  line-height: 1.2; margin: 0 0 var(--space-4, 16px); color: var(--text, #E8E6E1);
+  font-family: var(--font-display, var(--font-serif, serif));
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 0 0 var(--space-4, 16px);
+  color: var(--text, #E8E6E1);
 }
 .card__content { color: var(--text-soft, #B8B5AE); }
 
