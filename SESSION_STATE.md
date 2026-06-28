@@ -44,6 +44,12 @@ fixture-determinism — all merged. `pnpm verify` green (typecheck + `typecheck:
 Depth UX merged: compiled-enforcement preview, 3-part blocked-action card,
 second-pass causal narration + before/after checks table.
 
+### In-flight quality work
+- **LIM-1244** (`agent/LIM-1244-quality-a11y-pass`) is a PR-only accessibility pass
+  for the desktop demo: keyboard skip/focus behavior, active-step semantics,
+  contrast-safe status/eval colors, 44px interactive targets, responsive wrapping,
+  and a focused `a11y-demo.test.ts` guard. Not merged on main yet.
+
 ### Open PRs (as of this write)
 - **#29** (allsmog, LIM-1236) — also fills GovernanceCase. Per founder call, beat
   #3 stays a clean false-green (#36 won AgentActivity), so #29 reshapes to

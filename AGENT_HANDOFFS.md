@@ -46,6 +46,55 @@ this first.
   because the richer call transcript is not a spine-safe fixture yet. If a
   transcript fixture lands in `@liminal-engine/contracts/fixtures`, use that as
   the source artifact without importing `packages/integrations/*`.
+## Session: LIM-1244 quality a11y pass (2026-06-28)
+
+**Did:**
+- Claimed LIM-1244 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1244` on branch
+  `agent/LIM-1244-quality-a11y-pass`.
+- Added keyboard and focus hardening to the demo shell: first-tab skip button,
+  active-step `aria-current`, labeled Back/Next controls, and focus handoff to the
+  current beat title only after the beat index changes.
+- Hardened shared demo semantics: hidden captions for eval tables, decorative dots
+  and alert icon hidden from assistive tech, and the simulated Linear payload marked
+  as a named region.
+- Updated desktop-demo CSS for visible focus rings, 44px interactive targets,
+  higher-contrast pass/fail/focus colors, responsive wrapping, and no nonzero
+  `letter-spacing` in the app stylesheet.
+- Added `apps/desktop-demo/src/a11y-demo.test.ts` to guard the keyboard/focus,
+  target-size, contrast, and table-caption requirements.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/a11y-demo.test.ts` green.
+- `pnpm typecheck:app` green.
+- `pnpm verify` green: root typecheck, app typecheck, 98 tests, boundary lint.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `./scripts/smoke.sh` green for automated tests; manual checklist printed.
+- `git diff --check` clean.
+- Local Vite served at `http://localhost:5174/`; the browser plugin was unavailable,
+  so I used headless Chrome probes. Confirmed first Tab reaches the skip button and
+  Space moves focus to the beat title. Longer CDP key-loop automation was unreliable,
+  so the committed guard test is the durable regression check.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no fixture rewrites; no persona
+  names.
+- Did not rewrite the existing GovernanceCase content stub because LIM-1244 owns the
+  cross-cutting accessibility pass, not MNC#2 content completion.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1244 PR for keyboard/focus/contrast acceptance and merge only after
+  normal reviewer gates pass.
+- Coordinate with the GovernanceCase-fill PR so the existing MNC#2 content stub is
+  removed by its owning work, not by this quality pass.
+
+**Risks / watch:**
+- The app remains a static click-through; the keyboard path is through the demo rail
+  and Back/Next controls. If a later PR turns Approve + Enforce into an actual
+  in-screen action, that new control should inherit the same focus and 44px target
+  rules.
 
 ---
 

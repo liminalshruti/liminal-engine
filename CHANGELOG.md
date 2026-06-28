@@ -14,6 +14,18 @@ All notable changes to scope, contract, and structure. Newest first.
   trace cards and missing-requirement evidence line from `acmeScenario`, proving
   `EU data residency` was present in the customer call but missing from the
   first-pass output. No contract, fixture, or golden changes.
+### Added — LIM-1244 quality a11y pass (2026-06-28)
+- `apps/desktop-demo/src/App.tsx` now has a keyboard-first skip button, active-step
+  `aria-current`, labeled Back/Next controls, and focus handoff to the current beat
+  title after navigation.
+- Desktop demo components now include hidden eval-table captions, decorative
+  status/eval dots and alert icons hidden from assistive tech, and a named simulated
+  Linear workstream region.
+- `apps/desktop-demo/src/styles/app.css` now guards visible focus, 44px control
+  targets, higher-contrast pass/fail/focus colors, responsive wrapping, and
+  zero letter spacing in the app stylesheet.
+- `apps/desktop-demo/src/a11y-demo.test.ts` locks keyboard/focus, target-size,
+  contrast, and caption guardrails for the demo UI.
 
 ### Added — LIM-1238 second-pass causal narration + checks table (2026-06-28)
 - `apps/desktop-demo/src/screens/SecondPassEval.tsx` now renders beats #12-#14
