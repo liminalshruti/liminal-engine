@@ -62,14 +62,14 @@ button { touch-action: manipulation; }
 }
 
 .app__bar {
-  display: flex; align-items: baseline; gap: var(--space-4, 16px);
+  display: flex; align-items: center; gap: var(--space-4, 16px);
   padding: var(--space-3, 12px) var(--space-5, 20px);
   background: var(--frame-bg, #0E0E11);
   border-bottom: 1px solid var(--card-border, #232327);
   height: 48px;
   flex-shrink: 0;
 }
-.app__brand { font-weight: 600; letter-spacing: 0; }
+.app__brand { font-weight: 600; letter-spacing: 0; font-size: 0.95rem; }
 .app__scenario { color: var(--text-faint, #8A8780); font-size: 0.85rem; }
 .app__loop {
   margin-left: auto; font-family: var(--mono, ui-monospace, monospace);
@@ -93,7 +93,8 @@ button { touch-action: manipulation; }
   background: transparent; border: 1px solid transparent; border-radius: var(--radius-2, 6px);
   color: var(--text-faint, #8A8780); cursor: pointer; font: inherit; font-size: 0.82rem;
   transition: background var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
-              color var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+              color var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
+              box-shadow var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .rail__step:hover {
   background: var(--frame-bg-2, #0C0C0F); color: var(--text, #E8E6E1);
@@ -371,7 +372,7 @@ button { touch-action: manipulation; }
 .enforcement-panel__approval {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
   gap: var(--space-5, 20px); padding: var(--space-5, 20px);
-  background: var(--frame-bg, #0E0E11); border: 1px solid var(--judgment-edge, rgba(233,0,149,0.42));
+  background: var(--frame-bg, #0E0E11); border: 1px solid var(--judgment-edge, rgba(201,169,97,0.30));
   border-radius: var(--radius-2, 6px);
 }
 .enforcement-panel__approval-copy { min-width: 0; }
@@ -383,6 +384,7 @@ button { touch-action: manipulation; }
 .enforcement-panel__status-flip {
   display: flex; align-items: center; gap: var(--space-3, 12px);
   padding: var(--space-3, 12px); background: var(--frame-bg-2, #0C0C0F);
+  border: 1px solid var(--judgment-edge, rgba(201,169,97,0.30));
   border-radius: var(--radius-2, 6px);
   border: 1px solid var(--card-border, #232327);
 }
@@ -393,10 +395,15 @@ button { touch-action: manipulation; }
 .enforcement-panel__arrow {
   color: var(--text-faint, #8A8780); font-family: var(--mono, monospace);
   font-size: 1.1rem; line-height: 1;
-  transition: color var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: color var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
+              opacity var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .enforcement-panel__approval.is-enforced .enforcement-panel__arrow {
   color: var(--text, #F4F2EE);
+}
+.enforcement-panel__status-flip.is-enforced .enforcement-panel__arrow {
+  color: var(--text, #E8E6E1);
+  opacity: 0.9;
 }
 .enforcement-panel__attempt {
   padding: var(--space-5, 20px); background: var(--frame-bg, #0E0E11);
@@ -420,31 +427,28 @@ button { touch-action: manipulation; }
   border: 1px solid var(--card-border-2, #2A2A2F); background: var(--frame-bg, #0E0E11);
   color: var(--text, #E8E6E1); cursor: pointer; font: inherit; font-size: 0.9rem;
   font-weight: 500;
-  transition: background var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
+  transition: background-color var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
               color var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
+              border-color var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
               transform var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .stage__nav button:hover:not(:disabled) {
-  background: var(--frame-bg-2, #0C0C0F);
-  color: var(--text, #E8E6E1);
+  background-color: var(--frame-bg-2, #0C0C0F);
+  border-color: var(--card-border, #232327);
+  transform: scale(1.02);
 }
 .stage__nav button:active:not(:disabled) {
   transform: scale(0.98);
 }
-.stage__nav button:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
+.stage__nav button:disabled { opacity: 0.35; cursor: not-allowed; }
 .stage__nav-primary {
-  background: var(--judgment, #E90095) !important;
-  color: var(--ink, #0F0F10) !important;
-  border-color: transparent !important;
-  font-weight: 600;
-  transition: background var(--tx-emphasize, 0.25s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
-              transform var(--tx-fast, 0.15s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+  background: var(--judgment, #C9A961) !important; color: var(--ink, #0F0F10) !important; border-color: transparent !important; font-weight: 600;
 }
 .stage__nav-primary:hover:not(:disabled) {
-  background: var(--judgment-strong, #BF0078) !important;
+  background: var(--judgment-600, #B8935D) !important;
+}
+.stage__nav-primary:active:not(:disabled) {
+  background: var(--judgment-700, #A6824C) !important;
 }
 
 /* ── components: Card ── */
@@ -477,7 +481,9 @@ button { touch-action: manipulation; }
   padding: var(--space-1, 4px) var(--space-3, 12px); border-radius: var(--radius-2, 6px);
   font-size: 0.9rem; font-weight: 600;
   transition: transform var(--tx-emphasize, 0.25s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)),
-              opacity var(--tx-emphasize, 0.25s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+              opacity var(--tx-emphasize, 0.25s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)));
+  transform: scale(1);
+  opacity: 1;
 }
 .status-badge--on-track {
   background: var(--synthesis-bg, rgba(123,168,140,0.12));
@@ -498,6 +504,19 @@ button { touch-action: manipulation; }
   to {
     opacity: 1;
     transform: scale(1.0);
+  }
+}
+.status-badge.is-new {
+  animation: statusBadgePopIn var(--tx-emphasize, 0.25s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes statusBadgePopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 .status-badge__dot {
