@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import { Workspace } from "./Workspace.tsx";
 import { ProxyConsole } from "./ProxyConsole.tsx";
+import "./styles/fonts.css"; // @font-face for the canonical Liminal type — load first
 import "./styles/design-tokens.css";
 import "./styles/app.css";
 import "./styles/error.css";
