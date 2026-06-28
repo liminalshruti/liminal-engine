@@ -32,11 +32,11 @@ export function AgentActivity() {
           <p className="dropped-requirement-compare__line">
             {sourceSegments.map((segment, index) =>
               segment.highlight ? (
-                <mark key={index} className="dropped-requirement-highlight">
+                <mark key={`${index}-${segment.text}`} className="dropped-requirement-highlight">
                   {segment.text}
                 </mark>
               ) : (
-                <span key={index}>{segment.text}</span>
+                <span key={`${index}-${segment.text}`}>{segment.text}</span>
               ),
             )}
           </p>
