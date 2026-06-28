@@ -72,15 +72,21 @@ body {
   padding: 2px 8px; border: 1px solid var(--amber-orn-edge, rgba(253,194,55,0.40)); border-radius: 999px;
 }
 .stage__title { font-family: var(--font-display, var(--font-serif, serif)); font-size: 2rem; line-height: 1.1; margin: 0 0 var(--space-3, 12px); }
-.stage__summary { font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.5; margin: 0 0 var(--space-6, 32px); }
-
-.stage__placeholder {
-  display: flex; flex-direction: column; gap: var(--space-2, 8px);
-  padding: var(--space-6, 32px); border: 1px dashed var(--card-border-2, #2A2A2F);
+/* ── stage: the per-beat screen mount (LIM-1226) ── */
+.stage__screen { margin-bottom: var(--space-6, 32px); }
+.screen {
+  display: flex; flex-direction: column; gap: var(--space-3, 12px);
+  padding: var(--space-6, 32px); border: 1px solid var(--card-border-2, #2A2A2F);
   border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
-  color: var(--text-faint, #8A8780); margin-bottom: var(--space-6, 32px);
 }
-.stage__placeholder-note { font-size: 0.8rem; opacity: 0.7; }
+.screen__intro { margin: 0; font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.5; }
+.screen__fact { margin: 0; font-size: 0.95rem; color: var(--text, #E8E6E1); line-height: 1.5; }
+.screen__fact strong { color: var(--judgment, #C9A961); }
+.screen__stub-note {
+  margin: var(--space-2, 8px) 0 0; font-size: 0.8rem; font-style: italic;
+  color: var(--text-faint, #8A8780);
+  border-top: 1px dashed var(--card-border-2, #2A2A2F); padding-top: var(--space-2, 8px);
+}
 
 .stage__nav { display: flex; gap: var(--space-3, 12px); margin-top: auto; }
 .stage__nav button {

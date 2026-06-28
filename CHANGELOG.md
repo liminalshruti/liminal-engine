@@ -6,6 +6,14 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1242 audit reconstruction test (2026-06-27)
+- `packages/governance/src/audit-reconstruction.ts` — verifies AuditEvent hash
+  chains by recomputing `sha256(prevHash + canonical_json(event))` and rebuilds a
+  GovernanceCase lifecycle from `beforeState`/`afterState` snapshots only.
+- `packages/governance/src/audit-reconstruction.test.ts` — locks the Acme case
+  reconstruction invariant (`open -> enforced -> closed`) and proves payload
+  tampering invalidates the chain. No contract or golden changes.
+
 ### Decided — demo-spine UI stack (2026-06-27)
 - **Demo-spine stack locked: React + Vite (SPA), styled against `liminal-prototype`
   CSS cuts.** Chosen over Solid/liminal-desktop continuity. Rationale: a throwaway
