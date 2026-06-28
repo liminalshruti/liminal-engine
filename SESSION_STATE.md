@@ -4,6 +4,21 @@ Current state of the build, right now. Keep this short and true. Reflects git/PR
 merge-state (the truth), not Linear status (a lagging cache — multiple sessions
 write the board concurrently, so it flaps).
 
+## As of: LIM-1339 design-foundation-governslate branch ready (2026-06-28)
+
+- **LIM-1339 branch:** `agent/LIM-1339-design-foundation-governslate` promotes
+  govern-slate tokens into `packages/ui-components/src/styles/govern-slate.css`
+  and leaves the app-local `design-tokens.css` as a compatibility import.
+- **Token coverage:** shared source now carries slate surfaces, governance-state
+  accents (`on-track`, `at-risk`, `blocked`, `forwarded`, `held`), type/font,
+  spacing/radius/elevation, focus, motion/reduced-motion, light/dark, and
+  presenter density variants.
+- **App consumption:** touched app CSS consumes token references only; no raw color
+  literals remain outside the shared token source. The 14-beat app wiring and
+  contracts/goldens are unchanged.
+- **Verification:** desktop-demo build, `pnpm verify` (515 tests + boundary lint),
+  `./scripts/smoke.sh`, and `git diff --check` are green.
+
 ## As of: LIM-1372 unbuilt real-product contracts + harnesses (2026-06-28)
 
 - **Worktree:** `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1372`

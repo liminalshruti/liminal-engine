@@ -5,6 +5,57 @@ this first.
 
 ---
 
+## Session: LIM-1339 design-foundation-governslate PR-ready (2026-06-28)
+
+**Did:**
+- Claimed LIM-1339 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1339` on branch
+  `agent/LIM-1339-design-foundation-governslate`.
+- Promoted the govern-slate token source to
+  `packages/ui-components/src/styles/govern-slate.css` with CSS package exports
+  `@liminal-engine/ui-components/govern-slate.css` and
+  `@liminal-engine/ui-components/design-tokens.css`.
+- Replaced the app-local `apps/desktop-demo/src/styles/design-tokens.css` with a
+  compatibility import of the shared package token source.
+- Added govern-slate aliases for slate chrome, governance states
+  (`on-track`, `at-risk`, `blocked`, `forwarded`, `held`), font/type scale,
+  spacing/radii/elevation, focus, motion durations/easings, reduced-motion,
+  light/dark theme, and presenter density.
+- Removed app CSS raw color fallbacks/literals in touched styling so app styles
+  consume tokens instead of local hardcoded colors.
+- Added LIM-1339 token tests for source-of-truth wiring, prototype/specimen parity
+  anchors, variants, and app CSS no-raw-color enforcement.
+- Fixed the existing demo-video informational test to use `t.diagnostic()` instead
+  of `console.log`, preserving the no-skip check while avoiding Node runner
+  serialization failure.
+
+**Verified:**
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `pnpm verify` green after rebase: typecheck, app typecheck, 515 tests, boundary
+  lint.
+- `./scripts/smoke.sh` green: automated test suite passed.
+- `git diff --check` clean.
+- No `packages/contracts` diff; Acme golden tests stayed byte-identical in
+  `pnpm verify`; no `App.tsx`, `steps.tsx`, or demo-path e2e changes.
+
+**Did NOT do (by design):**
+- No live integrations or demo-spine behavior changes.
+- No contract, fixture, or golden regeneration.
+- Did not merge the PR or mark Linear Done.
+
+**Next session should:**
+- Review the token migration diff for visual parity and CI.
+- Merge only after normal reviewer gates pass; then remove the worktree with
+  `pnpm wt:rm LIM-1339`.
+
+**Risks / watch:**
+- The styling diff is broad because raw fallback removal touched existing CSS
+  consumers. The added no-raw-color test should keep the app dependent on the
+  shared package token source.
+
+---
+
 ## Session: LIM-1372 unbuilt real-product contracts + harnesses (2026-06-28)
 
 **Did:**
