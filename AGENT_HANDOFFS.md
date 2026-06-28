@@ -5,6 +5,44 @@ this first.
 
 ---
 
+## Session: LIM-1238 second-pass causal table (2026-06-28)
+
+**Did:**
+- Claimed LIM-1238 in Linear, assigned it to Sean, moved it to In Progress, and
+  worked only in `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1238`
+  on branch `agent/LIM-1238-second-pass-causal-table`.
+- Replaced the `SecondPassEval` stub with fixture-backed rendering for beats
+  #12-#14: EvalCase generated, improved second-pass output, the exact causal
+  narration `failure observed -> rule activated -> second pass gated -> eval passed`,
+  the shared `EvalTable`, and an explicit per-check before/after table showing
+  `FAIL -> PASS`.
+- Added `SecondPassEval.model.ts` plus targeted tests for deterministic
+  criterion-grouped before/after rows.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/SecondPassEval.model.test.ts` green.
+- `pnpm typecheck:app` green.
+- `pnpm verify` green: root typecheck, app typecheck, 94 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- Vite served the app locally at `http://localhost:5174/`; in-app browser was
+  unavailable in this session, so visual DOM inspection was not available.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no persona names; no changes
+  outside the second-pass screen files plus required handoff docs.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1238 PR, then merge after the normal reviewer gates pass.
+- Watch for merge ordering with LIM-1221, which also owns `SecondPassEval.*`.
+
+**Risks / watch:**
+- The table is computed from `toRows([evalPass1, evalPass2])`, so richer future
+  eval fixtures will be grouped by criterion automatically.
+
+---
+
 ## Session: LIM-1235 3-part blocked-action card (2026-06-28)
 
 **Did:**

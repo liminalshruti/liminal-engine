@@ -6,6 +6,15 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1238 second-pass causal narration + checks table (2026-06-28)
+- `apps/desktop-demo/src/screens/SecondPassEval.tsx` now renders beats #12-#14
+  from Acme fixtures: EvalCase generated, improved second-pass output, causal
+  narration, the shared EvalTable, and an explicit per-check before/after table
+  showing `FAIL -> PASS`.
+- `apps/desktop-demo/src/screens/SecondPassEval.model.ts` computes deterministic
+  criterion-grouped before/after rows from eval-harness display rows. No contract,
+  golden, or live-integration changes.
+
 ### Added — LIM-1235 3-part blocked-action card (2026-06-28)
 - `apps/desktop-demo/src/components/BlockedActionBanner.tsx` now renders the
   blocked downstream customer update as an explicit 3-part card: `Not allowed`,
