@@ -209,6 +209,108 @@
       },
       "canonical_string": "{\"action\":\"push\",\"args\":{\"force\":true,\"ref\":\"main\"},\"id\":\"ia_git_force_push\",\"requested_at\":\"2026-06-27T10:01:00.000Z\",\"schema\":\"liminal_engine.intercepted_action.v1\",\"tool\":\"git\"}",
       "sha256": "6d8545bf10a191c5e5bb2df7707a6fda21ebc1dcc2e3afdd04894eebf2d83863"
+    },
+    "liminal_engine.requirement.v1::acme-eu-residency-active": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "an active hard requirement — approved + activated, governs the Acme surfaces",
+      "input": {
+        "id": "req_acme_eu_residency",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "All Acme EU customer data must remain resident in EU data centers.",
+        "ownerRole": "Security",
+        "severity": "hard",
+        "scope": [
+          "deal-proposal",
+          "launch-plan",
+          "owner-assignment",
+          "customer-facing-status-update"
+        ],
+        "status": "active",
+        "createdBy": "operator",
+        "approvedBy": "VP Ops / Head of AI Transformation",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "createdAt": "2026-06-27T09:55:00.000Z",
+        "activatedAt": "2026-06-27T10:05:00.000Z"
+      },
+      "canonical_string": "{\"activated_at\":\"2026-06-27T10:05:00.000Z\",\"approved_by\":\"VP Ops / Head of AI Transformation\",\"created_at\":\"2026-06-27T09:55:00.000Z\",\"created_by\":\"operator\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_eu_residency\",\"owner_role\":\"Security\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"deal-proposal\",\"launch-plan\",\"owner-assignment\",\"customer-facing-status-update\"],\"severity\":\"hard\",\"status\":\"active\",\"text\":\"All Acme EU customer data must remain resident in EU data centers.\"}",
+      "sha256": "e065e011639983d55824b873a36179bd2af6dda30ea4245d7b61801440ca606e"
+    },
+    "liminal_engine.requirement.v1::acme-dpa-proposed": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "a proposed candidate — surfaced by a proposal, awaiting operator approval",
+      "input": {
+        "id": "req_acme_dpa_countersign",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "Acme must counter-sign the Data Processing Agreement before EU launch.",
+        "ownerRole": "Legal",
+        "severity": "hard",
+        "scope": [
+          "launch-plan",
+          "owner-assignment"
+        ],
+        "status": "proposed",
+        "createdBy": "proposal",
+        "evidenceRefs": [
+          "dpa_acme_v3"
+        ],
+        "createdAt": "2026-06-27T10:06:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:06:00.000Z\",\"created_by\":\"proposal\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[\"dpa_acme_v3\"],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_dpa_countersign\",\"owner_role\":\"Legal\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"launch-plan\",\"owner-assignment\"],\"severity\":\"hard\",\"status\":\"proposed\",\"text\":\"Acme must counter-sign the Data Processing Agreement before EU launch.\"}",
+      "sha256": "4756ae83dedc656be426af532b6edb034284b734cc84952b7e1967cb8713dfa5"
+    },
+    "liminal_engine.requirement.v1::acme-comarketing-rejected": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "a rejected candidate — a soft proposal the operator declined as out of scope",
+      "input": {
+        "id": "req_acme_comarketing",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "Acme expansion must ship with a joint co-marketing press release.",
+        "ownerRole": "Marketing",
+        "severity": "soft",
+        "scope": [
+          "launch-plan"
+        ],
+        "status": "rejected",
+        "createdBy": "proposal",
+        "evidenceRefs": [],
+        "createdAt": "2026-06-27T10:07:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:07:00.000Z\",\"created_by\":\"proposal\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_comarketing\",\"owner_role\":\"Marketing\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"launch-plan\"],\"severity\":\"soft\",\"status\":\"rejected\",\"text\":\"Acme expansion must ship with a joint co-marketing press release.\"}",
+      "sha256": "8b1cff804e95333e7713a5093ba43b87ed324fcf7174e650004ffaaff5a1f289"
+    },
+    "liminal_engine.requirement_evidence.v1::acme-eu-residency-call": {
+      "schema": "liminal_engine.requirement_evidence.v1",
+      "purpose": "evidence the EU data residency requirement was stated on the kickoff call",
+      "input": {
+        "sourceId": "call_acme_kickoff",
+        "sourceType": "call-transcript",
+        "span": "00:12:30-00:12:58",
+        "quote": "All customer data for EU subsidiaries must remain in EU data centers; this is a contractual obligation.",
+        "hash": "550d305ae8408bec196d3cae7d5a9a0bc63b17bacc7b68160add3f6b024e45ee",
+        "capturedAt": "2026-06-27T09:45:00.000Z"
+      },
+      "canonical_string": "{\"captured_at\":\"2026-06-27T09:45:00.000Z\",\"hash\":\"550d305ae8408bec196d3cae7d5a9a0bc63b17bacc7b68160add3f6b024e45ee\",\"quote\":\"All customer data for EU subsidiaries must remain in EU data centers; this is a contractual obligation.\",\"schema\":\"liminal_engine.requirement_evidence.v1\",\"source_id\":\"call_acme_kickoff\",\"source_type\":\"call-transcript\",\"span\":\"00:12:30-00:12:58\"}",
+      "sha256": "ec9c0bdf35436216eb78772e85a885ebd77827eedfdd291a6f772962c488d5dd"
+    },
+    "liminal_engine.requirement_evidence.v1::acme-eu-residency-dpa": {
+      "schema": "liminal_engine.requirement_evidence.v1",
+      "purpose": "evidence the same requirement is codified in the signed DPA clause",
+      "input": {
+        "sourceId": "dpa_acme_v3",
+        "sourceType": "signed-contract",
+        "span": "Section 7.2",
+        "quote": "Processing of EU Personal Data shall occur solely within the European Economic Area.",
+        "hash": "2fbdb6b3ac952fb5b28317eba8114760b88f30c1237e4bf3542dd21b0c7d9023",
+        "capturedAt": "2026-06-27T09:50:00.000Z"
+      },
+      "canonical_string": "{\"captured_at\":\"2026-06-27T09:50:00.000Z\",\"hash\":\"2fbdb6b3ac952fb5b28317eba8114760b88f30c1237e4bf3542dd21b0c7d9023\",\"quote\":\"Processing of EU Personal Data shall occur solely within the European Economic Area.\",\"schema\":\"liminal_engine.requirement_evidence.v1\",\"source_id\":\"dpa_acme_v3\",\"source_type\":\"signed-contract\",\"span\":\"Section 7.2\"}",
+      "sha256": "c70ead2aae9e03042c52938ff017ad00537c8fa22692afa05e61161b32cbed04"
     }
   }
 }
