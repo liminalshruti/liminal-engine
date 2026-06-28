@@ -1,0 +1,75 @@
+name: Deploy live demo + deck to GitHub Pages
+
+# Click-to-present: builds the desktop demo (static, in-browser, deterministic
+# fixtures) + bundles the pitch deck and launch page, then publishes to Pages.
+# A judge or presenter just opens the URL — no clone, no setup.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deploy; don't cancel an in-progress run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the desktop demo (served under /liminal-engine/demo/ on Pages)
+        env:
+          VITE_BASE: /liminal-engine/demo/
+        run: pnpm --filter @liminal-engine/desktop-demo build
+
+      - name: Assemble the Pages site
+        run: |
+          set -eux
+          mkdir -p site/demo
+          # launch page + deck + presenter guide at the site root
+          cp pages/index.html site/index.html
+          cp pages/deck.html site/deck.html
+          cp pages/PRESENTER_GUIDE.md site/PRESENTER_GUIDE.md
+          # the built demo under /demo/
+          cp -R apps/desktop-demo/dist/* site/demo/
+          # backup demo video, if one has been committed (optional drop-in)
+          if [ -f demos/recordings/demo-backup.mp4 ]; then cp demos/recordings/demo-backup.mp4 site/demo-backup.mp4; fi
+          if [ -f demos/recordings/demo-backup.webm ]; then cp demos/recordings/demo-backup.webm site/demo-backup.webm; fi
+          # SPA fallback so deep links inside the demo resolve
+          cp site/demo/index.html site/demo/404.html || true
+          # disable Jekyll so files/dirs starting with _ are served verbatim
+          touch site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

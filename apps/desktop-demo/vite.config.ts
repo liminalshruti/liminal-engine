@@ -11,7 +11,14 @@ import react from "@vitejs/plugin-react";
 // with VITE_API_PROXY_TARGET when the api runs elsewhere.
 const apiProxyTarget = process.env.VITE_API_PROXY_TARGET ?? "http://localhost:3000";
 
+// Base path for asset URLs. Defaults to "/" for local dev + preview; the GitHub
+// Pages build sets VITE_BASE="/liminal-engine/" so assets resolve under the repo
+// sub-path. The demo runs entirely in-browser on deterministic fixtures, so it is
+// a fully static deploy — no server needed for the click-through.
+const base = process.env.VITE_BASE ?? "/";
+
 export default defineConfig({
+  base,
   plugins: [react()],
   server: {
     port: 5174,
