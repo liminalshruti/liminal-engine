@@ -612,6 +612,117 @@
       },
       "canonical_string": "{\"approval_context\":\"Enforce EU data residency requirement for Acme expansion\",\"approvals\":[],\"case_id\":\"gc_acme_eu\",\"created_at\":\"2026-06-27T10:03:00.000Z\",\"deal_id\":\"deal_acme\",\"gate_keeper\":\"VP Ops / Head of AI Transformation\",\"id\":\"ag_acme_eu\",\"policy_rule_id\":\"pr_acme_eu\",\"required_approvers\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.approval_gate.v1\",\"updated_at\":\"2026-06-27T10:03:00.000Z\"}",
       "sha256": "816332e03bf7528c1654aed5d7f572f2f7f659df0174f27b9faf91be5b0e4685"
+    },
+    "liminal_engine.operator_message.v1::correction-turn-with-context": {
+      "schema": "liminal_engine.operator_message.v1",
+      "purpose": "operator message sent from a selected item / current beat",
+      "input": {
+        "id": "om_1",
+        "text": "This dropped EU data residency — that's a hard requirement, don't mark it done.",
+        "at": "2026-06-28T10:00:00.000Z",
+        "context": {
+          "currentBeat": "detect",
+          "selectedItemId": "LIM-1187"
+        }
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:00:00.000Z\",\"context\":{\"current_beat\":\"detect\",\"selected_item_id\":\"LIM-1187\"},\"id\":\"om_1\",\"schema\":\"liminal_engine.operator_message.v1\",\"text\":\"This dropped EU data residency — that's a hard requirement, don't mark it done.\"}",
+      "sha256": "9ee8b5a4611e3750137c63b62325fa7337bc400481e95da0d7f72084c6fa31cf"
+    },
+    "liminal_engine.operator_message.v1::message-minimal": {
+      "schema": "liminal_engine.operator_message.v1",
+      "purpose": "minimal operator message — required fields only, no context",
+      "input": {
+        "id": "om_2",
+        "text": "What's still blocked?",
+        "at": "2026-06-28T10:01:00.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:01:00.000Z\",\"id\":\"om_2\",\"schema\":\"liminal_engine.operator_message.v1\",\"text\":\"What's still blocked?\"}",
+      "sha256": "40f1fa522bcb324b05c6a7f5394413405811b25afa108f4279480b70f7280333"
+    },
+    "liminal_engine.parsed_intent.v1::intent-correction": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "LLM reads a correction → CorrectionEvent draft, unratified",
+      "input": {
+        "kind": "correction",
+        "confidence": 0.92,
+        "args": {
+          "correction": "EU data residency is a hard requirement; honor it before any done.",
+          "caseId": "gc_acme_eu"
+        },
+        "proposedBy": "llm",
+        "ratified": false
+      },
+      "canonical_string": "{\"args\":{\"case_id\":\"gc_acme_eu\",\"correction\":\"EU data residency is a hard requirement; honor it before any done.\"},\"confidence\":0.92,\"kind\":\"correction\",\"proposed_by\":\"llm\",\"ratified\":false,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "826229585cc4ba874f5531a8ccadab4f5eebbc81fc2f4cab79f4ece5c0aab11e"
+    },
+    "liminal_engine.parsed_intent.v1::intent-verdict-disapprove": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "LLM reads a verdict on an intercept-queue item, unratified",
+      "input": {
+        "kind": "verdict",
+        "confidence": 0.81,
+        "args": {
+          "queueItemId": "ia_pr20_merge",
+          "decision": "disapprove"
+        },
+        "proposedBy": "llm",
+        "ratified": false
+      },
+      "canonical_string": "{\"args\":{\"decision\":\"disapprove\",\"queue_item_id\":\"ia_pr20_merge\"},\"confidence\":0.81,\"kind\":\"verdict\",\"proposed_by\":\"llm\",\"ratified\":false,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "ea775a0790b75932b3f4773087a7c4394dfd6f0b5ed7fbf8b4c7084c156af9cb"
+    },
+    "liminal_engine.parsed_intent.v1::intent-navigate-ratified": {
+      "schema": "liminal_engine.parsed_intent.v1",
+      "purpose": "navigate intent the operator has ratified",
+      "input": {
+        "kind": "navigate",
+        "confidence": 0.99,
+        "args": {
+          "target": "audit-ledger"
+        },
+        "proposedBy": "llm",
+        "ratified": true
+      },
+      "canonical_string": "{\"args\":{\"target\":\"audit-ledger\"},\"confidence\":0.99,\"kind\":\"navigate\",\"proposed_by\":\"llm\",\"ratified\":true,\"schema\":\"liminal_engine.parsed_intent.v1\"}",
+      "sha256": "69c56899f710e279385f030405671fdf908925e8ee516e1c784e08c5175b95cf"
+    },
+    "liminal_engine.assistant_reply.v1::reply-with-correction-intent": {
+      "schema": "liminal_engine.assistant_reply.v1",
+      "purpose": "reply carrying a proposed correction intent + audit citations",
+      "input": {
+        "id": "ar_1",
+        "messageId": "om_1",
+        "summary": "I read that as a correction on EU data residency. Ratify to compile it into a policy.",
+        "intent": {
+          "kind": "correction",
+          "confidence": 0.92,
+          "args": {
+            "correction": "EU data residency is a hard requirement; honor it before any done.",
+            "caseId": "gc_acme_eu"
+          },
+          "proposedBy": "llm",
+          "ratified": false
+        },
+        "citations": [
+          "ae_acme_1",
+          "gc_acme_eu"
+        ],
+        "at": "2026-06-28T10:00:02.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:00:02.000Z\",\"citations\":[\"ae_acme_1\",\"gc_acme_eu\"],\"id\":\"ar_1\",\"intent\":{\"args\":{\"case_id\":\"gc_acme_eu\",\"correction\":\"EU data residency is a hard requirement; honor it before any done.\"},\"confidence\":0.92,\"kind\":\"correction\",\"proposed_by\":\"llm\",\"ratified\":false},\"message_id\":\"om_1\",\"schema\":\"liminal_engine.assistant_reply.v1\",\"summary\":\"I read that as a correction on EU data residency. Ratify to compile it into a policy.\"}",
+      "sha256": "ba432a89637927cda17666251ec5b464d4bbec463595f9db58e5bceb6634f7fc"
+    },
+    "liminal_engine.assistant_reply.v1::reply-minimal": {
+      "schema": "liminal_engine.assistant_reply.v1",
+      "purpose": "minimal reply — no parsed intent, no citations",
+      "input": {
+        "id": "ar_2",
+        "messageId": "om_2",
+        "summary": "Two items are blocked on the policy-rule contract.",
+        "at": "2026-06-28T10:01:02.000Z"
+      },
+      "canonical_string": "{\"at\":\"2026-06-28T10:01:02.000Z\",\"id\":\"ar_2\",\"message_id\":\"om_2\",\"schema\":\"liminal_engine.assistant_reply.v1\",\"summary\":\"Two items are blocked on the policy-rule contract.\"}",
+      "sha256": "f25e94e614d114d021f8441c7faf0119ec05f2a026a532c108e74520d476993d"
     }
   }
 }

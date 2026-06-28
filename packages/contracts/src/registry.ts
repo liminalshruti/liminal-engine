@@ -18,6 +18,11 @@ import { REQUIREMENT_EVIDENCE_SCHEMA, requirementEvidenceContract, requirementEv
 import { POLICY_RULE_SCHEMA, policyRuleContract, policyRuleGoldenVectors } from "./policy-rule.contract.ts";
 import { ACTION_POLICY_RULE_SCHEMA, actionPolicyRuleContract, actionPolicyRuleGoldenVectors } from "./action-policy-rule.contract.ts";
 import { APPROVAL_GATE_SCHEMA, approvalGateContract, approvalGateGoldenVectors } from "./approval-gate.contract.ts";
+import {
+  OPERATOR_MESSAGE_SCHEMA, operatorMessageContract, operatorMessageGoldenVectors,
+  PARSED_INTENT_SCHEMA, parsedIntentContract, parsedIntentGoldenVectors,
+  ASSISTANT_REPLY_SCHEMA, assistantReplyContract, assistantReplyGoldenVectors,
+} from "./operator-nl.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -48,4 +53,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: POLICY_RULE_SCHEMA, contract: policyRuleContract, vectors: policyRuleGoldenVectors },
   { schema: ACTION_POLICY_RULE_SCHEMA, contract: actionPolicyRuleContract, vectors: actionPolicyRuleGoldenVectors },
   { schema: APPROVAL_GATE_SCHEMA, contract: approvalGateContract, vectors: approvalGateGoldenVectors },
+  { schema: OPERATOR_MESSAGE_SCHEMA, contract: operatorMessageContract, vectors: operatorMessageGoldenVectors },
+  { schema: PARSED_INTENT_SCHEMA, contract: parsedIntentContract, vectors: parsedIntentGoldenVectors },
+  { schema: ASSISTANT_REPLY_SCHEMA, contract: assistantReplyContract, vectors: assistantReplyGoldenVectors },
 ] as unknown as ContractEntry[];
