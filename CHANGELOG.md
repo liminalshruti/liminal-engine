@@ -6,6 +6,14 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1239 agent-activity trace cards (2026-06-28)
+- `apps/desktop-demo/src/screens/AgentActivity.tsx` now renders the beat #3
+  false-green output with fixture-backed per-agent trace cards showing which Acme
+  artifacts Product, Security, and Engineering agents used.
+- `apps/desktop-demo/src/screens/AgentActivityTrace.ts` plus tests derive the
+  trace cards and missing-requirement evidence line from `acmeScenario`, proving
+  `EU data residency` was present in the customer call but missing from the
+  first-pass output. No contract, fixture, or golden changes.
 ### Added — LIM-1244 quality a11y pass (2026-06-28)
 - `apps/desktop-demo/src/App.tsx` now has a keyboard-first skip button, active-step
   `aria-current`, labeled Back/Next controls, and focus handoff to the current beat
