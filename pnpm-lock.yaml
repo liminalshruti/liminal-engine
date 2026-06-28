@@ -26,6 +26,12 @@ importers:
       '@liminal-engine/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@liminal-engine/eval-harness':
+        specifier: workspace:*
+        version: link:../../packages/eval-harness
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../packages/governance
       react:
         specifier: ^18.3.1
         version: 18.3.1
