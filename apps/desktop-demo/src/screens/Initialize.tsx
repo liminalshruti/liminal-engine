@@ -16,6 +16,7 @@
  * stubbed panel, so nothing carries a "Simulated" badge — that label is reserved for
  * the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
+import "./Initialize.css";
 import { Card } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { OPERATOR_ROLE, SCREEN_COPY } from "../lib/copy.ts";
@@ -30,7 +31,10 @@ export function Initialize() {
     <section className="screen screen--initialize" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title={copy.title}>
+      <Card
+        title={copy.title}
+        className="initialize__workspace-card"
+      >
         <p className="screen__fact">
           Deal under governance: {agentOutputPass1.dealName}
         </p>
