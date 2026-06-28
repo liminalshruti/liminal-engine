@@ -234,6 +234,58 @@
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
     },
+    "liminal_engine.linear_remediation_issue.v1::acme-eu-residency-security-accountable": {
+      "schema": "liminal_engine.linear_remediation_issue.v1",
+      "purpose": "the accountable-owner remediation issue (Security owns EU data residency)",
+      "input": {
+        "title": "[Remediation] All Acme EU customer data must remain resident in EU data centers. — Security",
+        "requirementId": "req_acme_eu_residency",
+        "governanceCaseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "ownerRole": "Security",
+        "accountableOwner": true,
+        "severity": "hard",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "description": "Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\n\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\nOwner role: Security (accountable owner)\nDeal: deal_acme\nGovernanceCase: gc_acme_eu\nSeverity: hard\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\nEvidence: call_acme_kickoff, dpa_acme_v3",
+        "labels": [
+          "remediation",
+          "governance",
+          "severity:hard",
+          "owner:Security"
+        ]
+      },
+      "canonical_string": "{\"accountable_owner\":true,\"deal_id\":\"deal_acme\",\"description\":\"Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\\n\\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\\nOwner role: Security (accountable owner)\\nDeal: deal_acme\\nGovernanceCase: gc_acme_eu\\nSeverity: hard\\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\\nEvidence: call_acme_kickoff, dpa_acme_v3\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"governance_case_id\":\"gc_acme_eu\",\"labels\":[\"remediation\",\"governance\",\"severity:hard\",\"owner:Security\"],\"owner_role\":\"Security\",\"requirement_id\":\"req_acme_eu_residency\",\"schema\":\"liminal_engine.linear_remediation_issue.v1\",\"severity\":\"hard\",\"title\":\"[Remediation] All Acme EU customer data must remain resident in EU data centers. — Security\"}",
+      "sha256": "bbe0b39c4683c9dc6e8719b76c6c2b5d2cf7b43252e0d0196643fc7ae6be0107"
+    },
+    "liminal_engine.linear_remediation_issue.v1::acme-eu-residency-product-workstream": {
+      "schema": "liminal_engine.linear_remediation_issue.v1",
+      "purpose": "a required-workstream-owner remediation issue (Product), not the accountable owner",
+      "input": {
+        "title": "[Remediation] All Acme EU customer data must remain resident in EU data centers. — Product",
+        "requirementId": "req_acme_eu_residency",
+        "governanceCaseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "ownerRole": "Product",
+        "accountableOwner": false,
+        "severity": "hard",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "description": "Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\n\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\nOwner role: Product\nDeal: deal_acme\nGovernanceCase: gc_acme_eu\nSeverity: hard\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\nEvidence: call_acme_kickoff, dpa_acme_v3",
+        "labels": [
+          "remediation",
+          "governance",
+          "severity:hard",
+          "owner:Product"
+        ]
+      },
+      "canonical_string": "{\"accountable_owner\":false,\"deal_id\":\"deal_acme\",\"description\":\"Liminal Engine governance loop filed this remediation on enforcement of a violated hard active requirement.\\n\\nRequirement (req_acme_eu_residency): All Acme EU customer data must remain resident in EU data centers.\\nOwner role: Product\\nDeal: deal_acme\\nGovernanceCase: gc_acme_eu\\nSeverity: hard\\nScope: deal-proposal, launch-plan, owner-assignment, customer-facing-status-update\\nEvidence: call_acme_kickoff, dpa_acme_v3\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"governance_case_id\":\"gc_acme_eu\",\"labels\":[\"remediation\",\"governance\",\"severity:hard\",\"owner:Product\"],\"owner_role\":\"Product\",\"requirement_id\":\"req_acme_eu_residency\",\"schema\":\"liminal_engine.linear_remediation_issue.v1\",\"severity\":\"hard\",\"title\":\"[Remediation] All Acme EU customer data must remain resident in EU data centers. — Product\"}",
+      "sha256": "9bc60d4184d19a1ad3bf714bed89a0691b48b74448a207bf57dba8ea145bd457"
+    },
     "liminal_engine.intercepted_action.v1::pr20-merge-intercepted": {
       "schema": "liminal_engine.intercepted_action.v1",
       "purpose": "the PR-#20 replay action - gh pr-merge with split reviews, full provenance",

@@ -26,3 +26,4 @@ export * from "./policy-audit.ts"; // audit: policy verdict + rule lifecycle
 // orchestrator + the atomic Approve+Enforce handler
 export * from "./use-cases.ts"; // runGovernanceLoop
 export * from "./approve-enforce.ts";
+export * from "./remediation.ts"; // enforce: file Linear remediation issues (LIM-1335)

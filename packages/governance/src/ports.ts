@@ -10,6 +10,8 @@ import type {
   ActionGate,
   ActionGateDecision,
   EvalResult,
+  JsonObject,
+  LinearRemediationIssuePayload,
 } from "@liminal-engine/contracts";
 
 /** Source of agent output for a deal+pass (fixture stub, or live Gemini later). */
@@ -44,4 +46,42 @@ export interface LinearWorkstreamPanel {
   workstreams(dealId: string): Promise<{ title: string; status: string; owner: string }[]>;
   /** Owners the workstream requires (Product / Security / Engineering) — must-not-cut #4. */
   requiredOwners(): readonly string[];
+}
+
+/** A created (or, in dry-run, would-be-created) remediation issue reference. */
+export interface RemediationIssueRef {
+  /** the provider issue id (live) — never present in dry-run. */
+  readonly id: string;
+  /** the provider human identifier, e.g. "ENG-123" (live only). */
+  readonly identifier?: string;
+  /** the issue URL (live only). */
+  readonly url?: string;
+  readonly title: string;
+}
+
+/** The outcome of filing ONE remediation issue through the client port. */
+export interface RemediationIssueResult {
+  /** `dry-run` printed the payload without writing; `live` created a real issue. */
+  readonly mode: "dry-run" | "live";
+  /** the exact governance payload that was filed. */
+  readonly payload: LinearRemediationIssuePayload;
+  /**
+   * the exact provider request that was sent (live) or would be sent (dry-run) —
+   * a generic JsonObject so the application port carries no provider SDK types.
+   * This is the "exact Linear payload" a dry-run prints byte-for-byte.
+   */
+  readonly providerRequest: JsonObject;
+  /** the created issue — present ONLY in live mode. */
+  readonly created?: RemediationIssueRef;
+}
+
+/**
+ * RemediationIssueClient — the outbound port the remediation use case files
+ * issues through. The live Linear adapter (packages/integrations/linear) and its
+ * dry-run mode both implement it; the application never imports the concrete
+ * adapter (composition-root wiring only). Mirrors the LinearWorkstreamPanel
+ * boundary: dry-run/simulated by default, live only when explicitly opted in.
+ */
+export interface RemediationIssueClient {
+  create(payload: LinearRemediationIssuePayload): Promise<RemediationIssueResult>;
 }

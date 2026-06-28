@@ -3,3 +3,4 @@ export * from "./scope.ts";
 export * from "./policy-engine.ts";
 export * from "./escalation-metric.ts";
 export * from "./narrow-policy.ts";
+export * from "./nl-query.ts";

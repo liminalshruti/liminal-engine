@@ -1,0 +1,22 @@
+{
+  "issues": [
+    {
+      "identifier": "ACME-1",
+      "title": "Confirm EU-only storage region",
+      "description": "Acme requires EU customer data to remain in EU data centers. Confirm EU-only storage before go-live.",
+      "state": "todo"
+    },
+    {
+      "identifier": "ACME-2",
+      "title": "Update SOW with data residency clause",
+      "description": "The statement of work currently defaults storage to US and omits the EU residency guarantee.",
+      "state": "todo"
+    },
+    {
+      "identifier": "ACME-3",
+      "title": "Assign Product/Security/Engineering owners",
+      "description": "EU data residency readiness needs named owners across Product, Security, and Engineering.",
+      "state": "todo"
+    }
+  ]
+}
