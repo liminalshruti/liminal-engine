@@ -26,7 +26,9 @@ import type {
   EvalResult,
   AgentOutput,
   LinearWorkstreamPayload,
+  RedactedRef,
 } from "@liminal-engine/contracts";
+import { redact } from "@liminal-engine/contracts";
 import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";
 import {
   runGovernanceLoop,
@@ -69,6 +71,13 @@ export interface GovernanceDemo {
   gatedAction: string;
   /** beat 11: the recorded audit evidence. */
   auditEvent: AuditEvent;
+  /**
+   * beat 11 (data-residency proof): a LIVE-produced redacted reference for the
+   * sensitive customer claim — computed here via the real `redact()` helper (same
+   * canonical-hash the audit ledger seals with), NOT read from a raw fixture. Proves
+   * sensitive data is stored by hash/reference, never raw (LIM-1248 / LIM-1201).
+   */
+  dataResidencyRef: RedactedRef;
   /** beat 12: the eval case the second pass is graded against. */
   evalCase: EvalCase;
   /** beat 14: Fail (pass 1) → Pass (pass 2). */
@@ -127,6 +136,12 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
   const gateDecision = await actionGateStore.decisionFor(GATED_CUSTOMER_ACTION);
   const evalResults = await runEvals(evalStore, DEAL_ID);
 
+  // beat 11 (data-residency proof): produce the redacted reference LIVE via the real
+  // `redact()` helper — the same canonical-hash the audit ledger seals snapshots with
+  // — over the sensitive claim carried in the loop's pass-1 agent output. No raw
+  // fixture read; deterministic (pure hash), so it reproduces the locked ref.
+  const dataResidencyRef = redact(acmeScenario.agentOutputPass1.summary, "customer-claim");
+
   return {
     dealId: DEAL_ID,
     businessGoal: acmeScenario.businessGoal,
@@ -141,6 +156,7 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
     gateDecision,
     gatedAction: GATED_CUSTOMER_ACTION,
     auditEvent,
+    dataResidencyRef,
     evalCase,
     evalResults,
     evalRows: toRows(evalResults),
