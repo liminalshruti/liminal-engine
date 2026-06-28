@@ -50,6 +50,8 @@ jobs:
           cp pages/index.html site/index.html
           cp pages/deck.html site/deck.html
           cp pages/PRESENTER_GUIDE.md site/PRESENTER_GUIDE.md
+          # brand fonts for the deck's @font-face (deck.html references ./fonts/)
+          mkdir -p site/fonts && cp pages/fonts/*.otf site/fonts/
           # the built demo under /demo/
           cp -R apps/desktop-demo/dist/* site/demo/
           # backup demo video, if one has been committed (optional drop-in)
