@@ -57,13 +57,52 @@ Initialize workspace
 
 ## Run instructions
 
-> _Placeholder — fill in once `apps/desktop-demo` has a runnable entry point._
+**Prerequisites:** Node `>=22.6.0` and `pnpm@11.1.2` (pinned via `packageManager`).
 
 ```bash
-# TODO: install
-# TODO: run dev server
-# TODO: ./scripts/smoke.sh   # build/test + manual demo checklist
+pnpm install                  # install workspace deps
+
+pnpm --filter @liminal-engine/desktop-demo dev
+                              # start the demo (Vite dev server) → open the printed localhost URL
+                              # walk the 14-step Acme false-green path in order
+
+pnpm verify                   # typecheck + typecheck:app + tests + boundary lint (the full gate)
+pnpm smoke                    # build/test + print the manual demo checklist
 ```
+
+`pnpm verify` is the proof gate: it typechecks every package and the app `.tsx`,
+runs the contract + engine + determinism tests, and enforces the architecture
+boundary rules (the demo spine cannot import live integrations). A green
+`verify` means the loop is correct and **deterministic** — re-running produces
+byte-identical artifacts, so the demo cannot flake on live calls.
+
+To serve a production build instead of the dev server:
+
+```bash
+pnpm --filter @liminal-engine/desktop-demo build
+pnpm --filter @liminal-engine/desktop-demo preview
+```
+
+## What to look for (judge walkthrough)
+
+The demo is **one locked story** — the Acme false-green — walked in order. Each
+beat is a visible screen state; the full path is under 3 minutes. The engine
+output feeding the screens is the *real* `runGovernanceLoop` result, not raw
+fixtures (single source of truth — see `apps/desktop-demo/src/lib/governance-demo.ts`).
+
+| # | Beat | Screen | What it proves |
+|---|------|--------|----------------|
+| 1–2 | Initialize + business goal (`Close Acme expansion — $1.2M ARR`) | `Initialize` | observe |
+| 3–4 | Agent output reads "on track"; the dropped **EU data-residency** requirement is revealed | `ContextTray` → `AgentActivity` | the false green + the silent miss |
+| 5 | `GovernanceCase` flags the dropped requirement with evidence | `GovernanceCase` | detect (MNC#2) |
+| 6–7 | Operator clicks **Approve + Enforce**; status flips **On Track → At Risk** | `EnforcementPanel` | correct + enforce (MNC#3) |
+| 8–9 | Simulated Linear workstream appears, requiring Product / Security / Engineering owners | `EnforcementPanel` | enforce (MNC#4) |
+| 10 | A false customer-facing "on track" update is **blocked** until corrected | `EnforcementPanel` | the action gate (MNC#5) |
+| 11 | `AuditEvent` recorded (correction + deciding actor), on a tamper-evident hash chain | `AuditTrail` | audit (MNC#6) |
+| 12–14 | `EvalCase` generated; second pass re-runs under the gate; eval table shows **Fail → Pass** | `SecondPassEval` | improve (MNC#7) |
+
+Full beat→file map: `TRACEABILITY_MATRIX.md`. Rubric→thesis→beat map:
+`JUDGING_MAP.md`. The locked path + must-not-cut list: `DEMO_CONTRACT.md`.
 
 ## Judging / demo notes
 
