@@ -3,7 +3,11 @@
  * actions are blocked by an open governance case. Implements
  * @liminal-engine/governance's ActionGateStore.
  */
-import { type ActionGate, isAllowed } from "@liminal-engine/contracts";
+import {
+  actionGateDecision,
+  type ActionGate,
+  type ActionGateDecision,
+} from "@liminal-engine/contracts";
 import type { ActionGateStore } from "@liminal-engine/governance";
 
 export class InMemoryActionGateStore implements ActionGateStore {
@@ -13,11 +17,15 @@ export class InMemoryActionGateStore implements ActionGateStore {
     this.gates.set(gate.id, gate);
   }
 
-  async isBlocked(action: string): Promise<boolean> {
+  async decisionFor(action: string): Promise<ActionGateDecision> {
     for (const g of this.gates.values()) {
-      // a gate with any reasons is not allowed ⇒ the action is blocked
-      if (g.action === action && !isAllowed(g)) return true;
+      const decision = actionGateDecision(g);
+      if (g.action === action && !decision.allowed) return decision;
     }
-    return false;
+    return {
+      allowed: true,
+      reasons: [],
+      requiredBeforeSend: [],
+    };
   }
 }

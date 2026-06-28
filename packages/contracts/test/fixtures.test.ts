@@ -12,6 +12,7 @@ import { governanceCaseContract } from "../src/governance-case.contract.ts";
 import { enforcementActionContract } from "../src/enforcement-action.contract.ts";
 import { auditEventContract } from "../src/audit-event.contract.ts";
 import { actionGateContract } from "../src/action-gate.contract.ts";
+import { actionGateDecision } from "../src/action-gate.contract.ts";
 import { evalCaseContract } from "../src/eval-case.contract.ts";
 import { evalResultContract } from "../src/eval-result.contract.ts";
 import { linearWorkstreamPayloadContract } from "../src/linear-workstream-payload.contract.ts";
@@ -56,10 +57,13 @@ test("must-not-cut #4: simulated Linear workstream requires Product/Security/Eng
 });
 
 test("must-not-cut #5: a downstream customer action is blocked until corrected", () => {
-  // gated ⇒ has at least one reason (and is therefore not allowed)
-  assert.ok(acmeScenario.blockedAction.reasons.length > 0);
-  assert.ok(acmeScenario.blockedAction.requiredBeforeSend.length > 0);
+  const decision = actionGateDecision(acmeScenario.blockedAction);
+  assert.equal(decision.allowed, false);
+  assert.equal("blocked" in acmeScenario.blockedAction, false);
+  assert.equal("allowed" in acmeScenario.blockedAction, false);
   assert.equal(acmeScenario.blockedAction.caseId, acmeScenario.governanceCase.id);
+  assert.ok(decision.reasons.some((reason) => reason.includes("EU data residency")));
+  assert.ok(decision.requiredBeforeSend.some((item) => item.includes("EvalCase")));
 });
 
 test("must-not-cut #6: AuditEvent records the correction + deciding actor and the flip", () => {
