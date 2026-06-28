@@ -15,7 +15,7 @@
 const NOT_TEST = "\\.(test|spec)\\.ts$";
 const SPINE = "^packages/(engine-core|governance|eval-harness|ui-components)/";
 
-// The LIVE integrations the demo must never call (DEMO_CONTRACT cut-if-risky).
+// The LIVE integrations the demo spine must never call (DEMO_CONTRACT cut-if-risky).
 // The OTHER integrations (in-memory fixture stores + the deterministic clock/idgen)
 // are fixture-backed and ARE allowed at the apps/ composition root so the app can
 // run the real governance loop over them (LIM-1245 — UI renders real loop output,

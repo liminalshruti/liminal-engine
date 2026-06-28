@@ -1,0 +1,235 @@
+/* ContextTray screen styling (LIM-1237 — evidence badges + cited-in-case/audit).
+ *
+ * Screen-scoped because the shared app.css is owned elsewhere; this file stays inside
+ * the ContextTray.* ownership fence. It only REFERENCES the canonical design tokens
+ * (design-tokens.css) via var(--*) with the same fallbacks app.css uses — it never
+ * redefines a token or inlines a style (apps/desktop-demo/AGENTS.md Locked Rule #6).
+ */
+
+/* ── legend ── */
+.context-tray__legend {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-faint, #8A8780);
+}
+.context-tray__legend-tag {
+  color: var(--text-soft, #B8B5AE);
+  font-weight: 600;
+}
+
+/* ── card grid ── */
+.context-tray__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4, 16px);
+}
+
+/* The context card composes the shared Card widget; tighten its default spacing and
+ * make it a flex column so the citation row pins to the bottom for an even grid. */
+.context-card.card {
+  margin-bottom: 0;
+  padding: var(--space-5, 20px);
+  display: flex;
+  flex-direction: column;
+}
+.context-card .card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  height: 100%;
+}
+
+/* ── card head: title + provenance tags ── */
+.context-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2, 8px);
+}
+.context-card__title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text, #E8E6E1);
+}
+.context-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 4px);
+}
+
+/* source-type tag — the IDEAS.md "source type" affordance. Mono so it reads as a type. */
+.context-card__type {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: var(--radius-1, 4px);
+  color: var(--text-soft, #B8B5AE);
+  background: var(--frame-bg, #0E0E11);
+  border: 1px solid var(--card-border, #232327);
+}
+/* provenance tag — the "live-stream vs pinned" affordance. */
+.context-card__capture {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-1, 4px);
+  color: var(--text-faint, #8A8780);
+  background: var(--frame-bg-2, #0C0C0F);
+  border: 1px solid var(--card-border-2, #2A2A2F);
+}
+/* simulated badge — mirrors the linear-payload simulated badge (watch/amber). */
+.context-card__simulated {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-1, 4px);
+  color: var(--watch, #FEC125);
+  background: var(--watch-bg, rgba(254, 193, 37, 0.12));
+  border: 1px solid var(--watch-edge, rgba(254, 193, 37, 0.30));
+}
+
+/* ── evidence badge ── */
+.context-card__evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border-radius: var(--radius-2, 6px);
+  background: var(--frame-bg, #0E0E11);
+  border: 1px solid var(--card-border, #232327);
+  border-left: 3px solid var(--card-border-2, #2A2A2F);
+}
+/* the cards where the load-bearing requirement actually lived (or was dropped) get an
+ * amber accent so the #4 reveal is legible at a glance. */
+.context-card__evidence--requirement {
+  border-left-color: var(--watch, #FEC125);
+  background: var(--watch-bg, rgba(254, 193, 37, 0.08));
+}
+.context-card__evidence-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--text-faint, #8A8780);
+}
+.context-card__evidence-text {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text-soft, #B8B5AE);
+}
+
+/* ── card body ── */
+.context-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+.context-card__detail {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text-soft, #B8B5AE);
+}
+.context-card__status {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  font-size: 0.85rem;
+  color: var(--text-faint, #8A8780);
+}
+.context-card__trace {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.context-card__trace--warn {
+  color: var(--watch, #FEC125);
+}
+.context-card__trace--green {
+  color: var(--synthesis, #7BA88C);
+}
+
+/* ── cited-in-case/audit indicators ── */
+.context-card__citations {
+  margin: var(--space-1, 4px) 0 0;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+  padding-top: var(--space-3, 12px);
+  border-top: 1px solid var(--card-border-2, #2A2A2F);
+}
+.context-card__cite {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  font-size: 0.78rem;
+}
+.context-card__cite-mark {
+  text-align: center;
+  font-weight: 700;
+}
+.context-card__cite-label {
+  color: var(--text-soft, #B8B5AE);
+}
+.context-card__cite-verdict {
+  justify-self: end;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.66rem;
+}
+.context-card__cite-ref {
+  grid-column: 2 / -1;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  color: var(--text-faint, #8A8780);
+}
+/* cited → affirmative (matches the app's positive/on-track register). */
+.context-card__cite--yes .context-card__cite-mark,
+.context-card__cite--yes .context-card__cite-verdict {
+  color: var(--synthesis, #7BA88C);
+}
+/* not cited → muted (informational, not an error). */
+.context-card__cite--no .context-card__cite-mark,
+.context-card__cite--no .context-card__cite-verdict {
+  color: var(--text-faint, #8A8780);
+}
+
+/* ── beat #4 reveal callout ── */
+.context-tray__reveal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: var(--space-4, 16px) var(--space-5, 20px);
+  border-radius: var(--radius-2, 6px);
+  background: var(--watch-bg, rgba(254, 193, 37, 0.10));
+  border: 1px solid var(--watch-edge, rgba(254, 193, 37, 0.30));
+  border-left: 3px solid var(--watch, #FEC125);
+}
+.context-tray__reveal-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--watch, #FEC125);
+}
+.context-tray__reveal-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-soft, #B8B5AE);
+}
+.context-tray__reveal-text strong {
+  color: var(--text, #E8E6E1);
+}

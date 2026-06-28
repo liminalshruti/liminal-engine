@@ -14,11 +14,11 @@
  * `Card`; framing copy comes from `../lib/copy.ts`.
  */
 import { Card, TraceRow } from "../components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function AuditTrail() {
-  const { auditEvent } = acmeScenario;
+  const { auditEvent } = useDemo();
   const copy = SCREEN_COPY.auditTrail;
   // The demo records one correction event; the trail is append-only, so render as a list.
   const events = [auditEvent];

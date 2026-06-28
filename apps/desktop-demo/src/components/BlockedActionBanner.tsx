@@ -28,7 +28,7 @@ export function BlockedActionBanner({ gate, className }: BlockedActionBannerProp
       role="alert"
       aria-labelledby={headingId}
     >
-      <div className="blocked-action-banner__icon">
+      <div className="blocked-action-banner__icon" aria-hidden="true">
         <span className="blocked-action-banner__icon-symbol" aria-hidden="true">!</span>
       </div>
       <div className="blocked-action-banner__content">

@@ -8,24 +8,22 @@
  * THE CLOSER — the beat that proves the thesis: governance caught the miss, enforced
  * correction, and the graded re-run flips Fail → Pass.
  *
- * All demo facts come ONLY from the validated Acme fixtures
- * (`@liminal-engine/contracts/fixtures`) — no live calls, no invented data
- * (apps/desktop-demo/AGENTS.md Locked Rules; fixtures-only per Decision D1-a, with
- * LIM-1245 re-pointing to live runEvals output later). Eval rows are built with
- * `toRows()` from the eval-harness; framing copy from `../lib/copy.ts`; widgets from
- * `../components`.
+ * Demo facts come from the LIVE governance loop via `useDemo()` (LIM-1255) — the
+ * screen renders `runGovernanceLoop`/`runEvals` output, byte-identical to the locked
+ * Acme fixtures by determinism (no live calls, no invented data; AGENTS.md Locked
+ * Rules). Eval rows come from `demo.evalRows`; framing copy from `../lib/copy.ts`;
+ * widgets from `../components`.
  */
 import type { EvalRow } from "@liminal-engine/eval-harness";
 import { Card, EvalTable, StatusBadge } from "../components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
-import { toRows } from "@liminal-engine/eval-harness";
+import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 import { toBeforeAfterCheckRows } from "./SecondPassEval.model.ts";
 
 function EvalResultBadge({ result }: { result: EvalRow["result"] }) {
   return (
     <span className="eval-table__result-badge">
-      <span className={`eval-table__result-dot eval-table__result-dot--${result}`} />
+      <span className={`eval-table__result-dot eval-table__result-dot--${result}`} aria-hidden="true" />
       <span className="eval-table__result-label">{result.toUpperCase()}</span>
     </span>
   );
@@ -35,15 +33,22 @@ export function SecondPassEval() {
   const {
     agentOutputPass1,
     agentOutputPass2,
-    blockedAction,
+    gate,
     enforcementAction,
     evalCase,
-    evalPass1,
-    evalPass2,
+    evalResults,
+    evalRows,
     governanceCase,
-  } = acmeScenario;
+  } = useDemo();
   const copy = SCREEN_COPY.secondPassEval;
-  const rows = toRows([evalPass1, evalPass2]);
+  // evalResults is [pass 1 (fail), pass 2 (pass)] from the live loop — same order as the fixtures.
+  const [evalPass1, evalPass2] = evalResults;
+  const rows = evalRows;
+  // The Fail→Pass proof (MNC#7) requires exactly the two graded passes; surface a
+  // wiring/loop error loudly rather than render a half-empty proof.
+  if (!evalPass1 || !evalPass2) {
+    throw new Error("SecondPassEval expects two eval results (Fail→Pass); the loop returned fewer.");
+  }
   const beforeAfterRows = toBeforeAfterCheckRows(rows);
   const causalNarration = "failure observed -> rule activated -> second pass gated -> eval passed";
 
@@ -89,7 +94,7 @@ export function SecondPassEval() {
             {enforcementAction.toStatus}.
           </li>
           <li className="screen__fact">
-            second pass gated: {blockedAction.id} requires the correction work before the customer-facing update can send.
+            second pass gated: {gate.id} requires the correction work before the customer-facing update can send.
           </li>
           <li className="screen__fact">
             eval passed: pass {evalPass2.passNumber} evaluated the same check as{" "}
@@ -106,6 +111,9 @@ export function SecondPassEval() {
       <Card title="Per-check before/after">
         <div className="eval-table" aria-label="Before and after checks table">
           <table className="eval-table__table">
+            <caption className="sr-only">
+              Before and after eval checks showing each criterion moving from fail to pass.
+            </caption>
             <thead>
               <tr>
                 <th className="eval-table__th eval-table__th--criterion">Check</th>

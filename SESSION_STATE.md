@@ -4,6 +4,24 @@ Current state of the build, right now. Keep this short and true. Reflects git/PR
 merge-state (the truth), not Linear status (a lagging cache — multiple sessions
 write the board concurrently, so it flaps).
 
+## As of: LIM-1239 agent-activity trace cards branch ready (2026-06-28)
+
+- **LIM-1239 branch:** `agent/LIM-1239-agent-activity-trace-cards` upgrades
+  `AgentActivity` with fixture-backed per-agent trace cards for Product,
+  Security, and Engineering roles plus a visible missing-requirement evidence
+  line.
+- **Demo path impact:** beat #3 / MNC#1 still shows the false-green claim
+  `Acme expansion appears on track`, now with artifact trace cards showing the
+  Acme goal/workstream artifacts each agent used and the explicit evidence that
+  `EU data residency` was present in the customer call but missing from the
+  first-pass output.
+- **Verification:** focused trace tests, app typecheck, desktop-demo production
+  build, `pnpm verify` (100/100 tests + boundary lint), and `./scripts/smoke.sh`
+  automated checks are green.
+- **No contract drift:** no contract, fixture, or golden changes; no live calls
+  on the demo spine; no invented persona name.
+
+## As of: LIM-1238 second-pass causal table branch ready (2026-06-28)
 ## As of 2026-06-28 — demo spine 6 of 7 screens on main
 
 ### Backend / engine — complete on main
@@ -25,6 +43,12 @@ fixture-determinism — all merged. `pnpm verify` green (typecheck + `typecheck:
 
 Depth UX merged: compiled-enforcement preview, 3-part blocked-action card,
 second-pass causal narration + before/after checks table.
+
+### In-flight quality work
+- **LIM-1244** (`agent/LIM-1244-quality-a11y-pass`) is a PR-only accessibility pass
+  for the desktop demo: keyboard skip/focus behavior, active-step semantics,
+  contrast-safe status/eval colors, 44px interactive targets, responsive wrapping,
+  and a focused `a11y-demo.test.ts` guard. Not merged on main yet.
 
 ### Open PRs (as of this write)
 - **#29** (allsmog, LIM-1236) — also fills GovernanceCase. Per founder call, beat

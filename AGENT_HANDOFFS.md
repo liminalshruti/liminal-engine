@@ -5,6 +5,99 @@ this first.
 
 ---
 
+## Session: LIM-1239 agent-activity trace cards (2026-06-28)
+
+**Did:**
+- Claimed LIM-1239 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1239` on branch
+  `agent/LIM-1239-agent-activity-trace-cards`.
+- Replaced the `AgentActivity` stub with fixture-backed beat #3 rendering:
+  the false-green `Acme expansion appears on track` claim, On Track status badge,
+  first-pass summary, per-agent trace cards, and an explicit missing-requirement
+  evidence line.
+- Added `AgentActivityTrace.ts` and focused tests so the trace cards are derived
+  from `acmeScenario` artifacts, prove the `EU data residency` requirement was
+  present in the customer call but missing from the first-pass output, and fail
+  closed on fixture drift.
+- Added scoped CSS for the AgentActivity trace-card grid and evidence line. No
+  contract, fixture, golden, live integration, or persona-name changes.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/AgentActivityTrace.test.ts` green
+  (6 tests).
+- `pnpm --filter @liminal-engine/desktop-demo typecheck` green.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `pnpm verify` green: root typecheck, app typecheck, 100 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live Gemini/Linear/LiveKit calls; no invented
+  persona names.
+- Did not merge or move Linear to Done.
+
+**Next session should:**
+- Review the LIM-1239 PR alongside the overlapping LIM-1217/LIM-1236
+  AgentActivity PRs and merge in an order that preserves the false-green base,
+  inline dropped-requirement highlight, and these trace cards.
+
+**Risks / watch:**
+- The app-safe source artifact is derived from `agentOutputPass1.dealName`
+  because the richer call transcript is not a spine-safe fixture yet. If a
+  transcript fixture lands in `@liminal-engine/contracts/fixtures`, use that as
+  the source artifact without importing `packages/integrations/*`.
+## Session: LIM-1244 quality a11y pass (2026-06-28)
+
+**Did:**
+- Claimed LIM-1244 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1244` on branch
+  `agent/LIM-1244-quality-a11y-pass`.
+- Added keyboard and focus hardening to the demo shell: first-tab skip button,
+  active-step `aria-current`, labeled Back/Next controls, and focus handoff to the
+  current beat title only after the beat index changes.
+- Hardened shared demo semantics: hidden captions for eval tables, decorative dots
+  and alert icon hidden from assistive tech, and the simulated Linear payload marked
+  as a named region.
+- Updated desktop-demo CSS for visible focus rings, 44px interactive targets,
+  higher-contrast pass/fail/focus colors, responsive wrapping, and no nonzero
+  `letter-spacing` in the app stylesheet.
+- Added `apps/desktop-demo/src/a11y-demo.test.ts` to guard the keyboard/focus,
+  target-size, contrast, and table-caption requirements.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/a11y-demo.test.ts` green.
+- `pnpm typecheck:app` green.
+- `pnpm verify` green: root typecheck, app typecheck, 98 tests, boundary lint.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `./scripts/smoke.sh` green for automated tests; manual checklist printed.
+- `git diff --check` clean.
+- Local Vite served at `http://localhost:5174/`; the browser plugin was unavailable,
+  so I used headless Chrome probes. Confirmed first Tab reaches the skip button and
+  Space moves focus to the beat title. Longer CDP key-loop automation was unreliable,
+  so the committed guard test is the durable regression check.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no fixture rewrites; no persona
+  names.
+- Did not rewrite the existing GovernanceCase content stub because LIM-1244 owns the
+  cross-cutting accessibility pass, not MNC#2 content completion.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1244 PR for keyboard/focus/contrast acceptance and merge only after
+  normal reviewer gates pass.
+- Coordinate with the GovernanceCase-fill PR so the existing MNC#2 content stub is
+  removed by its owning work, not by this quality pass.
+
+**Risks / watch:**
+- The app remains a static click-through; the keyboard path is through the demo rail
+  and Back/Next controls. If a later PR turns Approve + Enforce into an actual
+  in-screen action, that new control should inherit the same focus and 44px target
+  rules.
+
+---
+
 ## Session: LIM-1238 second-pass causal table (2026-06-28)
 
 **Did:**

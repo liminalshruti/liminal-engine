@@ -12,7 +12,14 @@
  * or Math.random(). Boundary: contracts + engine-core + ./ports only — never a
  * concrete adapter (enforced by .dependency-cruiser.cjs).
  */
-import type { EvalCase, EvalResult } from "@liminal-engine/contracts";
+import type {
+  EvalCase,
+  EvalResult,
+  GovernanceCase,
+  EnforcementAction,
+  AuditEvent,
+  ActionGate,
+} from "@liminal-engine/contracts";
 import type {
   AgentOutputSource,
   GovernanceCaseStore,
@@ -20,7 +27,7 @@ import type {
   ActionGateStore,
   EvalStore,
 } from "./ports.ts";
-import { type Clock, type IdGen, detectMiss } from "./detect-miss.ts";
+import { type Clock, type IdGen, type CaseEvidence, detectMiss } from "./detect-miss.ts";
 import { enforceCorrection } from "./enforce.ts";
 import { gateDownstreamAction, GATED_CUSTOMER_ACTION } from "./proxy-gate.ts";
 import { gradeSecondPass } from "./second-pass.ts";
@@ -43,19 +50,36 @@ export interface GovernanceLoopDeps {
   evalStore: EvalStore;
   clock: Clock;
   idGen: IdGen;
+  /**
+   * Optional case evidence (business impact / missing-from / recommended actions)
+   * the detector attaches to the opened case (LIM-1254). Injected scenario
+   * knowledge, not derivable from agent output — see CaseEvidence. Omitted ⇒
+   * the loop produces a minimal case (existing behavior unchanged).
+   */
+  caseEvidence?: CaseEvidence;
+}
+
+/** Everything the loop produces — the full result a UI/audit can render. */
+export interface GovernanceLoopResult {
+  governanceCase: GovernanceCase;
+  enforcementAction: EnforcementAction;
+  auditEvent: AuditEvent;
+  gate: ActionGate;
+  evalCase: EvalCase;
+  evals: EvalResult[];
 }
 
 /**
  * The full loop: observe → detect → correct → enforce → audit → improve.
  * Detects the miss, enforces the flip + audit, gates the bad action, generates
- * the EvalCase, grades both passes, and records the results to the EvalStore
- * (read back by eval-harness.runEvals). Returns the EvalCase + the two results.
- * [must-not-cut #2/#3/#5/#6/#7]
+ * the EvalCase, and grades both passes. Returns EVERY artifact it produced (not
+ * just the eval) so a single source of truth can render the whole 14-beat path
+ * without re-reading raw fixtures. [must-not-cut #2/#3/#5/#6/#7]
  */
 export async function runGovernanceLoop(
   deps: GovernanceLoopDeps,
   dealId: string,
-): Promise<{ evalCase: EvalCase; evals: EvalResult[] }> {
+): Promise<GovernanceLoopResult> {
   // detect
   const governanceCase = await detectMiss(
     deps.source,
@@ -64,20 +88,22 @@ export async function runGovernanceLoop(
     1,
     deps.clock,
     deps.idGen,
+    deps.caseEvidence,
   );
   if (!governanceCase) {
     throw new Error(`no governance case detected for deal ${dealId}`);
   }
 
-  // enforce + audit
-  await enforceCorrection(governanceCase.id, dealId, "on-track", {
-    auditSink: deps.auditSink,
-    clock: deps.clock,
-    idGen: deps.idGen,
-  });
+  // enforce + audit — capture the action + audit the loop produced
+  const { action: enforcementAction, audit: auditEvent } = await enforceCorrection(
+    governanceCase.id,
+    dealId,
+    "on-track",
+    { auditSink: deps.auditSink, clock: deps.clock, idGen: deps.idGen },
+  );
 
-  // gate the downstream action
-  await gateDownstreamAction(
+  // gate the downstream action — capture the gate the loop produced
+  const gate = await gateDownstreamAction(
     deps.actionGateStore,
     GATED_CUSTOMER_ACTION,
     governanceCase.id,
@@ -85,7 +111,7 @@ export async function runGovernanceLoop(
   );
 
   // improve — generate the EvalCase + grade both passes
-  return gradeSecondPass(
+  const { evalCase, evals } = await gradeSecondPass(
     {
       source: deps.source,
       evalStore: deps.evalStore,
@@ -95,4 +121,6 @@ export async function runGovernanceLoop(
     dealId,
     governanceCase,
   );
+
+  return { governanceCase, enforcementAction, auditEvent, gate, evalCase, evals };
 }
