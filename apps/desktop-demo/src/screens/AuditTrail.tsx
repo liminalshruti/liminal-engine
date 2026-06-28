@@ -20,12 +20,12 @@
  */
 import { Card, TraceRow } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function AuditTrail() {
-  const { auditEvent } = useDemo();
-  const { dataResidencyRef } = acmeScenario;
+  // Everything renders from the live loop output (useDemo()), including the
+  // data-residency redacted ref — no raw fixture import (UI == engine, all 7 screens).
+  const { auditEvent, dataResidencyRef } = useDemo();
   const copy = SCREEN_COPY.auditTrail;
   // The demo records one correction event; the trail is append-only, so render as a list.
   const events = [auditEvent];
