@@ -1,0 +1,53 @@
+/*
+ * fonts.css — load the canonical Liminal typefaces so the app renders in its own
+ * type, not system fallbacks.
+ *
+ * ADAPTED FROM: liminal-prototype/fonts (Nineties Headliner + Perfectly Nineties) —
+ *   prior-work licensed display/serif faces, served for visual fidelity. Geist /
+ *   Geist Mono are open (SIL OFL) and loaded from the Google Fonts CDN.
+ *
+ * Family names MUST match the design tokens in govern-slate.css:
+ *   --display: "Nineties Headliner" · --serif/--sans-serif: "Perfectly Nineties"
+ *   --sans: "Geist" · --mono: "Geist Mono"
+ * Files live in public/fonts and resolve against Vite's base (works under the
+ * GitHub Pages sub-path too). font-display: swap so text paints immediately.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
+
+@font-face {
+  font-family: "Nineties Headliner";
+  src: url("/fonts/nineties-headliner.otf") format("opentype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfectly Nineties";
+  src: url("/fonts/perfectly-nineties-light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Perfectly Nineties";
+  src: url("/fonts/perfectly-nineties-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Perfectly Nineties";
+  src: url("/fonts/PerfectlyNineties-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Perfectly Nineties";
+  src: url("/fonts/perfectly-nineties-bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
