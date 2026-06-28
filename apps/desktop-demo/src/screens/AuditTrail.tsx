@@ -23,9 +23,39 @@ import { useDemo } from "../lib/demo-context.tsx";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
-export function AuditTrail() {
-  const { auditEvent } = useDemo();
+/**
+ * AuditTrail screen content — renders audit events with null checks.
+ * Throws if required fields are missing (caught by parent ErrorBoundary).
+ */
+function AuditTrailContent() {
+  const demo = useDemo();
+  const { auditEvent } = demo;
+
+  // Null checks for required fields
+  if (!auditEvent) {
+    throw new Error("AuditTrail requires auditEvent but it is missing");
+  }
+
+  if (!auditEvent.id || !auditEvent.previousStatus || !auditEvent.newStatus) {
+    throw new Error(
+      `AuditTrail requires auditEvent with id, previousStatus, newStatus; got ${[
+        !auditEvent.id ? "missing id" : "",
+        !auditEvent.previousStatus ? "missing previousStatus" : "",
+        !auditEvent.newStatus ? "missing newStatus" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
   const { dataResidencyRef } = acmeScenario;
+
+  if (!dataResidencyRef || !dataResidencyRef.label || !dataResidencyRef.hash) {
+    throw new Error(
+      "AuditTrail requires acmeScenario.dataResidencyRef with label and hash but data is incomplete",
+    );
+  }
+
   const copy = SCREEN_COPY.auditTrail;
   // The demo records one correction event; the trail is append-only, so render as a list.
   const events = [auditEvent];
@@ -62,6 +92,10 @@ export function AuditTrail() {
       </Card>
     </section>
   );
+}
+
+export function AuditTrail() {
+  return <AuditTrailContent />;
 }
 
 export default AuditTrail;

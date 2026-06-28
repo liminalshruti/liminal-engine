@@ -33,12 +33,35 @@ import { Card, StatusBadge } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
-export function AgentActivity() {
-  // First-pass agent output (the false green) + the verbatim beat-#3 claim. Neutral,
-  // on-track facts only: the drop is NOT read here (`droppedRequirements` is left for
-  // the beat-#4 reveal), keeping the requirement silently absent on this screen.
-  const { agentOutputPass1, demoBeats } = useDemo();
+/**
+ * AgentActivity screen content — renders the first-pass agent output with null checks.
+ * Throws if required fields are missing (caught by parent ErrorBoundary).
+ */
+function AgentActivityContent() {
+  const demo = useDemo();
+  const { agentOutputPass1, demoBeats } = demo;
   const copy = SCREEN_COPY.agentActivity;
+
+  // Null checks for required fields
+  if (!agentOutputPass1) {
+    throw new Error("AgentActivity requires agentOutputPass1 but it is missing");
+  }
+
+  if (!agentOutputPass1.dealName || !agentOutputPass1.reportedStatus || !agentOutputPass1.summary) {
+    throw new Error(
+      `AgentActivity requires dealName, reportedStatus, summary; got ${[
+        !agentOutputPass1.dealName ? "missing dealName" : "",
+        !agentOutputPass1.reportedStatus ? "missing reportedStatus" : "",
+        !agentOutputPass1.summary ? "missing summary" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!demoBeats || !demoBeats.agentClaim) {
+    throw new Error("AgentActivity requires demoBeats with agentClaim but it is missing");
+  }
 
   return (
     <section className="screen screen--agent-activity" aria-label={copy.title}>
@@ -58,6 +81,10 @@ export function AgentActivity() {
       </Card>
     </section>
   );
+}
+
+export function AgentActivity() {
+  return <AgentActivityContent />;
 }
 
 export default AgentActivity;
