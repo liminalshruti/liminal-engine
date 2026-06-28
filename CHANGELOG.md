@@ -6,6 +6,14 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Fixed — SCOPE_SPEC.md: PolicyRule/ApprovalGate COVERED, not P0-build (LIM-1251, 2026-06-28)
+- Last spec contradiction reconciled. `SCOPE_SPEC.md` still listed `PolicyRule` +
+  `ApprovalGate` as "P0 entities to extend in contracts," but LIM-1251 / PR #26
+  established they're **covered by existing contracts, no new build** (demo steps
+  9/11 render from `EnforcementAction.actionType` `require_approval`/`activate_policy`
+  + `AuditEvent` + `LinearWorkstreamPayload.requiredOwners`). `SCOPE_SPEC.md` is
+  reconciled to the covered/post-hack conclusion; the matching `specs/SPEC.md` edit
+  is the paired PR #26 (both land together to close the contradiction). Docs-only.
 ### Added — LIM-1239 agent-activity trace cards (2026-06-28)
 - `apps/desktop-demo/src/screens/AgentActivity.tsx` now renders the beat #3
   false-green output with fixture-backed per-agent trace cards showing which Acme
