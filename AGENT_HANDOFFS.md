@@ -12,11 +12,13 @@ this first.
   `agent-claimed`, and worked only in
   `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1236` on branch
   `agent/LIM-1236-dropped-requirement-highlight`.
-- Replaced the AgentActivity and GovernanceCase stub content with fixture-backed
-  inline dropped-requirement compare surfaces. The first-pass false green now
-  shows `Acme expansion appears on track`, the source-call line highlights
-  `EU data residency`, and the downstream output marks `Missing: EU data residency`
-  exactly beside the agent output summary.
+- Filled GovernanceCase (beat #5) with a fixture-backed inline dropped-requirement
+  compare surface: the source-call line highlights `EU data residency` and the
+  downstream output marks `Missing: EU data residency` beside the agent summary.
+- Beat #3 (AgentActivity) deliberately stays the clean false green owned by
+  LIM-1217 (#36, merged) — the reveal belongs to the detect/case beats, not the
+  observe screen. (Reconciled the LIM-1217 collision in #36's favor per review;
+  took main's AgentActivity on merge.)
 - Added `AgentActivityHighlight.ts` and focused tests to derive the highlighted
   requirement from `agentOutputPass1` + `governanceCase`, split the exact source
   span, and fail closed if the output/case data drift apart.
@@ -31,8 +33,8 @@ this first.
 - `./scripts/smoke.sh` green for automated tests and printed the manual demo
   checklist.
 - `pnpm --filter @liminal-engine/desktop-demo build` green.
-- Vite SSR render assertion green: AgentActivity and GovernanceCase contain the
-  inline EU data residency highlight markers.
+- Vite SSR render assertion green: GovernanceCase contains the inline EU data
+  residency highlight markers (AgentActivity stays the clean false green).
 
 **Did NOT do (by design):**
 - No live Gemini/LiveKit/Linear calls; no imports from `packages/integrations/*`.
@@ -47,6 +49,41 @@ this first.
 - The app-safe source-call text is derived from the Acme fixture deal name and
   dropped requirement because the only scripted transcript fixture currently lives
   under `packages/integrations`, which the demo spine must not import.
+## Session: LIM-1238 second-pass causal table (2026-06-28)
+
+**Did:**
+- Claimed LIM-1238 in Linear, assigned it to Sean, moved it to In Progress, and
+  worked only in `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1238`
+  on branch `agent/LIM-1238-second-pass-causal-table`.
+- Replaced the `SecondPassEval` stub with fixture-backed rendering for beats
+  #12-#14: EvalCase generated, improved second-pass output, the exact causal
+  narration `failure observed -> rule activated -> second pass gated -> eval passed`,
+  the shared `EvalTable`, and an explicit per-check before/after table showing
+  `FAIL -> PASS`.
+- Added `SecondPassEval.model.ts` plus targeted tests for deterministic
+  criterion-grouped before/after rows.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/SecondPassEval.model.test.ts` green.
+- `pnpm typecheck:app` green.
+- `pnpm verify` green: root typecheck, app typecheck, 94 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- Vite served the app locally at `http://localhost:5174/`; in-app browser was
+  unavailable in this session, so visual DOM inspection was not available.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no persona names; no changes
+  outside the second-pass screen files plus required handoff docs.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1238 PR, then merge after the normal reviewer gates pass.
+- Watch for merge ordering with LIM-1221, which also owns `SecondPassEval.*`.
+
+**Risks / watch:**
+- The table is computed from `toRows([evalPass1, evalPass2])`, so richer future
+  eval fixtures will be grouped by criterion automatically.
 
 ---
 

@@ -1,27 +1,18 @@
 /**
- * Governance use cases — the application layer that drives the loop
+ * Governance use cases — the orchestrator that drives the full loop
  * (observe → detect → correct → enforce → audit → improve) over the ports in
- * ./ports.ts. Pure-domain decisions come from @liminal-engine/engine-core; this
- * layer orchestrates them and threads contracts through the stores.
+ * ./ports.ts. The individual phases now live in their own modules (detect-miss,
+ * enforce, proxy-gate, second-pass, compile-correction) so the Wave-2 gov tasks
+ * fill one file each without racing on this barrel; this module composes them.
+ *
+ * Re-exports the phase modules so existing importers of `./use-cases.ts` keep
+ * working after the «gov-scaffold» decomposition (no consumer churn).
  *
  * Determinism: IDs + timestamps are INJECTED (idGen / clock), never Date.now()
- * or Math.random(). On the demo spine the composition root injects generators
- * that reproduce the locked Acme fixture values; tests inject their own.
- *
- * Boundary: imports contracts + engine-core + ./ports only — never a concrete
- * adapter (enforced by .dependency-cruiser.cjs).
+ * or Math.random(). Boundary: contracts + engine-core + ./ports only — never a
+ * concrete adapter (enforced by .dependency-cruiser.cjs).
  */
-import type {
-  GovernanceCase,
-  EnforcementAction,
-  AuditEvent,
-  ActionGate,
-  ActionGateDecision,
-  EvalCase,
-  EvalResult,
-  DealStatus,
-} from "@liminal-engine/contracts";
-import { enforceCorrection as pureEnforceCorrection } from "@liminal-engine/engine-core";
+import type { EvalCase, EvalResult } from "@liminal-engine/contracts";
 import type {
   AgentOutputSource,
   GovernanceCaseStore,
@@ -29,186 +20,20 @@ import type {
   ActionGateStore,
   EvalStore,
 } from "./ports.ts";
+import { type Clock, type IdGen, detectMiss } from "./detect-miss.ts";
+import { enforceCorrection } from "./enforce.ts";
+import { gateDownstreamAction, GATED_CUSTOMER_ACTION } from "./proxy-gate.ts";
+import { gradeSecondPass } from "./second-pass.ts";
 
-/** Deterministic sources of identity + time, injected at the composition root. */
-export interface Clock {
-  now(): string;
-}
-export interface IdGen {
-  next(): string;
-}
-
-/** The locked deciding role — never an invented persona name (DEMO_CONTRACT). */
-const DECIDING_ROLE = "VP Ops / Head of AI Transformation";
-
-const REQUIRED_BEFORE_CUSTOMER_UPDATE = [
-  "Propagate the EU data residency requirement into the Acme workstream.",
-  "Assign Product, Security, and Engineering owners.",
-  "Pass the EU data residency EvalCase.",
-] as const;
-
-/**
- * detect — read a pass of agent output; if it silently dropped a requirement,
- * open a blocking GovernanceCase. Returns the case, or null if nothing missed.
- * [must-not-cut #2]
- */
-export async function detectMiss(
-  source: AgentOutputSource,
-  caseStore: GovernanceCaseStore,
-  dealId: string,
-  passNumber: number,
-  clock: Clock,
-  idGen: IdGen,
-): Promise<GovernanceCase | null> {
-  const output = await source.getOutput(dealId, passNumber);
-  const missed = output.droppedRequirements[0];
-  if (!missed) return null;
-
-  const governanceCase: GovernanceCase = {
-    id: idGen.next(),
-    dealId,
-    missedRequirement: missed,
-    category: "data-governance",
-    severity: "blocking",
-    status: "open",
-    detectedAt: clock.now(),
-  };
-  await caseStore.open(governanceCase);
-  return governanceCase;
-}
-
-export interface EnforceDeps {
-  auditSink: AuditSink;
-  clock: Clock;
-  idGen: IdGen;
-}
-
-/** Deterministic sources of identity + time only (no I/O ports). */
-export interface IdentityClock {
-  clock: Clock;
-  idGen: IdGen;
-}
-
-/**
- * buildEnforcement — construct the EnforcementAction + AuditEvent for a
- * correction WITHOUT persisting anything. Consumes the idGen twice (action,
- * audit) and the clock twice (enforcedAt, recordedAt) in that fixed order, and
- * throws (via the pure engine-core state machine) when there is nothing to
- * enforce. Separated from persistence so a caller can order side effects for
- * fail-safety while keeping the deterministic id/timestamp assignment stable.
- */
-export function buildEnforcement(
-  caseId: string,
-  dealId: string,
-  currentStatus: DealStatus,
-  gen: IdentityClock,
-): { action: EnforcementAction; audit: AuditEvent } {
-  const flip = pureEnforceCorrection(currentStatus);
-  if (!flip.ok) throw new Error(flip.error);
-  const newStatus = flip.value;
-
-  const action: EnforcementAction = {
-    id: gen.idGen.next(),
-    caseId,
-    dealId,
-    fromStatus: currentStatus,
-    toStatus: newStatus,
-    actor: DECIDING_ROLE,
-    enforcedAt: gen.clock.now(),
-  };
-
-  const audit: AuditEvent = {
-    id: gen.idGen.next(),
-    caseId,
-    dealId,
-    action: "correction-enforced",
-    decidingActor: DECIDING_ROLE,
-    previousStatus: currentStatus,
-    newStatus,
-    recordedAt: gen.clock.now(),
-  };
-
-  return { action, audit };
-}
-
-/**
- * enforce — the operator's Approve + Enforce. Uses the pure engine-core state
- * machine to flip the deal status, emits an EnforcementAction, and records an
- * AuditEvent capturing the correction + deciding actor. [must-not-cut #3, #6]
- *
- * (engine-core's pure enforceCorrection is imported as pureEnforceCorrection to
- * avoid shadowing this orchestrator of the same name.)
- */
-export async function enforceCorrection(
-  caseId: string,
-  dealId: string,
-  currentStatus: DealStatus,
-  deps: EnforceDeps,
-): Promise<{ action: EnforcementAction; audit: AuditEvent }> {
-  const { action, audit } = buildEnforcement(caseId, dealId, currentStatus, {
-    clock: deps.clock,
-    idGen: deps.idGen,
-  });
-  await deps.auditSink.record(audit);
-  return { action, audit };
-}
-
-/**
- * buildGate — construct the deny ActionGate for a downstream action WITHOUT
- * persisting it. Consumes the idGen once (gate id). Separated from persistence
- * so a caller can open the gate before other side effects (fail-closed).
- */
-export function buildGate(
-  action: string,
-  caseId: string,
-  idGen: IdGen,
-): ActionGate {
-  return {
-    id: idGen.next(),
-    caseId,
-    action,
-    verdict: "deny",
-    reasons: [
-      `Open governance case ${caseId} requires EU data residency correction before a customer-facing on-track update.`,
-    ],
-    requiredBeforeSend: [...REQUIRED_BEFORE_CUSTOMER_UPDATE],
-  };
-}
-
-/**
- * enforce (gate) — block a downstream customer-facing action until the case is
- * corrected. [must-not-cut #5]
- */
-export async function gateDownstreamAction(
-  actionGateStore: ActionGateStore,
-  action: string,
-  caseId: string,
-  idGen: IdGen,
-): Promise<ActionGate> {
-  const gate = buildGate(action, caseId, idGen);
-  await actionGateStore.gate(gate);
-  return gate;
-}
-
-export async function evaluateDownstreamAction(
-  actionGateStore: ActionGateStore,
-  action: string,
-): Promise<ActionGateDecision> {
-  try {
-    return await actionGateStore.decisionFor(action);
-  } catch (error) {
-    const detail = error instanceof Error && error.message.length > 0
-      ? `: ${error.message}`
-      : "";
-    return {
-      allowed: false,
-      reasons: [`Gate evaluation failed closed${detail}.`],
-      requiredBeforeSend: [
-        "Resolve the gate evaluation failure before sending a customer-facing update.",
-      ],
-    };
-  }
-}
+// Backward-compat: the loop phases were decomposed into their own modules
+// («gov-scaffold»). Re-export them from here so existing importers of
+// `./use-cases.ts` (approve-enforce.ts, the tests) keep resolving. These re-
+// export the SAME symbols the barrel exports from the same origin, so there is
+// no duplicate-export ambiguity.
+export * from "./detect-miss.ts";
+export * from "./enforce.ts";
+export * from "./proxy-gate.ts";
+export * from "./second-pass.ts";
 
 export interface GovernanceLoopDeps {
   source: AgentOutputSource;
@@ -219,9 +44,6 @@ export interface GovernanceLoopDeps {
   clock: Clock;
   idGen: IdGen;
 }
-
-/** The downstream action gated on the demo spine. */
-export const GATED_CUSTOMER_ACTION = "Send customer-facing status update to Acme";
 
 /**
  * The full loop: observe → detect → correct → enforce → audit → improve.
@@ -262,35 +84,15 @@ export async function runGovernanceLoop(
     deps.idGen,
   );
 
-  // improve — the EvalCase the second pass is graded against
-  const criterion = `${governanceCase.missedRequirement} requirement honored`;
-  const evalCase: EvalCase = {
-    id: deps.idGen.next(),
+  // improve — generate the EvalCase + grade both passes
+  return gradeSecondPass(
+    {
+      source: deps.source,
+      evalStore: deps.evalStore,
+      clock: deps.clock,
+      idGen: deps.idGen,
+    },
     dealId,
-    governanceCaseId: governanceCase.id,
-    criterion,
-    createdAt: deps.clock.now(),
-  };
-
-  // grade each pass against the criterion: a pass FAILS iff it still drops the
-  // requirement. Pass 1 (false green) fails; pass 2 (corrected) passes.
-  const evals: EvalResult[] = [];
-  for (const passNumber of [1, 2]) {
-    const output = await deps.source.getOutput(dealId, passNumber);
-    const honored = !output.droppedRequirements.includes(
-      governanceCase.missedRequirement,
-    );
-    const result: EvalResult = {
-      id: deps.idGen.next(),
-      dealId,
-      evalCaseId: evalCase.id,
-      passNumber,
-      criterion,
-      result: honored ? "pass" : "fail",
-    };
-    await deps.evalStore.record(result);
-    evals.push(result);
-  }
-
-  return { evalCase, evals };
+    governanceCase,
+  );
 }

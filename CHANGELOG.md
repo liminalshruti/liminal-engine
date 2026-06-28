@@ -7,14 +7,24 @@ All notable changes to scope, contract, and structure. Newest first.
 ## [Unreleased]
 
 ### Added — LIM-1236 dropped requirement highlight (2026-06-28)
-- `apps/desktop-demo/src/screens/AgentActivity.tsx` and
-  `GovernanceCase.tsx` now render a fixture-backed inline highlight for the
-  dropped `EU data residency` requirement: present in the source-call line and
-  marked as missing beside the downstream first-pass agent output.
+- `apps/desktop-demo/src/screens/GovernanceCase.tsx` (beat #5) renders a
+  fixture-backed inline highlight for the dropped `EU data residency` requirement:
+  present in the source-call line and marked as missing beside the downstream
+  first-pass agent output. Beat #3 (`AgentActivity.tsx`) intentionally stays the
+  clean false green owned by LIM-1217 — the reveal lives at the detect/case beats,
+  not on the observe screen.
 - `apps/desktop-demo/src/screens/AgentActivityHighlight.ts` plus tests derive the
   highlighted requirement from the Acme `AgentOutput` + `GovernanceCase`, split
   the exact highlighted span, and fail closed on fixture drift. No contract,
   fixture, or golden changes.
+### Added — LIM-1238 second-pass causal narration + checks table (2026-06-28)
+- `apps/desktop-demo/src/screens/SecondPassEval.tsx` now renders beats #12-#14
+  from Acme fixtures: EvalCase generated, improved second-pass output, causal
+  narration, the shared EvalTable, and an explicit per-check before/after table
+  showing `FAIL -> PASS`.
+- `apps/desktop-demo/src/screens/SecondPassEval.model.ts` computes deterministic
+  criterion-grouped before/after rows from eval-harness display rows. No contract,
+  golden, or live-integration changes.
 
 ### Added — LIM-1235 3-part blocked-action card (2026-06-28)
 - `apps/desktop-demo/src/components/BlockedActionBanner.tsx` now renders the

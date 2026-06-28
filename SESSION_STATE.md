@@ -6,11 +6,13 @@ Current state of the build, right now. Keep this short and true.
 
 - **LIM-1236 branch:** `agent/LIM-1236-dropped-requirement-highlight` in
   `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1236`.
-- **Implemented:** AgentActivity and GovernanceCase now render a fixture-backed
-  inline highlight for the dropped `EU data residency` requirement. Beat #3 shows
-  the false-green claim `Acme expansion appears on track`; beats #4-#5 show the
-  requirement present in the call and marked `Missing: EU data residency` beside
-  the downstream agent output.
+- **Implemented:** GovernanceCase (beat #5) renders a fixture-backed inline
+  highlight for the dropped `EU data residency` requirement — present in the call
+  and marked `Missing: EU data residency` beside the downstream agent output. Beat
+  #3 (AgentActivity) stays the clean false green owned by LIM-1217 (now merged):
+  the reveal lives at the detect/case beats, not on the observe screen. The
+  `AgentActivityHighlight.ts` helper + tests are retained and consumed by
+  GovernanceCase.
 - **Verification:** `pnpm verify` green (93 tests + boundary lint),
   `./scripts/smoke.sh` green for automated tests, desktop-demo production build
   green, and a Vite SSR render check confirms both affected screens contain the
@@ -21,18 +23,31 @@ Current state of the build, right now. Keep this short and true.
   agent.
 
 ## As of: LIM-1235 blocked-action card branch ready (2026-06-28)
+## As of: LIM-1238 second-pass causal table branch ready (2026-06-28)
+
+- **LIM-1238 branch:** `agent/LIM-1238-second-pass-causal-table` replaces the
+  `SecondPassEval` stub with fixture-backed rendering for beats #12-#14: EvalCase
+  generated, second-pass output, causal narration, shared EvalTable, and an
+  explicit per-check before/after checks table.
+- **LIM-1238 verification:** targeted screen-model test, app typecheck, desktop-demo
+  production build, `pnpm verify` (94/94 tests + boundary lint), and
+  `./scripts/smoke.sh` automated checks are green. Vite served locally; in-app
+  browser was unavailable, so visual DOM inspection was not available.
+- **Demo path impact:** MNC#7 is now explicit on screen: `failure observed -> rule
+  activated -> second pass gated -> eval passed`, plus the before/after check row
+  for `EU data residency requirement honored` showing `FAIL -> PASS`. Fixtures
+  only; no live calls; no persona names.
+
+## Previous state: LIM-1235 blocked-action card branch ready (2026-06-28)
 
 - **LIM-1235 branch:** `agent/LIM-1235-blocked-action-card` upgrades the demo
-  enforcement beat with a visible 3-part blocked-action card and replaces the
-  `EnforcementPanel` placeholder with fixture-backed rendering for beats #6-#10.
-  Pending PR/review; not merged.
-- **LIM-1235 verification:** app typecheck, app production build, headless Chrome
-  DOM check for beat #10, `pnpm verify` (80/80 tests + boundary lint), and
-  `./scripts/smoke.sh` automated checks are green.
-- **Demo path impact:** beat #10 / MNC#5 is now explicit on screen: attempted
+  enforcement beat with a visible 3-part blocked-action card and fixture-backed
+  rendering for beats #6-#10. Verification was green: app typecheck, app build,
+  headless Chrome DOM check, `pnpm verify` (80/80 tests + boundary lint), and
+  `./scripts/smoke.sh`.
+- **Demo path impact:** beat #10 / MNC#5 is explicit on screen: attempted
   customer-facing on-track update -> `Not allowed` / `Why blocked` / `Required
-  before send` with all `ActionGate.requiredBeforeSend` items visible. Fixtures
-  only; no live calls; no persona names.
+  before send` with all `ActionGate.requiredBeforeSend` items visible.
 
 ## Previous state: backend loop on main, M1 UI next (2026-06-28 early)
 ## As of: LIM-1234 preview branch ready for PR (2026-06-28)
