@@ -259,6 +259,15 @@ importers:
         specifier: ^2.15.5
         version: 2.15.5
 
+  packages/integrations/policy-store:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/policy':
+        specifier: workspace:*
+        version: link:../../policy
+
   packages/integrations/requirement-store:
     dependencies:
       '@liminal-engine/contracts':
@@ -267,6 +276,12 @@ importers:
       '@liminal-engine/governance':
         specifier: workspace:*
         version: link:../../governance
+
+  packages/policy:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
   packages/policy-router:
     dependencies:
@@ -286,20 +301,14 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
 
-  packages/integrations/policy-store:
-    dependencies:
-      '@liminal-engine/contracts':
-        specifier: workspace:*
-        version: link:../../contracts
-      '@liminal-engine/policy':
-        specifier: workspace:*
-        version: link:../../policy
-
-  packages/policy:
+  packages/substrate:
     dependencies:
       '@liminal-engine/contracts':
         specifier: workspace:*
         version: link:../contracts
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
 
   packages/ui-components:
     dependencies:
