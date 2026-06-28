@@ -13,6 +13,7 @@ export * from "./requirement-ports.ts"; // RequirementStore port + fail-closed r
 // loop phases (one file per phase)
 export * from "./detect-miss.ts"; // detect       (incl. shared Clock / IdGen)
 export * from "./active-requirement-checker.ts"; // detect: grade output/action vs active user requirements (LIM-1326)
+export * from "./propose-requirements.ts"; // detect: candidate-requirement inbox — proposed until approved (LIM-1325)
 export * from "./requirement-case.ts"; // detect: open GovernanceCase from active requirement violations (LIM-1327)
 export * from "./compile-correction.ts"; // correct  (STUB — «gov-correct»)
 export * from "./enforce.ts"; // enforce
