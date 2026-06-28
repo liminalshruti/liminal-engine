@@ -220,11 +220,11 @@
 /* LiveKit status message */
 .voice-correction__status-message {
   padding: 0.75rem 1rem;
-  background: var(--watch, #e3f2fd);
-  border: 1px solid var(--signal, #0066cc);
+  background: var(--govern-state-forwarded-bg);
+  border: 1px solid var(--govern-state-forwarded-border);
   border-radius: 4px;
   font-size: 0.875rem;
-  color: var(--signal, #0066cc);
+  color: var(--govern-state-forwarded-text);
   line-height: 1.4;
 }
 
