@@ -4,6 +4,32 @@ Current state of the build, right now. Keep this short and true. Reflects git/PR
 merge-state (the truth), not Linear status (a lagging cache — multiple sessions
 write the board concurrently, so it flaps).
 
+## As of: LIM-1372 unbuilt real-product contracts + harnesses (2026-06-28)
+
+- **Worktree:** `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1372`
+  on branch `agent/LIM-1372-unbuilt-real-product`, rebased onto current
+  `origin/main` with LIM-1367 policy intercept, LIM-1340 operator-NL, and
+  LIM-1373 arbitrary-agent-output API work preserved.
+- **Contracts:** added and registry-pinned `DriftSignal`, `LlmRequest`,
+  `LlmOutcome`, `EndpointConfig`, `TransformRule`, `ResourceAllocation`,
+  `RoutingRule`, and `NlIntent`; `contracts.golden.json` now carries 41 vectors
+  across 27 registered contracts after the rebase, including upstream
+  `OperatorMessage`, `ParsedIntent`, and `AssistantReply`.
+- **Real product logic:** new `@liminal-engine/signal-harness` detects requirement
+  drift on arbitrary active requirements, applies transform rules, routes
+  signals/intents to enabled endpoints, and allocates resources for severe open
+  signals. `eval-harness` now generates/grades evals from real inputs, and
+  `ui-components` exposes view-model helpers for the new control-plane artifacts.
+- **Gemini:** `@liminal-engine/integration-gemini` keeps upstream's cache-backed
+  `GeminiAgentOutputSource` and adds `GeminiRestAgentOutputSource` for direct
+  REST calls with contract-recorded `LlmRequest`/`LlmOutcome` history. The fixture
+  source remains explicit for deterministic composition roots.
+- **Verification:** post-rebase `pnpm verify` is green: typecheck, app typecheck,
+  508 tests, and boundary lint. `pnpm test` now serializes Node test-file
+  execution with `--test-concurrency=1` to avoid Node 26 child-result
+  deserialization flake; it still runs the same test glob. `./scripts/smoke.sh`
+  is green after the final rebase.
+
 ## As of: LIM-1367 policy intercept control plane branch ready (2026-06-28)
 
 - **LIM-1367 branch:** `agent/LIM-1367-policy-intercept-control-plane` adds the
