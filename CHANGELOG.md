@@ -6,6 +6,24 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Decided — demo-spine UI stack (2026-06-27)
+- **Demo-spine stack locked: React + Vite (SPA), styled against `liminal-prototype`
+  CSS cuts.** Chosen over Solid/liminal-desktop continuity. Rationale: a throwaway
+  3-minute demo spine is judged on the click-through and visual fidelity, not on
+  sharing the product's framework. `liminal-desktop` is a Tauri app (heavyweight to
+  run live); `liminal-prototype` ships its visual identity as **portable CSS**
+  (`design-system/tokens/design-tokens.css` + cuts), liftable directly. Net-new
+  per CLAUDE.md; adapted CSS marked `ADAPTED FROM`. Flips the demo-spine issue
+  yellow→green.
+
+### Added — demo-shell session (2026-06-27)
+- **`apps/desktop-demo/`** stood up: React 18 + Vite + TS SPA shell. Vendored the
+  canonical `design-tokens.css` from `liminal-prototype` (single source of truth,
+  marked ADAPTED FROM). Renders an empty 14-step stepper frame against the Acme
+  fixtures from `@liminal-engine/contracts` — the static click-through spine to be
+  filled per `DEMO_CONTRACT.md`. No governance/eval logic yet (those are the next
+  P0s).
+
 ### Added — judging-map session (2026-06-27)
 - **`JUDGING_MAP.md`** (LIM-1157) — maps every rubric criterion (Technicality 40%
   / Creativity 25% / Live Demo 20% / Future Potential 15%) and the required theme

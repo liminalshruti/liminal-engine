@@ -6,6 +6,10 @@ work**, so the IP story and the hackathon net-new claim are both defensible.
 ## Net-new (built during the hackathon, in this folder)
 
 - All scaffold docs and structure (this session).
+- `apps/desktop-demo/**` (React+Vite demo spine shell) — except the vendored
+  `design-tokens.css` (see adapted-work table). The 14-step stepper, the
+  step→fixture binding, and all layout CSS are net-new.
+- `JUDGING_MAP.md` (LIM-1157) — rubric→thesis→demo-beat mapping.
 - _To be appended as the build proceeds._
 
 ## Adapted / referenced prior work
@@ -20,7 +24,7 @@ List each such file here as it's added:
 
 | File | Source repo/path | What was adapted |
 |------|------------------|------------------|
-| _(none yet)_ | | |
+| `apps/desktop-demo/src/styles/design-tokens.css` | `liminal-prototype/design-system/tokens/design-tokens.css` | Canonical Liminal design tokens (color/type/spacing/motion), vendored verbatim with an `ADAPTED FROM` banner. Single source of truth for the demo's visual register. Prior Liminal work, authored by Shruti Rajagopal — MIT-compatible (same owner). |
 
 ## Entity status
 
@@ -46,6 +50,9 @@ This can be updated later after incorporation and assignment if appropriate.
 ## Prior repos referenced for context only (NOT copied)
 
 - `liminal-prototype` — persona / ICP / product narrative (persona extraction TODO).
+  **Exception:** its canonical `design-tokens.css` IS vendored into the demo app
+  (see the adapted-work table above) — that one file is copied, the rest is
+  reference-only.
 - `liminal-desktop`, `liminal-govern`, `liminal-agents` — vocabulary & design
   language reference.
 
