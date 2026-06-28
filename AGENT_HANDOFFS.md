@@ -5,6 +5,42 @@ this first.
 
 ---
 
+## Session: LIM-1242 audit reconstruction test (2026-06-27 night)
+
+**Did:**
+- Claimed LIM-1242 in Linear, assigned it to Sean, moved it to In Progress, and
+  worked only in `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1242`
+  on branch `agent/LIM-1242-audit-reconstruction-test`.
+- Added governance-local audit reconstruction support:
+  `packages/governance/src/audit-reconstruction.ts` validates AuditEvents through
+  the contract, computes `sha256(prevHash + canonical_json(event))`, verifies
+  `prevHash` ordering, and rebuilds a GovernanceCase lifecycle from event
+  snapshots only.
+- Added `packages/governance/src/audit-reconstruction.test.ts` proving the Acme
+  case reconstructs as `open -> enforced -> closed` from AuditEvents alone and
+  that tampering an earlier event payload invalidates the chain.
+
+**Verified:**
+- `node --test packages/governance/src/audit-reconstruction.test.ts` green.
+- `pnpm verify` green: typecheck, app typecheck, 64 tests, boundary lint.
+- `./scripts/smoke.sh` green for automated tests; manual UI checklist not exercised
+  because this issue only changes governance support.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no UI changes; no persona copy.
+- Did not touch LIM-1229's worktree/branch. LIM-1229 is related context only.
+
+**Next session should:**
+- Review the LIM-1242 PR and, after merge, let LIM-1229 build on the verifier if it
+  needs broader append-only writer/demo "chain valid" UI support.
+
+**Risks / watch:**
+- `eventHash` is not a stored field in the current `AuditEvent` contract, so the
+  verifier recomputes head hashes from canonical payloads and detects payload
+  tampering through the next event's `prevHash`.
+
+---
+
 ## Session: review + merge harness, start LIM-1165 (2026-06-27 eve)
 
 **Did:**
