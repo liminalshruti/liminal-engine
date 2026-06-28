@@ -6,6 +6,16 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1236 dropped requirement highlight (2026-06-28)
+- `apps/desktop-demo/src/screens/AgentActivity.tsx` and
+  `GovernanceCase.tsx` now render a fixture-backed inline highlight for the
+  dropped `EU data residency` requirement: present in the source-call line and
+  marked as missing beside the downstream first-pass agent output.
+- `apps/desktop-demo/src/screens/AgentActivityHighlight.ts` plus tests derive the
+  highlighted requirement from the Acme `AgentOutput` + `GovernanceCase`, split
+  the exact highlighted span, and fail closed on fixture drift. No contract,
+  fixture, or golden changes.
+
 ### Added — LIM-1242 audit reconstruction test (2026-06-27)
 - `packages/governance/src/audit-reconstruction.ts` — verifies AuditEvent hash
   chains by recomputing `sha256(prevHash + canonical_json(event))` and rebuilds a

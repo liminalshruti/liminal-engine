@@ -5,6 +5,51 @@ this first.
 
 ---
 
+## Session: LIM-1236 dropped-requirement highlight (2026-06-28 night)
+
+**Did:**
+- Claimed LIM-1236 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1236` on branch
+  `agent/LIM-1236-dropped-requirement-highlight`.
+- Replaced the AgentActivity and GovernanceCase stub content with fixture-backed
+  inline dropped-requirement compare surfaces. The first-pass false green now
+  shows `Acme expansion appears on track`, the source-call line highlights
+  `EU data residency`, and the downstream output marks `Missing: EU data residency`
+  exactly beside the agent output summary.
+- Added `AgentActivityHighlight.ts` and focused tests to derive the highlighted
+  requirement from `agentOutputPass1` + `governanceCase`, split the exact source
+  span, and fail closed if the output/case data drift apart.
+- Added screen CSS for the inline highlight, missing marker, and GovernanceCase
+  evidence rows using existing design tokens. No contract, fixture, or golden
+  changes.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/AgentActivityHighlight.test.ts`
+  green (4 tests).
+- `pnpm verify` green: root typecheck, app typecheck, 93 tests, boundary lint.
+- `./scripts/smoke.sh` green for automated tests and printed the manual demo
+  checklist.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- Vite SSR render assertion green: AgentActivity and GovernanceCase contain the
+  inline EU data residency highlight markers.
+
+**Did NOT do (by design):**
+- No live Gemini/LiveKit/Linear calls; no imports from `packages/integrations/*`.
+- No persona name, no dashboard redesign, no contract/golden regeneration.
+- Did not merge; this remains PR-only for human review.
+
+**Next session should:**
+- Review the LIM-1236 PR for visual fidelity on beats #3-#5 / MNC#1,#2, then
+  merge only after human approval.
+
+**Risks / watch:**
+- The app-safe source-call text is derived from the Acme fixture deal name and
+  dropped requirement because the only scripted transcript fixture currently lives
+  under `packages/integrations`, which the demo spine must not import.
+
+---
+
 ## Session: LIM-1242 audit reconstruction test (2026-06-27 night)
 
 **Did:**

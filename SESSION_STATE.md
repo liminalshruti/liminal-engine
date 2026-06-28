@@ -2,6 +2,24 @@
 
 Current state of the build, right now. Keep this short and true.
 
+## As of: LIM-1236 PR-ready, inline dropped-requirement highlight (2026-06-28 night)
+
+- **LIM-1236 branch:** `agent/LIM-1236-dropped-requirement-highlight` in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1236`.
+- **Implemented:** AgentActivity and GovernanceCase now render a fixture-backed
+  inline highlight for the dropped `EU data residency` requirement. Beat #3 shows
+  the false-green claim `Acme expansion appears on track`; beats #4-#5 show the
+  requirement present in the call and marked `Missing: EU data residency` beside
+  the downstream agent output.
+- **Verification:** `pnpm verify` green (93 tests + boundary lint),
+  `./scripts/smoke.sh` green for automated tests, desktop-demo production build
+  green, and a Vite SSR render check confirms both affected screens contain the
+  highlight markers.
+- **No contract drift:** no contract, fixture, or golden changes; no live calls on
+  the demo spine; no invented persona name.
+- **Status:** ready for PR review; never merge or move Linear to Done from the
+  agent.
+
 ## As of: backend loop on main, M1 UI next (2026-06-28 early)
 
 - **LIM-1242 branch:** `agent/LIM-1242-audit-reconstruction-test` adds
