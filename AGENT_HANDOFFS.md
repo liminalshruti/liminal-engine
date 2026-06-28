@@ -5,7 +5,7 @@ this first.
 
 ---
 
-## Session: review + merge harness, start LIM-1165 (2026-06-28)
+## Session: review + merge harness, start LIM-1165 (2026-06-27 eve)
 
 **Did:**
 - Reviewed Shayaun's control-harness PR (#1) end to end. Ran its own gates on a
