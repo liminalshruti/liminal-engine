@@ -16,14 +16,52 @@ import {
 } from "../components";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
-export function EnforcementPanel() {
+/**
+ * EnforcementPanel screen content — renders enforcement preview, status flip, and
+ * blocked action with null checks. Throws if required fields are missing
+ * (caught by parent ErrorBoundary).
+ */
+function EnforcementPanelContent() {
+  const demo = useDemo();
   const {
     agentOutputPass1,
     gate,
     demoBeats,
     enforcementAction,
     linearWorkstreamPayload,
-  } = useDemo();
+  } = demo;
+
+  // Null checks for required fields
+  if (!enforcementAction || !gate || !linearWorkstreamPayload || !agentOutputPass1 || !demoBeats) {
+    throw new Error(
+      `EnforcementPanel requires enforcementAction, gate, linearWorkstreamPayload, agentOutputPass1, demoBeats; got ${[
+        !enforcementAction ? "missing enforcementAction" : "",
+        !gate ? "missing gate" : "",
+        !linearWorkstreamPayload ? "missing linearWorkstreamPayload" : "",
+        !agentOutputPass1 ? "missing agentOutputPass1" : "",
+        !demoBeats ? "missing demoBeats" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!enforcementAction.id || !enforcementAction.caseId || !enforcementAction.actor) {
+    throw new Error(
+      `EnforcementPanel requires enforcementAction.id, caseId, actor; got ${[
+        !enforcementAction.id ? "missing id" : "",
+        !enforcementAction.caseId ? "missing caseId" : "",
+        !enforcementAction.actor ? "missing actor" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!gate.action) {
+    throw new Error("EnforcementPanel requires gate.action but it is missing");
+  }
+
   const copy = SCREEN_COPY.enforcementPanel;
 
   return (
@@ -50,7 +88,7 @@ export function EnforcementPanel() {
           <span className="enforcement-panel__arrow" aria-hidden="true">→</span>
           <div className="enforcement-panel__status-node">
             <span className="enforcement-panel__label">After</span>
-            <StatusBadge status={enforcementAction.toStatus} />
+            <StatusBadge status={enforcementAction.toStatus} className="is-new" />
           </div>
         </div>
       </div>
@@ -69,6 +107,10 @@ export function EnforcementPanel() {
       <BlockedActionBanner gate={gate} />
     </section>
   );
+}
+
+export function EnforcementPanel() {
+  return <EnforcementPanelContent />;
 }
 
 export default EnforcementPanel;

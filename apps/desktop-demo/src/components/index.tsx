@@ -14,3 +14,15 @@ export { BlockedActionBanner, type BlockedActionBannerProps } from "./BlockedAct
 export { EnforcementPreview, type EnforcementPreviewProps } from "./EnforcementPreview.tsx";
 export { TraceRow, type TraceRowProps } from "./TraceRow.tsx";
 export { Card, type CardProps } from "./Card.tsx";
+export { ErrorBoundary } from "./ErrorBoundary.tsx";
+export { RedactionNote, type RedactionNoteProps } from "./RedactionNote.tsx";
+export { AuditChain, type AuditChainProps } from "./AuditChain.tsx";
+export { ViolationHighlight, type ViolationHighlightProps } from "./ViolationHighlight.tsx";
+export {
+  CorrectionTemplateForm,
+  type CorrectionTemplateFormProps,
+  type CorrectionTemplate,
+  type TemplateField,
+  type TemplateSelection,
+  CORRECTION_TEMPLATES,
+} from "./CorrectionTemplateForm.tsx";

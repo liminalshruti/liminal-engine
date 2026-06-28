@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DEMO_STEPS, PHASE_LABEL } from "./steps.tsx";
 import { DemoProvider } from "./lib/demo-context.tsx";
+import { ErrorBoundary } from "./components";
 
 /**
  * Demo spine SHELL — the static clickable frame for the 14-step required path
@@ -13,12 +14,19 @@ import { DemoProvider } from "./lib/demo-context.tsx";
  * (`buildGovernanceDemo`) and feeds its output to the screens via `useDemo()` —
  * the screens render live engine output, not raw fixtures (LIM-1255). The result is
  * byte-identical to the locked fixtures (determinism), so the walkthrough is unchanged.
+ *
+ * Error handling: each screen is wrapped in an ErrorBoundary that catches render
+ * errors and displays them gracefully, plus each screen has null-check stubs to
+ * validate required data before rendering (AGENTS.md Rule 6: real error handling for
+ * real edge cases).
  */
 export function App() {
   return (
-    <DemoProvider>
-      <DemoShell />
-    </DemoProvider>
+    <ErrorBoundary screenName="App">
+      <DemoProvider>
+        <DemoShell />
+      </DemoProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -85,7 +93,9 @@ function DemoShell() {
           </h1>
 
           <div className="stage__screen">
-            <Screen />
+            <ErrorBoundary screenName={`Beat ${step.n}: ${step.title}`}>
+              <Screen />
+            </ErrorBoundary>
           </div>
 
           <div className="stage__nav">
