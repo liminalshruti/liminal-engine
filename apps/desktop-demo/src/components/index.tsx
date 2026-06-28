@@ -17,3 +17,4 @@ export { Card, type CardProps } from "./Card.tsx";
 export { ErrorBoundary } from "./ErrorBoundary.tsx";
 export { RedactionNote, type RedactionNoteProps } from "./RedactionNote.tsx";
 export { AuditChain, type AuditChainProps } from "./AuditChain.tsx";
+export { ViolationHighlight, type ViolationHighlightProps } from "./ViolationHighlight.tsx";
