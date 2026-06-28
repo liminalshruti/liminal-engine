@@ -26,3 +26,5 @@ export {
   type TemplateSelection,
   CORRECTION_TEMPLATES,
 } from "./CorrectionTemplateForm.tsx";
+export { GeminiVisibility, type GeminiVisibilityProps } from "./GeminiVisibility.tsx";
+export { VoiceCorrection, type VoiceCorrectionProps } from "./VoiceCorrection.tsx";

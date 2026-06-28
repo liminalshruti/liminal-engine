@@ -13,10 +13,19 @@
         "summary": "Acme $1.2M expansion on track; all workstreams green.",
         "droppedRequirements": [
           "EU data residency"
-        ]
+        ],
+        "agentMetadata": {
+          "agent": "Gemini",
+          "model": "gemini-2.0-flash",
+          "artifacts": [
+            "customer-call-transcript",
+            "proposal-document",
+            "launch-plan"
+          ]
+        }
       },
-      "canonical_string": "{\"deal_id\":\"deal_acme\",\"deal_name\":\"Acme expansion\",\"dropped_requirements\":[\"EU data residency\"],\"id\":\"ao_acme_p1\",\"pass_number\":1,\"reported_status\":\"on-track\",\"schema\":\"liminal_engine.agent_output.v1\",\"summary\":\"Acme $1.2M expansion on track; all workstreams green.\"}",
-      "sha256": "ed51039927c7b825093706f8c5acad5ff7468b6aa0367d953b691ac81b0bb5ac"
+      "canonical_string": "{\"agent_metadata\":{\"agent\":\"Gemini\",\"artifacts\":[\"customer-call-transcript\",\"launch-plan\",\"proposal-document\"],\"model\":\"gemini-2.0-flash\"},\"deal_id\":\"deal_acme\",\"deal_name\":\"Acme expansion\",\"dropped_requirements\":[\"EU data residency\"],\"id\":\"ao_acme_p1\",\"pass_number\":1,\"reported_status\":\"on-track\",\"schema\":\"liminal_engine.agent_output.v1\",\"summary\":\"Acme $1.2M expansion on track; all workstreams green.\"}",
+      "sha256": "52d67166cbd4af529d2dc2d6b4d2babd37eead590a47567f8dce15eb3516e151"
     },
     "liminal_engine.governance_case.v1::acme-eu-residency-open": {
       "schema": "liminal_engine.governance_case.v1",
