@@ -10,9 +10,11 @@ export interface TraceRowProps {
   event: AuditEvent;
   /** Optional class name for styling override. */
   className?: string;
+  /** Optional index for staggered animation. */
+  index?: number;
 }
 
-export function TraceRow({ event, className }: TraceRowProps) {
+export function TraceRow({ event, className, index = 0 }: TraceRowProps) {
   // Format the timestamp for display (ISO → human-readable)
   const timestamp = new Date(event.recordedAt);
   const timeString = timestamp.toLocaleString("en-US", {
@@ -23,7 +25,10 @@ export function TraceRow({ event, className }: TraceRowProps) {
   });
 
   return (
-    <div className={`trace-row${className ? ` ${className}` : ""}`}>
+    <div
+      className={`trace-row${className ? ` ${className}` : ""}`}
+      style={{ "--stagger-delay": `${index * 20}ms` } as React.CSSProperties}
+    >
       <div className="trace-row__timestamp">
         <time className="trace-row__time" dateTime={event.recordedAt}>
           {timeString}

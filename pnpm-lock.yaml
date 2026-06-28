@@ -189,6 +189,15 @@ importers:
         specifier: ^2.15.5
         version: 2.15.5
 
+  packages/integrations/requirement-store:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../contracts
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../governance
+
   packages/ui-components:
     dependencies:
       '@liminal-engine/contracts':
