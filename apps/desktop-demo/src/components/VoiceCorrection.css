@@ -217,6 +217,17 @@
   color: var(--ink-on-accent);
 }
 
+/* LiveKit status message */
+.voice-correction__status-message {
+  padding: 0.75rem 1rem;
+  background: var(--watch, #e3f2fd);
+  border: 1px solid var(--signal, #0066cc);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--signal, #0066cc);
+  line-height: 1.4;
+}
+
 /* Error display */
 .voice-correction__error {
   padding: 0.75rem 1rem;
