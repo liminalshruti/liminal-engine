@@ -55,6 +55,28 @@ Initialize workspace
 → Eval shows Fail → Pass
 ```
 
+## What's real vs. simulated (read this, judges)
+
+The governance **engine is real, computed, and tested** — not hardcoded screens:
+
+- **The loop runs, and the UI renders *its* output.** `runGovernanceLoop` + `runEvals`
+  execute detection, enforcement, the action gate, and the eval; all 7 screens read that
+  live result (`useDemo()` → `buildGovernanceDemo()`), not hand-authored fixtures.
+  **UI == engine is verified end-to-end** — an un-skipped e2e asserts the screen's case is
+  the engine's live loop-detected case (18/18 e2e).
+- **The audit trail is hash-chained** and reconstructable — tamper-evident, not a log row.
+- **The action gate fails closed** — if evaluation throws, it denies; never silently passes.
+- **It's deterministic** — a test runs the whole loop twice and asserts byte-identical
+  artifacts, so the live demo can't flake on stage.
+- **Boundary-enforced:** `apps/desktop-demo` *cannot* import a live integration on the
+  spine (dependency-cruiser rule) — "no live calls on the demo spine" is enforced by the
+  build, not by review.
+
+**Simulated by deterministic fixtures, by design (hackathon scope):** Gemini, LiveKit,
+and the live Linear API — behind ports, with real adapters quarantined at the composition
+root so they swap in without touching the spine. No invented persona name; entity is not
+yet incorporated (no `Liminal, Inc.`).
+
 ## Run instructions
 
 > _Placeholder — fill in once `apps/desktop-demo` has a runnable entry point._
