@@ -14,8 +14,9 @@ import { useDemo } from "./lib/demo-context.tsx";
  * to screens via `useDemo()` (byte-identical to fixtures, LIM-1255).
  *
  * Hard rules: No changes to engine/logic/contracts/copy-meaning. All 14 beats +
- * 7 MNC visible. Right rail shows static architecture (not live agent states —
- * fixtures don't populate those). Tray is lowest priority (deferred).
+ * 7 MNC visible. Right rail derives agency state from the current beat index to
+ * narrate loop progression (this is honest: beat index IS real demo state).
+ * Tray is lowest priority (deferred).
  */
 export function App() {
   return (
@@ -25,6 +26,114 @@ export function App() {
       </DemoProvider>
     </ErrorBoundary>
   );
+}
+
+/**
+ * Derive the display state of each agency row based on the current beat index.
+ * Returns a tuple: [role, state, variant] for each agency section.
+ * Variant controls CSS styling (alarm/watch, judgment, outreach, synthesis, etc.).
+ * This narrates the loop's progression without fabricating live agent data.
+ */
+function deriveAgencyState(beatIndex: number): Array<{
+  role: string;
+  state: string;
+  variant?: string;
+}> {
+  const beat = beatIndex + 1; // 1-based
+
+  // Beats 1-2: Observe phase, everything calm/pending
+  if (beat <= 2) {
+    return [
+      { role: "GTM", state: "◯ reading", variant: "pending" },
+      { role: "Product", state: "◯ pending", variant: "pending" },
+      { role: "Security", state: "◯ pending", variant: "pending" },
+      { role: "Launch", state: "◯ pending", variant: "pending" },
+      { role: "Gate", state: "—", variant: "idle" },
+      { role: "Eval", state: "—", variant: "idle" },
+    ];
+  }
+
+  // Beats 3-4: False green detected, GTM read, Product MISSED appears
+  if (beat <= 4) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "◯ reading", variant: "pending" },
+      { role: "Launch", state: "◯ pending", variant: "pending" },
+      { role: "Gate", state: "—", variant: "idle" },
+      { role: "Eval", state: "—", variant: "idle" },
+    ];
+  }
+
+  // Beat 5: GovernanceCase surfaces, Security required appears
+  if (beat <= 5) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "● required", variant: "judgment" },
+      { role: "Launch", state: "◯ pending", variant: "pending" },
+      { role: "Gate", state: "—", variant: "idle" },
+      { role: "Eval", state: "—", variant: "idle" },
+    ];
+  }
+
+  // Beats 6-7: Enforce begins, operator approves, status flip happens
+  if (beat <= 7) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "● required", variant: "judgment" },
+      { role: "Launch", state: "◯ pending", variant: "pending" },
+      { role: "Gate", state: "◯ active", variant: "watching" },
+      { role: "Eval", state: "—", variant: "idle" },
+    ];
+  }
+
+  // Beats 8-10: Workstream, owners, blocked action — Gate becomes DENY here
+  if (beat <= 10) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "● required", variant: "judgment" },
+      { role: "Launch", state: "◯ assigned", variant: "watching" },
+      { role: "Gate", state: "⊗ DENY", variant: "alarm" },
+      { role: "Eval", state: "—", variant: "idle" },
+    ];
+  }
+
+  // Beat 11: Audit phase begins, Gate DENY stays
+  if (beat <= 11) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "● required", variant: "judgment" },
+      { role: "Launch", state: "◯ assigned", variant: "watching" },
+      { role: "Gate", state: "⊗ DENY", variant: "alarm" },
+      { role: "Eval", state: "◯ auditing", variant: "watching" },
+    ];
+  }
+
+  // Beats 12-13: Improve phase, second pass eval begins
+  if (beat <= 13) {
+    return [
+      { role: "GTM", state: "◉ read", variant: "done" },
+      { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+      { role: "Security", state: "● required", variant: "judgment" },
+      { role: "Launch", state: "◯ assigned", variant: "watching" },
+      { role: "Gate", state: "⊗ DENY", variant: "alarm" },
+      { role: "Eval", state: "◯ improving", variant: "watching" },
+    ];
+  }
+
+  // Beat 14: Final state — Eval shows PASS, loop complete
+  return [
+    { role: "GTM", state: "◉ read", variant: "done" },
+    { role: "Product", state: "⊘ MISSED", variant: "alarm" },
+    { role: "Security", state: "● required", variant: "judgment" },
+    { role: "Launch", state: "◯ assigned", variant: "watching" },
+    { role: "Gate", state: "⊗ DENY", variant: "alarm" },
+    { role: "Eval", state: "✓ PASS", variant: "synthesis" },
+  ];
 }
 
 function DemoShell() {
@@ -44,6 +153,8 @@ function DemoShell() {
     previousIndexRef.current = i;
     titleRef.current?.focus();
   }, [i]);
+
+  const agencyState = deriveAgencyState(i);
 
   return (
     <div className="app">
@@ -134,36 +245,27 @@ function DemoShell() {
             </div>
           </section>
 
-          {/* Right rail: static agency/gate/eval architecture */}
+          {/* Right rail: agency/gate/eval architecture — derives state from beat index */}
           <aside className="rail-right">
             <div className="rail-header">
-              <span className="rail-label">Agency Architecture</span>
+              <span className="rail-label">Loop Progression</span>
             </div>
             <div className="agency-diagram">
-              <div className="agency-section">
-                <div className="agency-role">GTM</div>
-                <div className="agency-state">◉ read</div>
-              </div>
-              <div className="agency-section">
-                <div className="agency-role">Product</div>
-                <div className="agency-state">⊘ missed</div>
-              </div>
-              <div className="agency-section">
-                <div className="agency-role">Security</div>
-                <div className="agency-state">● required</div>
-              </div>
-              <div className="agency-section">
-                <div className="agency-role">Launch</div>
-                <div className="agency-state">◯ pending</div>
-              </div>
-              <div className="agency-section agency-gate">
-                <div className="agency-role">Gate</div>
-                <div className="agency-state">DENY</div>
-              </div>
-              <div className="agency-section agency-eval">
-                <div className="agency-role">Eval</div>
-                <div className="agency-state">PASS</div>
-              </div>
+              {agencyState.map((item) => (
+                <div
+                  key={item.role}
+                  className={`agency-section${
+                    item.variant === "alarm" ? " agency-alarm" : ""
+                  }${item.variant === "judgment" ? " agency-judgment" : ""}${
+                    item.variant === "watching" ? " agency-watching" : ""
+                  }${item.variant === "synthesis" ? " agency-synthesis" : ""}${
+                    item.variant === "idle" ? " agency-idle" : ""
+                  }${item.variant === "done" ? " agency-done" : ""}`}
+                >
+                  <div className="agency-role">{item.role}</div>
+                  <div className="agency-state">{item.state}</div>
+                </div>
+              ))}
             </div>
           </aside>
         </main>

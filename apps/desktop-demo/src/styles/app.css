@@ -48,8 +48,8 @@ body {
 }
 
 .skip-link {
-  position: absolute; top: var(--space-2, 8px); left: var(--space-2, 8px);
-  z-index: 10; min-height: 44px; display: inline-flex; align-items: center;
+  position: fixed; top: var(--space-2, 8px); left: var(--space-2, 8px);
+  z-index: 1000; min-height: 44px; display: inline-flex; align-items: center;
   padding: 0 var(--space-4, 16px); border-radius: var(--radius-2, 6px);
   border: 0; font: inherit; cursor: pointer;
   background: var(--demo-focus-ring); color: var(--ink, #0F0F10);
@@ -636,6 +636,44 @@ button { touch-action: manipulation; }
 .agency-section.agency-eval {
   border-color: var(--synthesis-edge, rgba(123,168,140,0.30));
   background: var(--synthesis-bg, rgba(123,168,140,0.06));
+}
+
+/* Agency state variants — derived from beat index */
+.agency-section.agency-idle {
+  border-color: var(--card-border, #232327);
+  background: var(--frame-bg, #0E0E11);
+  opacity: 0.5;
+}
+
+.agency-section.agency-pending {
+  border-color: var(--card-border, #232327);
+  background: var(--frame-bg, #0E0E11);
+  opacity: 0.7;
+}
+
+.agency-section.agency-done {
+  border-color: var(--synthesis-edge, rgba(123,168,140,0.30));
+  background: var(--synthesis-bg, rgba(123,168,140,0.06));
+}
+
+.agency-section.agency-watching {
+  border-color: var(--watch-edge, rgba(254,193,37,0.30));
+  background: var(--watch-bg, rgba(254,193,37,0.08));
+}
+
+.agency-section.agency-alarm {
+  border-color: var(--outreach-edge, rgba(213,77,68,0.30));
+  background: var(--outreach-bg, rgba(213,77,68,0.12));
+}
+
+.agency-section.agency-judgment {
+  border-color: var(--judgment-edge, rgba(201,169,97,0.30));
+  background: var(--judgment-bg, rgba(201,169,97,0.08));
+}
+
+.agency-section.agency-synthesis {
+  border-color: var(--signal, #70F32F);
+  background: var(--signal-bg, rgba(112,243,47,0.08));
 }
 
 .agency-role {
