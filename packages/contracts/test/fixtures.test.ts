@@ -49,7 +49,9 @@ test("must-not-cut #4: simulated Linear workstream requires Product/Security/Eng
 });
 
 test("must-not-cut #5: a downstream customer action is blocked until corrected", () => {
-  assert.equal(acmeScenario.blockedAction.blocked, true);
+  // gated ⇒ has at least one reason (and is therefore not allowed)
+  assert.ok(acmeScenario.blockedAction.reasons.length > 0);
+  assert.ok(acmeScenario.blockedAction.requiredBeforeSend.length > 0);
   assert.equal(acmeScenario.blockedAction.caseId, acmeScenario.governanceCase.id);
 });
 

@@ -91,8 +91,8 @@ test("must-not-cut #5: gateDownstreamAction blocks the customer update until cor
 
   const gate = await gateDownstreamAction(store, GATED_CUSTOMER_ACTION, acmeScenario.governanceCase.id, idGen);
 
-  assert.equal(gate.blocked, true);
-  assert.equal(gate.unblockedByCaseCorrection, true);
+  assert.ok(gate.reasons.length > 0, "a gated action carries at least one reason");
+  assert.ok(gate.requiredBeforeSend.length > 0, "and what must hold before it sends");
   assert.deepEqual(gate, acmeScenario.blockedAction);
   assert.equal(await store.isBlocked(GATED_CUSTOMER_ACTION), true);
   assert.equal(await store.isBlocked("some other action"), false);

@@ -52,7 +52,7 @@ export const DEMO_STEPS: DemoStep[] = [
   { n: 9, phase: "enforce", title: "Product / Security / Engineering owners required",
     summary: `Required owners: ${s.requiredOwners.join(", ")}.` },
   { n: 10, phase: "enforce", title: "False customer-facing update is blocked", mustNotCut: 5,
-    summary: s.blockedAction.reason },
+    summary: s.blockedAction.reasons[0] ?? "Blocked until the governance case is corrected." },
   { n: 11, phase: "audit", title: "AuditEvent recorded", mustNotCut: 6,
     summary: `AuditEvent ${s.auditEvent.id} — correction + deciding actor.` },
   { n: 12, phase: "improve", title: "EvalCase generated",

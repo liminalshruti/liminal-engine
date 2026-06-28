@@ -19,6 +19,15 @@ export const auditEventShape = z.object({
   previousStatus: dealStatus,
   newStatus: dealStatus,
   recordedAt: z.string().datetime(),
+  // SPEC.md extensions — optional; only projected into the hash when present.
+  // beforeState/afterState are free-form snapshots; prevHash chains the ledger.
+  beforeState: z.record(z.unknown()).optional(),
+  afterState: z.record(z.unknown()).optional(),
+  evidenceIds: z.array(z.string().min(1)).optional(),
+  actionIds: z.array(z.string().min(1)).optional(),
+  evalIds: z.array(z.string().min(1)).optional(),
+  affectedSystems: z.array(z.string().min(1)).optional(),
+  prevHash: z.string().min(1).optional(),
 });
 export type AuditEvent = z.infer<typeof auditEventShape>;
 
@@ -35,6 +44,13 @@ export const auditEventContract = defineContract({
     previous_status: e.previousStatus,
     new_status: e.newStatus,
     recorded_at: e.recordedAt,
+    ...(e.beforeState !== undefined ? { before_state: e.beforeState } : {}),
+    ...(e.afterState !== undefined ? { after_state: e.afterState } : {}),
+    ...(e.evidenceIds !== undefined ? { evidence_ids: e.evidenceIds } : {}),
+    ...(e.actionIds !== undefined ? { action_ids: e.actionIds } : {}),
+    ...(e.evalIds !== undefined ? { eval_ids: e.evalIds } : {}),
+    ...(e.affectedSystems !== undefined ? { affected_systems: e.affectedSystems } : {}),
+    ...(e.prevHash !== undefined ? { prev_hash: e.prevHash } : {}),
   }),
 });
 
