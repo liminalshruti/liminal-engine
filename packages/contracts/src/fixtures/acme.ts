@@ -3,6 +3,10 @@
  * Deterministic fixtures the demo spine renders. Every field is validated through
  * its contract (see fixtures.test.ts), so the demo can't drift from the contracts.
  *
+ * SINGLE SOURCE (LIM-1165 AC#2): every screen reads the demo's Acme data from the
+ * `acmeScenario` object exported here (and the `acmeDemoBeats` display copy). No
+ * screen hardcodes its own copy of the goal / agent claim / dropped requirement.
+ *
  * Persona rule: `decidingActor` is a ROLE, never an invented name.
  */
 import { agentOutputContract, type AgentOutput } from "../agent-output.contract.ts";
@@ -18,6 +22,23 @@ export const acmeBusinessGoal = "Close Acme expansion by Friday — $1.2M ARR";
 
 /** Workstream owners the simulated Linear panel requires (must-not-cut #4). */
 export const acmeRequiredOwners = ["Product", "Security", "Engineering"] as const;
+
+/**
+ * Demo-beat DISPLAY copy for steps 2–4 (LIM-1165 demo beats), quoted VERBATIM from
+ * DEMO_CONTRACT.md. This is presentation text the screens render — kept separate
+ * from the contract-hashed fixture fields above so the on-screen wording can match
+ * the contract exactly without changing any golden hash. The underlying facts
+ * (on-track status, the dropped requirement) live in the validated fixtures and
+ * are tied to these strings by `acme-beats.test.ts`.
+ */
+export const acmeDemoBeats = {
+  /** Step 2 — show the Acme business goal. */
+  goal: acmeBusinessGoal,
+  /** Step 3 — the false green: agent output as the operator first sees it. */
+  agentClaim: "Acme expansion appears on track",
+  /** Step 4 — reveal the silently dropped, load-bearing customer requirement. */
+  droppedRequirement: "EU data residency",
+} as const;
 
 // Pass 1: the false green — reads on-track while EU data residency was dropped.
 export const acmeAgentOutputPass1: AgentOutput = agentOutputContract.parse({
@@ -110,10 +131,11 @@ export const acmeEvalPass2: EvalResult = evalResultContract.parse({
 /** The whole locked scenario, in 14-step demo-path order (DEMO_CONTRACT). */
 export const acmeScenario = {
   businessGoal: acmeBusinessGoal,
+  demoBeats: acmeDemoBeats,
+  requiredOwners: acmeRequiredOwners,
   agentOutputPass1: acmeAgentOutputPass1,
   governanceCase: acmeGovernanceCase,
   enforcementAction: acmeEnforcementAction,
-  requiredOwners: acmeRequiredOwners,
   blockedAction: acmeBlockedAction,
   auditEvent: acmeAuditEvent,
   evalCase: acmeEvalCase,
