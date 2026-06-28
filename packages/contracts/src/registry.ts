@@ -26,6 +26,7 @@ import {
 import { DRIFT_SIGNAL_SCHEMA, driftSignalContract, driftSignalGoldenVectors } from "./drift-signal.contract.ts";
 import { LLM_REQUEST_SCHEMA, llmRequestContract, llmRequestGoldenVectors } from "./llm-request.contract.ts";
 import { LLM_OUTCOME_SCHEMA, llmOutcomeContract, llmOutcomeGoldenVectors } from "./llm-outcome.contract.ts";
+import { LLM_CALL_OUTCOME_SCHEMA, llmCallOutcomeContract, llmCallOutcomeGoldenVectors } from "./llm-outcome.contract.ts";
 import { ENDPOINT_CONFIG_SCHEMA, endpointConfigContract, endpointConfigGoldenVectors } from "./endpoint-config.contract.ts";
 import { TRANSFORM_RULE_SCHEMA, transformRuleContract, transformRuleGoldenVectors } from "./transform-rule.contract.ts";
 import { RESOURCE_ALLOCATION_SCHEMA, resourceAllocationContract, resourceAllocationGoldenVectors } from "./resource-allocation.contract.ts";
@@ -68,6 +69,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: DRIFT_SIGNAL_SCHEMA, contract: driftSignalContract, vectors: driftSignalGoldenVectors },
   { schema: LLM_REQUEST_SCHEMA, contract: llmRequestContract, vectors: llmRequestGoldenVectors },
   { schema: LLM_OUTCOME_SCHEMA, contract: llmOutcomeContract, vectors: llmOutcomeGoldenVectors },
+  { schema: LLM_CALL_OUTCOME_SCHEMA, contract: llmCallOutcomeContract, vectors: llmCallOutcomeGoldenVectors },
   { schema: ENDPOINT_CONFIG_SCHEMA, contract: endpointConfigContract, vectors: endpointConfigGoldenVectors },
   { schema: TRANSFORM_RULE_SCHEMA, contract: transformRuleContract, vectors: transformRuleGoldenVectors },
   { schema: RESOURCE_ALLOCATION_SCHEMA, contract: resourceAllocationContract, vectors: resourceAllocationGoldenVectors },
