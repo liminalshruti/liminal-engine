@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 const appCss = await readSource("./styles/app.css");
+const designTokens = await readSource("./styles/design-tokens.css");
 const appShell = await readSource("./App.tsx");
 const evalTable = await readSource("./components/EvalTable.tsx");
 const secondPassEval = await readSource("./screens/SecondPassEval.tsx");
@@ -41,10 +42,27 @@ function contrastRatio(foreground: string, background: string): number {
 }
 
 function cssHexVariable(name: string): string {
-  const pattern = new RegExp(`--${name}:\\s*(#[0-9A-Fa-f]{6})\\s*;`);
-  const match = pattern.exec(appCss);
+  let source = appCss + designTokens; // Check both files
+  const pattern = new RegExp(`--${name}:\\s*([^;]+);`);
+  let match = pattern.exec(source);
   assert.ok(match, `missing CSS color variable --${name}`);
-  return match[1]!;
+  let value = match[1]!.trim();
+
+  // Resolve var() references by following the chain
+  let maxIterations = 10;
+  while (value.startsWith("var(") && maxIterations-- > 0) {
+    const varName = value.match(/var\(--([^,)]+)/)?.[1];
+    if (!varName) break;
+    const varPattern = new RegExp(`--${varName}:\\s*([^;]+);`);
+    const varMatch = varPattern.exec(source);
+    if (!varMatch) break;
+    value = varMatch[1]!.trim();
+  }
+
+  // Extract hex color if present
+  const hexMatch = /#[0-9A-Fa-f]{6}/.exec(value);
+  assert.ok(hexMatch, `could not resolve hex color for --${name}: ${value}`);
+  return hexMatch[0]!;
 }
 
 test("LIM-1244: demo shell exposes keyboard skip, current-step, and focus context", () => {
