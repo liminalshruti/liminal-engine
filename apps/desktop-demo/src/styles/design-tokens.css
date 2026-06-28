@@ -866,9 +866,10 @@
     var(--depth-wash) 40%,
     transparent 70%);
 
-  /* ─── 4 · ink (5 tiers) ─────────────────────────────────── */
+  /* ─── 4 · ink (6 tiers · updated 2026-06-27) ─────────────────────────────────── */
   --text:         #F4F2EE;
   --text-mid:     #C9C5BD;
+  --text-soft:    #B8B5AE;    /* app-chrome labels · slightly softer than --text-mid */
   --text-dim:     #8A8780;
   /* --text-faint a11y history (corrected 2026-06-19):
        · 2026-05-12 pass 1: #5A5852 → #6B6862. The note then claimed this
@@ -1129,6 +1130,14 @@
   --resolved-edge:    rgba(110, 195, 168, 0.22);
 
   --gold:             #C9AD5E;   /* warm accent · selected/signed emphasis */
+
+  /* demo-specific palette · eval table pass/fail indicators (desktop-demo app)
+     Added 2026-06-27: UI-binding colors for the governance demo's eval matrix.
+     These are app-scoped, not exported to other surfaces.
+  */
+  --demo-focus-ring:  var(--watch-500);    /* amber focus · keyboard nav, active states */
+  --demo-pass-text:   #A8DDB9;              /* sage green · passing eval result */
+  --demo-fail-text:   #FF9A90;              /* coral red · failing eval result */
 
   /* interaction overlays · white-alpha states on dark chrome */
   --hover-strong:     rgba(255, 255, 255, 0.08);
