@@ -19,7 +19,11 @@ export function LinearPayloadView({ payload, className }: LinearPayloadViewProps
   const { title, workstreams, requiredOwners } = payload;
 
   return (
-    <div className={`linear-payload${className ? ` ${className}` : ""}`}>
+    <div
+      className={`linear-payload${className ? ` ${className}` : ""}`}
+      role="region"
+      aria-label="Simulated Linear workstream"
+    >
       <div className="linear-payload__header">
         <span className="linear-payload__simulated-badge">Simulated</span>
         <h3 className="linear-payload__title">{title}</h3>
