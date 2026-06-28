@@ -6,6 +6,26 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1372 real-product contracts, signal harness, Gemini REST receipts (2026-06-28)
+- Added shared-kernel contracts for `DriftSignal`, `LlmRequest`, `LlmOutcome`,
+  `EndpointConfig`, `TransformRule`, `ResourceAllocation`, `RoutingRule`, and
+  `NlIntent`, all exported from `@liminal-engine/contracts`, registered in the
+  golden contract registry, and covered by invariant tests.
+- Added `packages/signal-harness`, a real deterministic harness that detects
+  requirement drift from arbitrary active requirements + agent output, applies
+  transform rules, routes signals/intents through endpoint configs, and creates
+  role resource allocations for severe open signals.
+- Expanded `packages/eval-harness` with contract-validated read results plus pure
+  eval-case generation and requirement-coverage grading from real inputs, while
+  retaining the upstream rule-health table.
+- Expanded `packages/ui-components` with framework-agnostic view-model helpers for
+  signals, endpoint configs, NL intents, resource allocations, routing rules, and
+  eval summaries.
+- Added `GeminiRestAgentOutputSource`, a real Gemini REST adapter that constructs
+  `generateContent` requests, parses contract-shaped `AgentOutput`, and records
+  `LlmRequest`/`LlmOutcome` receipts. The upstream cache-backed
+  `GeminiAgentOutputSource` and deterministic fixture source remain available.
+
 ### Added — LIM-1367 policy intercept control plane (2026-06-28)
 - `packages/contracts/src/action-policy-rule.contract.ts` — a separate learned
   allow/deny/ask action-policy contract for intercepted tool actions. This avoids
