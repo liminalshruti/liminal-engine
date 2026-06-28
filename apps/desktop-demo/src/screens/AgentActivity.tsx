@@ -29,7 +29,7 @@
  * screen has no simulated or stubbed panel, so nothing carries a "Simulated" badge —
  * that label is reserved for the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
-import { Card, StatusBadge } from "../components";
+import { Card, StatusBadge, GeminiVisibility } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
@@ -55,6 +55,11 @@ export function AgentActivity() {
           Reported status: <StatusBadge status={agentOutputPass1.reportedStatus} />
         </p>
         <p className="screen__fact">{agentOutputPass1.summary}</p>
+        {agentOutputPass1.agentMetadata && (
+          <div className="screen__fact screen__fact--agent-visibility">
+            <GeminiVisibility agentMetadata={agentOutputPass1.agentMetadata} />
+          </div>
+        )}
       </Card>
     </section>
   );
