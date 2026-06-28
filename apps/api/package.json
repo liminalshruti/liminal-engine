@@ -1,0 +1,27 @@
+{
+  "name": "@liminal-engine/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Liminal Engine governance loop as a composable HTTP service",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "node src/index.ts",
+    "build": "tsc",
+    "test": "node --test \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/eval-harness": "workspace:*",
+    "@liminal-engine/engine-core": "workspace:*",
+    "@liminal-engine/governance": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22.6.0"
+  }
+}

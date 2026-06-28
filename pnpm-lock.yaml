@@ -21,6 +21,28 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
+  apps/api:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@liminal-engine/engine-core':
+        specifier: workspace:*
+        version: link:../../packages/engine-core
+      '@liminal-engine/eval-harness':
+        specifier: workspace:*
+        version: link:../../packages/eval-harness
+      '@liminal-engine/governance':
+        specifier: workspace:*
+        version: link:../../packages/governance
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.2
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+
   apps/desktop-demo:
     dependencies:
       '@liminal-engine/contracts':
