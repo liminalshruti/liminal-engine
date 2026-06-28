@@ -10,4 +10,5 @@
 export * from "./ports.ts";
 export * from "./use-cases.ts";
 export * from "./approve-enforce.ts";
+export * from "./audit-ledger.ts";
 export * from "./audit-reconstruction.ts";
