@@ -84,6 +84,60 @@
       "canonical_string": "{\"action\":\"Send customer-facing status update to Acme\",\"case_id\":\"gc_acme_eu\",\"id\":\"ag_acme_update\",\"reasons\":[\"Open governance case gc_acme_eu requires EU data residency correction before a customer-facing on-track update.\"],\"required_before_send\":[\"Propagate the EU data residency requirement into the Acme workstream.\",\"Assign Product, Security, and Engineering owners.\",\"Pass the EU data residency EvalCase.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"verdict\":\"deny\"}",
       "sha256": "feec16b31ac1258b827d93547c85226424a5899be10604fa8100a10aaca072a8"
     },
+    "liminal_engine.action_gate.v2::policy-auto-deny-from-learned-rule": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "auto-verdict from a learned policy rule — carries source:policy + sourceRuleId (the PR-#20 replay decay step)",
+      "input": {
+        "id": "ag_pr20_replay",
+        "caseId": "gc_pr20_dual_review",
+        "action": "Merge PR#35 without dual reviewer approval",
+        "verdict": "deny",
+        "reasons": [
+          "Learned policy rule denies merging a pull request without both required reviewers approving."
+        ],
+        "requiredBeforeSend": [
+          "Obtain approval from both required reviewers before merging."
+        ],
+        "source": "policy",
+        "sourceRuleId": "pr_rule_dual_review_v1"
+      },
+      "canonical_string": "{\"action\":\"Merge PR#35 without dual reviewer approval\",\"case_id\":\"gc_pr20_dual_review\",\"id\":\"ag_pr20_replay\",\"reasons\":[\"Learned policy rule denies merging a pull request without both required reviewers approving.\"],\"required_before_send\":[\"Obtain approval from both required reviewers before merging.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"policy\",\"source_rule_id\":\"pr_rule_dual_review_v1\",\"verdict\":\"deny\"}",
+      "sha256": "2e3c9c8b331277f51abcaf737fb6312877b42b3010d042cca689a2d4171b6d74"
+    },
+    "liminal_engine.action_gate.v2::default-deny-fail-closed": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "fail-closed verdict — policy store/gateway unreachable, so a consequential action defaults to deny with source:default-deny",
+      "input": {
+        "id": "ag_fail_closed",
+        "caseId": "gc_store_unreachable",
+        "action": "Force-push to a protected branch",
+        "verdict": "deny",
+        "reasons": [
+          "Policy store unreachable — failing closed on a consequential action."
+        ],
+        "requiredBeforeSend": [
+          "Restore policy store connectivity, then re-evaluate the action."
+        ],
+        "source": "default-deny"
+      },
+      "canonical_string": "{\"action\":\"Force-push to a protected branch\",\"case_id\":\"gc_store_unreachable\",\"id\":\"ag_fail_closed\",\"reasons\":[\"Policy store unreachable — failing closed on a consequential action.\"],\"required_before_send\":[\"Restore policy store connectivity, then re-evaluate the action.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"default-deny\",\"verdict\":\"deny\"}",
+      "sha256": "889acb8d66d19c0b6c1af8947c177f153051e9910e50ea38c3e220bd3f3ac663"
+    },
+    "liminal_engine.action_gate.v2::operator-ratified-allow": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "operator-ratified allow — verdict allow with source:operator; proves source provenance does not alter derived allowance",
+      "input": {
+        "id": "ag_operator_allow",
+        "caseId": "gc_pr20_dual_review",
+        "action": "Merge PR#41 with both required reviewers approving",
+        "verdict": "allow",
+        "reasons": [],
+        "requiredBeforeSend": [],
+        "source": "operator"
+      },
+      "canonical_string": "{\"action\":\"Merge PR#41 with both required reviewers approving\",\"case_id\":\"gc_pr20_dual_review\",\"id\":\"ag_operator_allow\",\"reasons\":[],\"required_before_send\":[],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"operator\",\"verdict\":\"allow\"}",
+      "sha256": "0f33af162df6ec43eeb951602e9fa84ca3031e366858be13749fb999097c957b"
+    },
     "liminal_engine.eval_case.v1::acme-eu-residency-case": {
       "schema": "liminal_engine.eval_case.v1",
       "purpose": "eval case generated from the EU-residency governance case",
