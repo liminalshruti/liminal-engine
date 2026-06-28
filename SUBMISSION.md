@@ -33,8 +33,8 @@ gaps remain — is in **`JUDGING_MAP.md`**.
 - [x] Entire git history begins with the hackathon (clean net-new boundary,
       first commit is t=0).
 - [x] **MIT `LICENSE`** present at repo root.
-- [ ] Final check before judges: confirm no secrets / `.env` / unrelated sibling
-      projects are included, and the README/demo reflect the final build.
+- [x] **Final verification passed** — no secrets / `.env` / unrelated sibling
+      projects included; README and demo reflect final build; all tests green.
 
 ## Demo readiness
 
