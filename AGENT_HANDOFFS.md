@@ -5,6 +5,50 @@ this first.
 
 ---
 
+## Session: LIM-1239 agent-activity trace cards (2026-06-28)
+
+**Did:**
+- Claimed LIM-1239 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1239` on branch
+  `agent/LIM-1239-agent-activity-trace-cards`.
+- Replaced the `AgentActivity` stub with fixture-backed beat #3 rendering:
+  the false-green `Acme expansion appears on track` claim, On Track status badge,
+  first-pass summary, per-agent trace cards, and an explicit missing-requirement
+  evidence line.
+- Added `AgentActivityTrace.ts` and focused tests so the trace cards are derived
+  from `acmeScenario` artifacts, prove the `EU data residency` requirement was
+  present in the customer call but missing from the first-pass output, and fail
+  closed on fixture drift.
+- Added scoped CSS for the AgentActivity trace-card grid and evidence line. No
+  contract, fixture, golden, live integration, or persona-name changes.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/AgentActivityTrace.test.ts` green
+  (6 tests).
+- `pnpm --filter @liminal-engine/desktop-demo typecheck` green.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `pnpm verify` green: root typecheck, app typecheck, 100 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live Gemini/Linear/LiveKit calls; no invented
+  persona names.
+- Did not merge or move Linear to Done.
+
+**Next session should:**
+- Review the LIM-1239 PR alongside the overlapping LIM-1217/LIM-1236
+  AgentActivity PRs and merge in an order that preserves the false-green base,
+  inline dropped-requirement highlight, and these trace cards.
+
+**Risks / watch:**
+- The app-safe source artifact is derived from `agentOutputPass1.dealName`
+  because the richer call transcript is not a spine-safe fixture yet. If a
+  transcript fixture lands in `@liminal-engine/contracts/fixtures`, use that as
+  the source artifact without importing `packages/integrations/*`.
+
+---
+
 ## Session: LIM-1238 second-pass causal table (2026-06-28)
 
 **Did:**

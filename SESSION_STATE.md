@@ -2,6 +2,23 @@
 
 Current state of the build, right now. Keep this short and true.
 
+## As of: LIM-1239 agent-activity trace cards branch ready (2026-06-28)
+
+- **LIM-1239 branch:** `agent/LIM-1239-agent-activity-trace-cards` upgrades
+  `AgentActivity` with fixture-backed per-agent trace cards for Product,
+  Security, and Engineering roles plus a visible missing-requirement evidence
+  line.
+- **Demo path impact:** beat #3 / MNC#1 still shows the false-green claim
+  `Acme expansion appears on track`, now with artifact trace cards showing the
+  Acme goal/workstream artifacts each agent used and the explicit evidence that
+  `EU data residency` was present in the customer call but missing from the
+  first-pass output.
+- **Verification:** focused trace tests, app typecheck, desktop-demo production
+  build, `pnpm verify` (100/100 tests + boundary lint), and `./scripts/smoke.sh`
+  automated checks are green.
+- **No contract drift:** no contract, fixture, or golden changes; no live calls
+  on the demo spine; no invented persona name.
+
 ## As of: LIM-1238 second-pass causal table branch ready (2026-06-28)
 
 - **LIM-1238 branch:** `agent/LIM-1238-second-pass-causal-table` replaces the
