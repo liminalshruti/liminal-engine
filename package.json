@@ -11,7 +11,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "typecheck:app": "pnpm --filter @liminal-engine/desktop-demo typecheck",
-    "test": "node --test \"packages/**/*.test.ts\" \"apps/**/*.test.ts\"",
+    "test": "node --test --test-concurrency=1 \"packages/**/*.test.ts\" \"apps/**/*.test.ts\"",
     "lint:boundaries": "depcruise packages apps",
     "regen:goldens": "node tools/regen-goldens.ts",
     "check:matrix": "node tools/check-conformance-matrix.mjs",

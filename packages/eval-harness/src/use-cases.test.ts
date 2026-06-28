@@ -6,7 +6,13 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { InMemoryEvalStore } from "@liminal-engine/integration-eval-store";
-import { runEvals, toRows } from "./index.ts";
+import {
+  generateEvalCaseFromGovernanceCase,
+  gradeRequirementCoverage,
+  runEvals,
+  summarizeEvalTable,
+  toRows,
+} from "./index.ts";
 
 const DEAL = "deal_acme";
 
@@ -38,4 +44,73 @@ test("toRows renders the Fail -> Pass table for display", () => {
     { pass: 1, criterion: "EU data residency requirement honored", result: "fail" },
     { pass: 2, criterion: "EU data residency requirement honored", result: "pass" },
   ]);
+});
+
+test("generateEvalCaseFromGovernanceCase creates contract-valid eval cases from arbitrary cases", () => {
+  const evalCase = generateEvalCaseFromGovernanceCase(
+    {
+      id: "gc_soc2",
+      dealId: "deal_payments",
+      missedRequirement: "SOC 2 Type II evidence",
+      category: "security",
+      severity: "blocking",
+      status: "open",
+      detectedAt: "2026-06-27T10:00:00.000Z",
+    },
+    {
+      clock: { now: () => "2026-06-27T10:01:00.000Z" },
+      idGen: { next: () => "ec_soc2" },
+    },
+  );
+
+  assert.deepEqual(evalCase, {
+    id: "ec_soc2",
+    dealId: "deal_payments",
+    governanceCaseId: "gc_soc2",
+    criterion: "SOC 2 Type II evidence requirement honored",
+    createdAt: "2026-06-27T10:01:00.000Z",
+  });
+});
+
+test("gradeRequirementCoverage grades arbitrary outputs with real text coverage logic", () => {
+  const evalCase = {
+    id: "ec_soc2",
+    dealId: "deal_payments",
+    governanceCaseId: "gc_soc2",
+    criterion: "SOC 2 Type II evidence requirement honored",
+    createdAt: "2026-06-27T10:01:00.000Z",
+  };
+  const results = gradeRequirementCoverage(
+    evalCase,
+    [
+      {
+        id: "ao_payments_p1",
+        dealId: "deal_payments",
+        dealName: "Enterprise payments",
+        passNumber: 1,
+        reportedStatus: "on-track",
+        summary: "Enterprise payments launch is on track.",
+        droppedRequirements: ["SOC 2 Type II evidence"],
+      },
+      {
+        id: "ao_payments_p2",
+        dealId: "deal_payments",
+        dealName: "Enterprise payments",
+        passNumber: 2,
+        reportedStatus: "at-risk",
+        summary: "Enterprise payments is at-risk until SOC 2 Type II evidence is attached.",
+        droppedRequirements: [],
+      },
+    ],
+    "SOC 2 Type II evidence",
+    (output) => `ev_soc2_p${output.passNumber}`,
+  );
+
+  assert.deepEqual(results.map((result) => result.result), ["fail", "pass"]);
+  assert.deepEqual(summarizeEvalTable(results), {
+    total: 2,
+    pass: 1,
+    fail: 1,
+    improved: true,
+  });
 });
