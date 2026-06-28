@@ -5,6 +5,47 @@ this first.
 
 ---
 
+## Session: LIM-1234 compiled-enforcement preview (2026-06-28)
+
+**Did:**
+- Claimed LIM-1234 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1234` on branch
+  `agent/LIM-1234-compiled-enforcement-preview`.
+- Added `apps/desktop-demo/src/components/EnforcementPreview.tsx`, a contract-typed
+  widget that lists the compiled `EnforcementAction` objects queued for approval.
+- Exported the widget from the desktop-demo component barrel and rendered it in
+  `apps/desktop-demo/src/screens/EnforcementPanel.tsx` before the enforce transition
+  text, so beat #6 shows the rule set before Approve + Enforce.
+- Added responsive CSS for the preview in `apps/desktop-demo/src/styles/app.css`.
+
+**Verified:**
+- `pnpm typecheck:app` green.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `git diff --check` clean.
+- `pnpm verify` green: root typecheck, app typecheck, 68 tests, boundary lint.
+- `./scripts/smoke.sh` automated section green: 68 tests. Manual checklist printed;
+  in-app browser was unavailable, so Vite was started locally and the served modules
+  were checked for routed `EnforcementPreview` rendering and the visible
+  "Compiled EnforcementActions" copy.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no persona names; no invented
+  workstream data.
+- Did not implement the full LIM-1219 enforcement panel expansion, Linear payload
+  view, or blocked-action widgets.
+
+**Next session should:**
+- Let LIM-1219 complete the rest of beats #7-#10 around this preview: status flip,
+  simulated Linear workstream, required owners, and blocked customer update.
+
+**Risks / watch:**
+- The current Acme fixture has one compiled `EnforcementAction`; the preview accepts
+  an array and will render additional compiled actions when the correction compiler
+  or richer fixture starts producing them.
+
+---
+
 ## Session: LIM-1242 audit reconstruction test (2026-06-27 night)
 
 **Did:**
