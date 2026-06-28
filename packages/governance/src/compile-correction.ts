@@ -187,6 +187,24 @@ function templateFor(atom: string, originatingAction: InterceptedAction | undefi
     };
   }
 
+  // LIM-1375: a rejection-shaped merge correction ("never merge with an open
+  // rejection" / "never merge while a review is rejected") must compile to the
+  // structured reviews.rejected condition the policy engine already matches on.
+  // Without this it falls through to the generic "never " branch below, which
+  // scopes to the WHOLE gh pr-merge action with NO condition — so a later clean,
+  // approved PR (reviews.rejected = 0) is denied too, reading as broken not smart.
+  if (normalized.includes("merge") && mentionsRejection(normalized)) {
+    return {
+      verdict: "deny",
+      effectActionType: "block_agent_action",
+      summary: "deny PR merges while any review is rejected",
+      reason: sentence(atom),
+      requiredBefore: "Resolve every rejecting review before merging.",
+      scopeOverride: { tool: "gh", action: "pr-merge", targetPattern: "PR#*" },
+      condition: { field: "reviews.rejected", op: ">=", value: 1 },
+    };
+  }
+
   if (normalized.startsWith("never ")) {
     return {
       verdict: "deny",
@@ -307,6 +325,16 @@ function targetPatternFor(target: string): string {
 function isVague(normalized: string): boolean {
   return normalized.split(/\s+/).length < 3
     || VAGUE_CORRECTION_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+// LIM-1375: detect that a correction is about a rejecting review, so a merge
+// correction can be compiled to the reviews.rejected condition rather than a
+// blanket block. Covers reject/rejects/rejected/rejecting/rejection(s) and the
+// GitHub "changes requested" phrasing for the same concept.
+function mentionsRejection(normalized: string): boolean {
+  return /\breject(?:s|ed|ing|ion|ions)?\b/.test(normalized)
+    || normalized.includes("changes requested")
+    || normalized.includes("requested changes");
 }
 
 function normalize(value: string): string {

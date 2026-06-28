@@ -1,0 +1,20 @@
+[
+  {
+    "type": "message",
+    "user": "U_AE",
+    "ts": "1719479400.000100",
+    "text": "Acme kickoff went well - targeting $1.2M ARR close by Friday."
+  },
+  {
+    "type": "message",
+    "user": "U_ENG",
+    "ts": "1719479700.000200",
+    "text": "Heads up: Acme needs EU data residency. Our default region is US, so we need EU-only storage confirmed before go-live."
+  },
+  {
+    "type": "message",
+    "user": "U_AE",
+    "ts": "1719480000.000300",
+    "text": "Noted. Adding it to the SOW and the readiness workstream."
+  }
+]

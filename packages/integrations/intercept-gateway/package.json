@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/eval-harness": "workspace:*",
     "@liminal-engine/governance": "workspace:*",
     "@liminal-engine/integration-policy-store": "workspace:*",
     "@liminal-engine/policy": "workspace:*"

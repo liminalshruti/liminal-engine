@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:05.000 --> 00:00:18.000
+Account exec: Thanks everyone for joining the Acme expansion kickoff. We're targeting a $1.2M ARR expansion to close by Friday.
+
+00:12:30.000 --> 00:12:58.000
+Acme procurement: To be clear, all EU customer data must remain resident in EU data centers. This is a hard contractual requirement for us, not a preference.
+
+00:13:10.000 --> 00:13:35.000
+Engineering: Understood. Our current default storage region is US, so we'll need to confirm EU-only storage before go-live.
+
+00:21:40.000 --> 00:22:05.000
+Account exec: Great. We'll reflect the data residency commitment in the statement of work and circle back on the required owners.

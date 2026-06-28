@@ -14,6 +14,7 @@ import { createServer } from "node:http";
 import { URL } from "node:url";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { governanceRouter } from "./routes/governance.ts";
+import { livekitRouter } from "./routes/livekit.ts";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
@@ -58,6 +59,12 @@ const routes: Route[] = [
     method: "GET",
     path: /^\/governance\/example$/,
     handler: (req, res) => governanceRouter.example(req, res),
+  },
+  // LiveKit join-token minting (server-side; secret never reaches the browser).
+  {
+    method: "POST",
+    path: /^\/livekit\/token$/,
+    handler: (req, res) => livekitRouter.token(req, res),
   },
   // Health check
   {
@@ -120,6 +127,7 @@ if (isEntryPoint) {
     console.log(`POST /governance/eval — { agentOutputPass1, agentOutputPass2 } → grade the Fail→Pass table`);
     console.log(`POST /governance/loop — { agentOutputPass1, agentOutputPass2, caseEvidence? } → run the full loop`);
     console.log(`GET /governance/example — example request bodies to try on your own data`);
+    console.log(`POST /livekit/token — { room, identity } → mint a LiveKit join token (503 if creds not configured)`);
     console.log(`GET /health — health check`);
   });
 

@@ -1,0 +1,14 @@
+From: procurement@acme.example
+To: deal-desk@vendor.example
+Subject: Acme expansion - data residency before countersignature
+Date: Sat, 27 Jun 2026 09:42:00 +0000
+Message-ID: <acme-proc-001@acme.example>
+
+Hi team,
+
+Legal sign-off is pending data residency confirmation. Please ensure the statement
+of work reflects EU-only storage for all EU customer data before we countersign.
+This is a contractual requirement on our side.
+
+Thanks,
+Acme Procurement

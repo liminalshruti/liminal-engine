@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./govern-slate.css": "./src/styles/govern-slate.css",
+    "./design-tokens.css": "./src/styles/govern-slate.css"
+  },
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/governance": "workspace:*"
