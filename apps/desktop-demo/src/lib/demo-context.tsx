@@ -23,16 +23,32 @@ const DemoContext = createContext<GovernanceDemo | null>(null);
  */
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [demo, setDemo] = useState<GovernanceDemo | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let active = true;
-    void buildGovernanceDemo().then((d) => {
-      if (active) setDemo(d);
-    });
+    buildGovernanceDemo()
+      .then((d) => {
+        if (active) setDemo(d);
+      })
+      .catch((err) => {
+        // The loop can throw (e.g. runGovernanceLoop throws "no governance case
+        // detected" if detectMiss returns null). Surface it loudly instead of
+        // hanging forever on the loading state — the worst on-stage failure mode.
+        if (active) setError(err instanceof Error ? err : new Error(String(err)));
+      });
     return () => {
       active = false;
     };
   }, []);
+
+  if (error) {
+    return (
+      <div className="demo-loading" role="alert">
+        Governance loop failed to run: {error.message}
+      </div>
+    );
+  }
 
   if (!demo) {
     return (
