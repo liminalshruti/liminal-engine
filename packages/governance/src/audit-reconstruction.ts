@@ -1,41 +1,26 @@
 /**
- * Audit reconstruction support for tests and demo proof surfaces.
+ * Audit reconstruction — the RICH case-lifecycle rebuild over a verified chain.
  *
- * The verifier treats AuditEvents as the source of truth: every payload is
- * contract-validated, each event's prevHash must match the canonical hash of the
- * previous event, and reconstruction applies only GovernanceCase snapshots found
- * in the event stream.
+ * The chain itself (hashing, genesis link, tamper-evidence) is owned by
+ * `audit-ledger.ts` (LIM-1229): one hash scheme, one append-only writer. This
+ * module does NOT re-implement hashing or verification — it consumes the ledger's
+ * `verifyChain` / `SealedAuditEvent` and layers the demo-proof reconstruction on
+ * top: full GovernanceCase snapshots, status transitions, and the lifecycle the
+ * audit-completeness claim (beat #11 / MNC#6) asserts against.
+ *
+ * Integrity precedes interpretation: reconstruction first verifies the FULL chain
+ * via the ledger and refuses to rebuild a lifecycle from a tampered log.
  */
 import {
-  auditEventContract,
   governanceCaseContract,
-  sha256Hex,
-  stableStringify,
-  type AuditEvent,
   type GovernanceCase,
   type GovernanceCaseStatus,
 } from "@liminal-engine/contracts";
-
-export interface AuditChainLink {
-  readonly eventId: string;
-  readonly prevHash?: string;
-  readonly eventHash: string;
-}
-
-export interface AuditChainError {
-  readonly code: "prev-hash-mismatch";
-  readonly eventId: string;
-  readonly index: number;
-  readonly expectedPrevHash?: string;
-  readonly actualPrevHash?: string;
-}
-
-export interface AuditChainVerification {
-  readonly ok: boolean;
-  readonly headHash?: string;
-  readonly links: readonly AuditChainLink[];
-  readonly error?: AuditChainError;
-}
+import {
+  verifyChain,
+  type ChainVerification,
+  type SealedAuditEvent,
+} from "./audit-ledger.ts";
 
 export interface GovernanceCaseTransition {
   readonly eventId: string;
@@ -54,61 +39,32 @@ export interface ReconstructedGovernanceCase {
   readonly eventIds: readonly string[];
   readonly actionIds: readonly string[];
   readonly evalIds: readonly string[];
+  /** the eventHash of the verified chain's head (tail) event — the chain anchor. */
   readonly chainHeadHash?: string;
 }
 
-export function hashAuditEvent(event: AuditEvent): string {
-  const parsed = auditEventContract.parse(event);
-  return sha256Hex(`${parsed.prevHash ?? ""}${stableStringify(auditEventContract.canonical(parsed))}`);
-}
-
-export function verifyAuditChain(events: readonly AuditEvent[]): AuditChainVerification {
-  let expectedPrevHash: string | undefined;
-  const links: AuditChainLink[] = [];
-
-  for (let index = 0; index < events.length; index += 1) {
-    const event = auditEventContract.parse(events[index]);
-    if (event.prevHash !== expectedPrevHash) {
-      return {
-        ok: false,
-        headHash: expectedPrevHash,
-        links,
-        error: {
-          code: "prev-hash-mismatch",
-          eventId: event.id,
-          index,
-          expectedPrevHash,
-          actualPrevHash: event.prevHash,
-        },
-      };
-    }
-
-    const eventHash = hashAuditEvent(event);
-    links.push({ eventId: event.id, prevHash: event.prevHash, eventHash });
-    expectedPrevHash = eventHash;
-  }
-
-  return { ok: true, headHash: expectedPrevHash, links };
-}
-
+/**
+ * Rebuild a single case's full lifecycle from the SEALED AuditEvents alone.
+ *
+ * The chain is verified through the ledger (`verifyChain`) — the same hash/genesis
+ * scheme used to write it — so this never re-derives hashes. On a tampered chain
+ * it throws with the ledger's pinpointed reason. Then it folds the case-scoped
+ * events into a current-state snapshot, validating that each event's `beforeState`
+ * matches the reconstructed prior state (so the snapshots themselves are a
+ * coherent timeline, not just a valid hash chain).
+ */
 export function reconstructCaseLifecycleFromEvents(
-  events: readonly AuditEvent[],
+  events: readonly SealedAuditEvent[],
   caseId: string,
 ): ReconstructedGovernanceCase {
-  const chain = verifyAuditChain(events);
-  if (!chain.ok) {
-    const error = chain.error;
+  const chain = verifyChain(events);
+  if (!chain.valid) {
     throw new Error(
-      error
-        ? `audit chain invalid at event ${error.eventId}: expected prevHash ${formatHash(error.expectedPrevHash)}, got ${formatHash(error.actualPrevHash)}`
-        : "audit chain invalid",
+      `audit chain invalid at index ${chain.brokenAt ?? "?"}: ${chain.reason ?? "broken chain"}`,
     );
   }
 
-  const caseEvents = events
-    .map((event) => auditEventContract.parse(event))
-    .filter((event) => event.caseId === caseId);
-
+  const caseEvents = events.filter((event) => event.caseId === caseId);
   if (caseEvents.length === 0) {
     throw new Error(`no audit events found for case ${caseId}`);
   }
@@ -175,15 +131,20 @@ export function reconstructCaseLifecycleFromEvents(
     eventIds,
     actionIds: [...actionIds],
     evalIds: [...evalIds],
-    chainHeadHash: chain.headHash,
+    chainHeadHash: chainHeadHash(events, chain),
   };
+}
+
+/** The eventHash of the verified chain's tail — the anchor a verifier pins to. */
+function chainHeadHash(
+  events: readonly SealedAuditEvent[],
+  chain: ChainVerification,
+): string | undefined {
+  if (!chain.valid || events.length === 0) return undefined;
+  return events[events.length - 1]!.eventHash;
 }
 
 function readCaseSnapshot(state: Record<string, unknown> | undefined): GovernanceCase | undefined {
   if (!state || state.governanceCase === undefined) return undefined;
   return governanceCaseContract.parse(state.governanceCase);
-}
-
-function formatHash(hash: string | undefined): string {
-  return hash ?? "<genesis>";
 }
