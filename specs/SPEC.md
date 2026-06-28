@@ -75,7 +75,7 @@ them; only the **Add** rows are net-new (landed by the foundation task LIM-«con
 | Fail→Pass result | `EvalResult` | exists |
 | Operator correction text | — | **Add** `CorrectionEvent` contract |
 | Simulated Linear workstream | — | **Add** `LinearWorkstreamPayload` contract (project + 6 issues + owners) |
-| Policy rule / approval gate | — | **Add (OPTIONAL/stretch)** `PolicyRule`, `ApprovalGate` — cut-second per cut-lines |
+| Policy rule / approval gate | — | **Add (P0)** `PolicyRule`, `ApprovalGate` — promoted from stretch 2026-06-28 per Demo Spine PRD §11 (demo steps 9 + 11) |
 
 `Workspace`/`BusinessGoal`/`Stream`/`Signal`/`AgentRun`/`ResourceAllocation` from
 the PDFs are **cut** for the MVP — their demo-visible content lives in the Acme
@@ -97,7 +97,8 @@ fixtures (`businessGoal`, `demoBeats`, context cards) rather than as contracts.
   status `on-track → at-risk`; require Product/Security/Engineering owners; create
   the simulated `LinearWorkstreamPayload`; register the proxy block; record one
   `AuditEvent` **via the hash-chained `audit-ledger`** (before/after/evidence/actions/
-  prevHash); generate the `EvalCase`. (PolicyRule + ApprovalGate optional.)
+  prevHash); generate the `EvalCase`. Enforcement also activates the `PolicyRule`
+  + `ApprovalGate` (P0 per PRD §11 — demo steps 9 + 11).
 - **Proxy gate (beat #10, MNC#5):** a check function — attempting "mark on track" /
   "send customer-facing on-track update" returns `{ allowed:false, reasons[],
   requiredBeforeSend[] }` until requirement propagated + owner assigned + eval passed.
@@ -130,7 +131,8 @@ open decision (see TASKS.md LIM-«spine-shell» — Solid / React / Vite-vanilla
   workstream · required owners · blocked future action · AuditEvent · EvalCase ·
   Fail→Pass second pass.
 - **Cut first if slipping:** real Gemini, LiveKit, real Linear API, extra scenarios,
-  extra blocked-action types, PolicyRule/ApprovalGate, resource-allocation view.
+  extra blocked-action types, resource-allocation view. (PolicyRule/ApprovalGate
+  promoted to P0 2026-06-28 per Demo Spine PRD §11 — no longer cut-second.)
 - **Never add:** 12-agent swarm · graph DB · RBAC · a dashboard-hero surface ·
   cross-repo refactors · new repos.
 

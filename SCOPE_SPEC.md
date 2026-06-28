@@ -2,7 +2,14 @@
 
 > Hackathon: Liminal Engine Governance Hack 2026
 
-What is in scope for the hackathon build, and what is explicitly out.
+What is in scope for the hackathon build, what is **deferred to a later wave**
+(simulated for the demo, real afterward), and what is **permanently out** by design.
+
+> Three tiers, mirroring `specs/SPEC.md` cut-lines: **in scope** (never cut — the
+> spine) · **deferred / next-wave** (cut-first-if-slipping; simulated now, real
+> later — NOT abandoned) · **never add** (out by design). Do not collapse
+> "deferred" into "out": the real integrations are sequenced after the spine, not
+> cancelled.
 
 ## In scope
 
@@ -15,17 +22,33 @@ What is in scope for the hackathon build, and what is explicitly out.
   - **Eval result** — Fail → Pass across two passes.
 - The governance loop wired through the UI: `observe → detect → correct →
   enforce → audit → improve`.
+- **`PolicyRule` + `ApprovalGate`** as P0 entities (promoted from stretch
+  2026-06-28 per Demo Spine PRD §11): enforcement activates a policy rule and an
+  approval gate (demo steps 9 + 11). Fixture-backed; extend in `contracts`
+  (LIM-1227).
 - **Deterministic fixtures** driving every screen on the demo spine.
 - A `smoke.sh` that runs available build/test and prints the manual checklist.
 
-## Out of scope (this hackathon)
+## Deferred to a later wave (simulated for the demo, NOT cut)
 
-- Real **Gemini** inference (fixtures stand in).
-- Real **LiveKit** voice (scripted/static transcript if shown at all).
-- Real **Linear API** writes (simulated Linear workstream panel).
+Cut-first-if-slipping per `specs/SPEC.md`. Simulated/fixture-backed for the
+hackathon demo; the real version is **next-wave work, not abandoned**. Drop the
+*real* version only under time/stability pressure — the simulated stand-in stays.
+
+- Real **Gemini** inference — fixtures stand in for the demo; real inference is a later wave.
+- Real **LiveKit** voice — scripted/static transcript for the demo; real voice later.
+- Real **Linear API** writes — simulated Linear workstream panel now; real API later.
+- Extra blocked-action types beyond the one demo gate, resource-allocation view, extra scenarios.
+- Multiple scenarios — only Acme for the demo; more scenarios later.
+
+## Out by design (never add)
+
+Permanent exclusions — these are not "later," they are not part of this product
+shape at all (mirrors `specs/SPEC.md` "Never add" + `CLAUDE.md` product locks).
+
+- A metrics **dashboard as the hero** (the loop is the hero; see `CLAUDE.md`).
+- 12-agent swarm · graph DB · RBAC · cross-repo refactors · new repos.
 - Multi-tenant / auth / persistence beyond what the demo needs.
-- Multiple scenarios — only Acme.
-- A metrics dashboard as the hero (explicitly not the hero; see `CLAUDE.md`).
 - Production hardening, CI/CD, deployment.
 
 ## Prior-work boundary
