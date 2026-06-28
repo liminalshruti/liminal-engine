@@ -42,7 +42,7 @@ gaps remain — is in **`JUDGING_MAP.md`**.
       screens filled + merged; the 14-step Acme walkthrough renders.
 - [x] All must-not-cut items visibly present (MNC#1–7 each rendered on screen).
 - [x] Eval table shows Fail → Pass (SecondPassEval, beat #14 / MNC#7).
-- [x] `scripts/smoke.sh` passes; `pnpm verify` green (124 tests, 0 boundary violations).
+- [x] `scripts/smoke.sh` passes; `pnpm verify` green (137 tests, 0 boundary violations).
 - [x] Determinism guaranteed — a test runs the loop twice and asserts identical artifacts.
 - [x] **Screens render live `runGovernanceLoop` output, not raw fixtures** (LIM-1255,
       merged) — all 7 screens read `useDemo()` (the real `buildGovernanceDemo()` result).
