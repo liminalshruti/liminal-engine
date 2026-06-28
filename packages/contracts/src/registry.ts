@@ -12,6 +12,7 @@ import { EVAL_RESULT_SCHEMA, evalResultContract, evalResultGoldenVectors } from 
 import { CORRECTION_EVENT_SCHEMA, correctionEventContract, correctionEventGoldenVectors } from "./correction-event.contract.ts";
 import { LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, linearWorkstreamPayloadContract, linearWorkstreamPayloadGoldenVectors } from "./linear-workstream-payload.contract.ts";
 import { INTERCEPTED_ACTION_SCHEMA, interceptedActionContract, interceptedActionGoldenVectors } from "./intercepted-action.contract.ts";
+import { EVIDENCE_BUNDLE_SCHEMA, evidenceBundleContract, evidenceBundleGoldenVectors } from "./evidence-bundle.contract.ts";
 import { REQUIREMENT_SCHEMA, requirementContract, requirementGoldenVectors } from "./requirement.contract.ts";
 import { REQUIREMENT_EVIDENCE_SCHEMA, requirementEvidenceContract, requirementEvidenceGoldenVectors } from "./requirement-evidence.contract.ts";
 
@@ -38,6 +39,7 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: CORRECTION_EVENT_SCHEMA, contract: correctionEventContract, vectors: correctionEventGoldenVectors },
   { schema: LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, contract: linearWorkstreamPayloadContract, vectors: linearWorkstreamPayloadGoldenVectors },
   { schema: INTERCEPTED_ACTION_SCHEMA, contract: interceptedActionContract, vectors: interceptedActionGoldenVectors },
+  { schema: EVIDENCE_BUNDLE_SCHEMA, contract: evidenceBundleContract, vectors: evidenceBundleGoldenVectors },
   { schema: REQUIREMENT_SCHEMA, contract: requirementContract, vectors: requirementGoldenVectors },
   { schema: REQUIREMENT_EVIDENCE_SCHEMA, contract: requirementEvidenceContract, vectors: requirementEvidenceGoldenVectors },
 ] as unknown as ContractEntry[];
