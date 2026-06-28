@@ -5,6 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Liminal Engine — Agentic Work Governance</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
+
+    @font-face {
+      font-family: "Nineties Headliner";
+      src: url("./fonts/nineties-headliner.otf") format("opentype");
+      font-weight: 400 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Perfectly Nineties";
+      src: url("./fonts/perfectly-nineties-light.otf") format("opentype");
+      font-weight: 300;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Perfectly Nineties";
+      src: url("./fonts/perfectly-nineties-regular.otf") format("opentype");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Perfectly Nineties";
+      src: url("./fonts/PerfectlyNineties-Semibold.otf") format("opentype");
+      font-weight: 600;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Perfectly Nineties";
+      src: url("./fonts/perfectly-nineties-bold.otf") format("opentype");
+      font-weight: 700;
+      font-display: swap;
+    }
+
     :root {
       --bg:           #0A0A0B;
       --frame-bg:     #0E0E11;
@@ -47,6 +84,19 @@
       font-size: 15px;
       line-height: 1.45;
       overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1400px;
+      height: 1400px;
+      background: radial-gradient(circle, rgba(142, 102, 251, 0.08) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .deck-container {
@@ -108,23 +158,26 @@
     }
 
     .slide-title {
-      font-size: 48px;
+      font-family: "Nineties Headliner", system-ui;
+      font-size: 72px;
       font-weight: 700;
-      line-height: 1.2;
-      max-width: 70%;
+      line-height: 1.1;
+      max-width: 90%;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
     .slide-title-main {
       color: var(--text);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .slide-title-accent {
-      background: linear-gradient(120deg, var(--clarity-500), var(--wholeness-500));
+      background: linear-gradient(115deg, #8E66FB 0%, #E90095 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+      font-family: "Nineties Headliner", system-ui;
     }
 
     .slide-body {
@@ -136,27 +189,38 @@
     }
 
     .stat-box {
-      background: var(--frame-bg-2);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 24px;
+      background: transparent;
+      border: 1px solid var(--wholeness-500);
+      border-radius: 8px;
+      padding: 28px;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
+      box-shadow: 0 0 30px rgba(233, 0, 149, 0.15);
+      transition: all 0.3s var(--ease);
+    }
+
+    .stat-box:hover {
+      box-shadow: 0 0 50px rgba(233, 0, 149, 0.25);
+      border-color: var(--alarm-500);
     }
 
     .stat-label {
-      color: var(--text-faint);
-      font-size: 11px;
-      letter-spacing: 0.16em;
+      color: var(--wholeness-500);
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      font-weight: 600;
     }
 
     .stat-value {
       color: var(--text);
-      font-size: 28px;
-      font-weight: 600;
-      line-height: 1.2;
+      font-family: "Nineties Headliner", system-ui;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
     }
 
     .loop-diagram {
@@ -168,22 +232,25 @@
     }
 
     .loop-step {
-      background: var(--frame-bg-3);
+      background: transparent;
       border: 1px solid var(--frame-border);
-      border-radius: 4px;
-      padding: 12px 16px;
-      font-size: 12px;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       color: var(--text-soft);
       min-width: fit-content;
+      transition: all 0.3s var(--ease);
     }
 
     .loop-step.active {
-      background: var(--clarity-100);
-      color: var(--clarity-600);
+      background: transparent;
+      color: var(--clarity-500);
       border-color: var(--clarity-500);
+      box-shadow: 0 0 12px rgba(142, 102, 251, 0.3);
     }
 
     .loop-arrow {
@@ -218,14 +285,15 @@
       width: 100%;
       aspect-ratio: 16/9;
       background: var(--bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border: 2px solid var(--clarity-500);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 24px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 0 40px rgba(142, 102, 251, 0.15), inset 0 0 1px rgba(142, 102, 251, 0.2);
     }
 
     .demo-placeholder {
@@ -270,15 +338,18 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: linear-gradient(135deg, var(--frame-bg-2), var(--frame-bg-3));
-      border: 2px dashed var(--frame-border);
-      color: var(--text-dim);
+      background: linear-gradient(135deg, rgba(14, 14, 17, 0.8), rgba(21, 22, 26, 0.8));
+      border: 2px solid var(--clarity-500);
+      color: var(--clarity-500);
       cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s var(--ease);
     }
 
     .backup-placeholder:hover {
-      border-color: var(--clarity-500);
-      color: var(--clarity-500);
+      border-color: var(--wholeness-500);
+      color: var(--wholeness-500);
+      box-shadow: 0 0 30px rgba(233, 0, 149, 0.2);
     }
 
     .backup-icon {
@@ -300,13 +371,13 @@
     /* Loop progress spine */
     .loop-progress-spine {
       width: 100%;
-      height: 4px;
+      height: 6px;
       background: var(--frame-bg-3);
-      border-radius: 2px;
+      border-radius: 3px;
       margin-bottom: 32px;
       overflow: hidden;
       display: flex;
-      gap: 2px;
+      gap: 3px;
     }
 
     .loop-progress-segment {
@@ -319,6 +390,7 @@
 
     .loop-progress-segment.active {
       background: var(--clarity-500);
+      box-shadow: 0 0 8px var(--clarity-500);
     }
 
     /* Notes panel */
@@ -415,7 +487,19 @@
 
     /* Slide-specific styles */
     .slide-1 {
-      background: linear-gradient(135deg, var(--frame-bg) 0%, var(--frame-bg-2) 100%);
+      background: linear-gradient(135deg, #0A0A0B 0%, #15161A 50%, #0E0E11 100%);
+      position: relative;
+    }
+
+    .slide-1::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 70% 40%, rgba(233, 0, 149, 0.1) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .slide-2 {
@@ -432,7 +516,20 @@
     }
 
     .slide-5 {
-      background: linear-gradient(135deg, var(--frame-bg) 0%, var(--frame-bg-3) 100%);
+      background: linear-gradient(135deg, #0A0A0B 0%, #15161A 100%);
+      /* position comes from .slide (absolute) — do NOT override, it breaks the
+         overlap-nav and pushes the slide below the viewport. */
+    }
+
+    .slide-5::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 60%, rgba(142, 102, 251, 0.08) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .technicality-grid {
@@ -444,31 +541,40 @@
     }
 
     .tech-item {
-      background: var(--frame-bg-2);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
+      background: transparent;
+      border: 1px solid var(--frame-border);
+      border-radius: 8px;
       padding: 20px;
+      transition: all 0.3s var(--ease);
+    }
+
+    .tech-item:hover {
+      border-color: var(--clarity-500);
+      box-shadow: 0 0 20px rgba(142, 102, 251, 0.15);
     }
 
     .tech-label {
       color: var(--clarity-500);
-      font-size: 11px;
-      letter-spacing: 0.16em;
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-weight: 600;
     }
 
     .tech-title {
       color: var(--text);
       font-size: 14px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      line-height: 1.3;
     }
 
     .tech-body {
       color: var(--text-soft);
       font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     .real-badge {
@@ -493,19 +599,25 @@
     }
 
     .close-statement {
-      background: var(--clarity-100);
-      border-left: 4px solid var(--clarity-500);
-      padding: 20px 24px;
-      border-radius: 4px;
-      margin-top: 24px;
+      background: transparent;
+      border-left: none;
+      padding: 32px 0;
+      border-radius: 0;
+      margin-top: 32px;
       width: 100%;
     }
 
     .close-statement-text {
-      color: var(--clarity-600);
-      font-size: 13px;
-      line-height: 1.55;
+      font-family: "Nineties Headliner", system-ui;
+      background: linear-gradient(115deg, #8E66FB 0%, #E90095 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.15;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
     @media (max-width: 1440px) {
@@ -558,7 +670,7 @@
           </div>
 
           <div class="slide-footer">
-            <span class="slide-number">01 / 05</span>
+            <span class="slide-number">01 / 06</span>
             <span>Press → or click to advance</span>
           </div>
         </div>
@@ -603,7 +715,7 @@
           </div>
 
           <div class="slide-footer">
-            <span class="slide-number">02 / 05</span>
+            <span class="slide-number">02 / 06</span>
             <span>↻ Ready to see it work →</span>
           </div>
         </div>
@@ -813,43 +925,23 @@
       <div class="slide slide-5">
         <div class="slide-content">
           <div class="slide-header">
-            <div>
-              <h1 class="slide-title slide-title-main">
-                Why Now
-              </h1>
-              <p style="color: var(--vitality-500); font-size: 16px; margin-top: 8px; font-weight: 600;">
-                Corrections are the moat
-              </p>
+            <div style="font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vitality-500);">
+              ◇ Why now · Corrections are the moat
             </div>
           </div>
 
-          <div class="slide-body">
-            <div>
-              <p style="color: var(--text); font-size: 15px; line-height: 1.55; margin-bottom: 20px;">
-                Every agent system will drift. The teams that can <strong>catch it, enforce it, prove it improved</strong> move faster than teams that just retrain weights.
-              </p>
-
-              <p style="color: var(--text-soft); font-size: 15px; line-height: 1.55; margin-bottom: 24px;">
-                <strong>What Liminal enables:</strong>
-              </p>
-
-              <ul style="list-style: none; color: var(--text-soft); font-size: 14px; line-height: 1.65;">
-                <li style="margin-bottom: 12px;">◇ Corrections become durable eval/policy — continual learning without retraining.</li>
-                <li style="margin-bottom: 12px;">◇ Operators govern any agent, any substrate, any data — one control plane.</li>
-                <li style="margin-bottom: 12px;">◇ The system gets more useful the more it's corrected.</li>
-              </ul>
-            </div>
-
-            <div class="close-statement">
-              <p class="close-statement-text">
-                <strong>Liminal is the governance layer for agentic work that gets smarter every time a human corrects it — it catches drift from the goal, enforces the fix, and proves the next pass improved.</strong>
-              </p>
-            </div>
+          <div class="slide-body" style="justify-content: center; gap: 44px;">
+            <p class="close-statement-text" style="max-width: 24ch;">
+              Corrections become the moat.
+            </p>
+            <p style="color: var(--text-soft); font-size: 24px; line-height: 1.5; max-width: 48ch; font-family: 'Perfectly Nineties', Georgia, serif;">
+              Every agent system drifts. The teams that <strong style="color: var(--text);">catch it, enforce it, and prove the next pass improved</strong> win — and Liminal gets more useful the more it's corrected. <span style="color: var(--clarity-500);">Continual learning, no retraining.</span>
+            </p>
           </div>
 
           <div class="slide-footer">
             <span class="slide-number">06 / 06</span>
-            <span>Questions?</span>
+            <span>The governance layer that gets smarter every time a human corrects it.</span>
           </div>
         </div>
       </div>

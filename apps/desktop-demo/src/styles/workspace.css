@@ -40,8 +40,10 @@
 }
 
 .workspace__goal-input {
-  font-size: clamp(1.25rem, 2.5vw, 1.9rem);
-  font-weight: 600;
+  font-family: var(--display, "Nineties Headliner", "Perfectly Nineties", Georgia, serif);
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1.2;
   background: transparent;
   border: none;
