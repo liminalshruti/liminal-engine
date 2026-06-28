@@ -54,8 +54,10 @@ button { touch-action: manipulation; }
   padding: var(--space-3, 12px) var(--space-5, 20px);
   background: var(--frame-bg, #0E0E11);
   border-bottom: 1px solid var(--card-border, #232327);
+  height: 48px;
+  align-items: center;
 }
-.app__brand { font-weight: 600; letter-spacing: 0; }
+.app__brand { font-weight: 600; letter-spacing: 0; font-size: 0.95rem; }
 .app__scenario { color: var(--text-faint, #8A8780); font-size: 0.85rem; }
 .app__loop {
   margin-left: auto; font-family: var(--font-mono, ui-monospace, monospace);
@@ -78,6 +80,9 @@ button { touch-action: manipulation; }
   padding: var(--space-2, 8px) var(--space-3, 12px); margin-bottom: 2px;
   background: transparent; border: 1px solid transparent; border-radius: var(--radius-2, 6px);
   color: var(--text-faint, #8A8780); cursor: pointer; font: inherit; font-size: 0.82rem;
+  transition: background-color var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1),
+              color var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1);
 }
 .rail__step:hover { background: var(--frame-bg-2, #0C0C0F); color: var(--text, #E8E6E1); }
 .rail__step:focus-visible {
@@ -111,13 +116,35 @@ button { touch-action: manipulation; }
   color: var(--amber-orn, #FDC237);
   padding: 2px 8px; border: 1px solid var(--amber-orn-edge, rgba(253,194,55,0.40)); border-radius: 999px;
 }
-.stage__title { font-family: var(--font-display, var(--font-serif, serif)); font-size: 2rem; line-height: 1.1; margin: 0 0 var(--space-3, 12px); }
+.stage__title {
+  font-family: var(--font-display, var(--font-serif, serif)); font-size: 2rem; line-height: 1.1; margin: 0 0 var(--space-3, 12px);
+  animation: screenTitleFadeIn var(--tx-settle, 0.32s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes screenTitleFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 /* ── stage: the per-beat screen mount (LIM-1226) ── */
 .stage__screen { margin-bottom: var(--space-6, 32px); }
 .screen {
   display: flex; flex-direction: column; gap: var(--space-3, 12px);
   padding: var(--space-6, 32px); border: 1px solid var(--card-border-2, #2A2A2F);
   border-radius: var(--radius-3, 10px); background: var(--frame-bg-2, #0C0C0F);
+  animation: screenCardSlideUp var(--tx-settle, 0.32s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes screenCardSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .screen__intro { margin: 0; font-size: 1.05rem; color: var(--text-soft, #B8B5AE); line-height: 1.5; }
 .screen__fact { margin: 0; font-size: 0.95rem; color: var(--text, #E8E6E1); line-height: 1.5; }
@@ -251,7 +278,7 @@ button { touch-action: manipulation; }
 .enforcement-panel__approval {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
   gap: var(--space-5, 20px); padding: var(--space-5, 20px);
-  background: var(--frame-bg, #0E0E11); border: 1px solid var(--card-border, #232327);
+  background: var(--frame-bg, #0E0E11); border: 1px solid var(--judgment-edge, rgba(201,169,97,0.30));
   border-radius: var(--radius-2, 6px);
 }
 .enforcement-panel__approval-copy { min-width: 0; }
@@ -263,6 +290,7 @@ button { touch-action: manipulation; }
 .enforcement-panel__status-flip {
   display: flex; align-items: center; gap: var(--space-3, 12px);
   padding: var(--space-3, 12px); background: var(--frame-bg-2, #0C0C0F);
+  border: 1px solid var(--judgment-edge, rgba(201,169,97,0.30));
   border-radius: var(--radius-2, 6px);
 }
 .enforcement-panel__status-node {
@@ -272,6 +300,12 @@ button { touch-action: manipulation; }
 .enforcement-panel__arrow {
   color: var(--text-faint, #8A8780); font-family: var(--font-mono, monospace);
   font-size: 1.1rem; line-height: 1;
+  transition: color var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1),
+              opacity var(--tx-base, 0.20s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+.enforcement-panel__status-flip.is-enforced .enforcement-panel__arrow {
+  color: var(--text, #E8E6E1);
+  opacity: 0.9;
 }
 .enforcement-panel__attempt {
   padding: var(--space-5, 20px); background: var(--frame-bg, #0E0E11);
@@ -291,9 +325,29 @@ button { touch-action: manipulation; }
   padding: var(--space-2, 8px) var(--space-5, 20px); border-radius: var(--radius-2, 6px);
   border: 1px solid var(--card-border-2, #2A2A2F); background: var(--frame-bg, #0E0E11);
   color: var(--text, #E8E6E1); cursor: pointer; font: inherit; font-size: 0.9rem;
+  transition: background-color var(--tx-fast, 0.15s) cubic-bezier(0.4, 0, 0.2, 1),
+              color var(--tx-fast, 0.15s) cubic-bezier(0.4, 0, 0.2, 1),
+              border-color var(--tx-fast, 0.15s) cubic-bezier(0.4, 0, 0.2, 1),
+              transform var(--tx-fast, 0.15s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stage__nav button:hover:not(:disabled) {
+  background-color: var(--frame-bg-2, #0C0C0F);
+  border-color: var(--card-border, #232327);
+  transform: scale(1.02);
+}
+.stage__nav button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 .stage__nav button:disabled { opacity: 0.35; cursor: not-allowed; }
-.stage__nav-primary { background: var(--judgment, #C9A961) !important; color: var(--ink, #0F0F10) !important; border-color: transparent !important; font-weight: 600; }
+.stage__nav-primary {
+  background: var(--judgment, #C9A961) !important; color: var(--ink, #0F0F10) !important; border-color: transparent !important; font-weight: 600;
+}
+.stage__nav-primary:hover:not(:disabled) {
+  background: var(--judgment-600, #B8935D) !important;
+}
+.stage__nav-primary:active:not(:disabled) {
+  background: var(--judgment-700, #A6824C) !important;
+}
 
 /* ── components: Card ── */
 .card {
@@ -312,6 +366,9 @@ button { touch-action: manipulation; }
   display: inline-flex; align-items: center; gap: var(--space-2, 8px);
   padding: var(--space-1, 4px) var(--space-3, 12px); border-radius: var(--radius-2, 6px);
   font-size: 0.9rem; font-weight: 500;
+  transition: all var(--tx-emphasize, 0.25s) cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+  opacity: 1;
 }
 .status-badge--on-track {
   background: var(--synthesis-bg, rgba(123,168,140,0.12));
@@ -322,6 +379,19 @@ button { touch-action: manipulation; }
   background: var(--outreach-bg, rgba(213,77,68,0.12));
   border: 1px solid rgba(255,154,144,0.70);
   color: var(--text, #E8E6E1);
+}
+.status-badge.is-new {
+  animation: statusBadgePopIn var(--tx-emphasize, 0.25s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes statusBadgePopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .status-badge__dot {
   display: inline-block; width: 8px; height: 8px; border-radius: 50%;
