@@ -9,3 +9,4 @@
  */
 export * from "./ports.ts";
 export * from "./use-cases.ts";
+export * from "./audit-ledger.ts";
