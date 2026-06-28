@@ -3,82 +3,59 @@
  *   #3  Show the agent output — "Acme expansion appears on track" — the FALSE GREEN
  *       (must-not-cut #1).
  *
- * LIM-1239 layers trace cards onto the LIM-1217 false-green base: the screen still
- * shows the first-pass on-track claim, then proves which fixture-backed artifacts the
- * agent roles used and where the EU data-residency requirement was present but lost.
- * Fixtures only; no live integrations or persona names.
+ * Fills the LIM-1226 «spine-shell-v2» stub (task LIM-1217 «screen-agent-activity»).
+ *
+ * This is the CLEAN base for beat #3 — the OBSERVE phase. It shows the first-pass
+ * agent output exactly as the operator first sees it: a confident on-track report
+ * whose claim and summary never mention the load-bearing EU data-residency
+ * requirement. That requirement is SILENTLY ABSENT here by design — surfacing it now
+ * would steal the later beats. The reveal that a requirement was dropped is the next
+ * screen (beat #4, ContextTray — the DETECT phase, which already derives that insight
+ * from `falseGreenBanner` + lists the dropped requirement), and the formal detection
+ * is beat #5 (GovernanceCase). So this screen deliberately does NOT use
+ * `falseGreenBanner`, flag the drop, or otherwise pre-empt those beats.
+ *
+ * The inline-highlighted "dropped requirement" affordance is a separate UX-depth
+ * layer (LIM-1236) that augments this beat; the structure below (status + verbatim
+ * claim + summary, each a `screen__fact` inside a `Card`) is intentionally shaped so
+ * that layer can be added later without a rewrite. Do not add it here.
+ *
+ * All demo facts come ONLY from the validated Acme fixtures
+ * (`@liminal-engine/contracts/fixtures`) — no live calls, no hardcoded or invented
+ * data (apps/desktop-demo/AGENTS.md Locked Rules #2/#4; the fixtures are the LIM-1165
+ * single source). Framing copy comes from the central demo-copy module
+ * (`../lib/copy.ts`); the false green is composed inside the shared `Card` widget and
+ * the reported status renders through the shared `StatusBadge` (`../components`). This
+ * screen has no simulated or stubbed panel, so nothing carries a "Simulated" badge —
+ * that label is reserved for the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
-import { falseGreenBanner } from "@liminal-engine/ui-components";
 import { Card, StatusBadge } from "../components";
+import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
-import { buildAgentActivityTrace } from "./AgentActivityTrace.ts";
 
 export function AgentActivity() {
-  const {
-    agentOutputPass1,
-    businessGoal,
-    demoBeats,
-    governanceCase,
-    linearWorkstreamPayload,
-  } = acmeScenario;
+  // First-pass agent output (the false green) + the verbatim beat-#3 claim. Neutral,
+  // on-track facts only: the drop is NOT read here (`droppedRequirements` is left for
+  // the beat-#4 reveal), keeping the requirement silently absent on this screen.
+  const { agentOutputPass1, demoBeats } = acmeScenario;
   const copy = SCREEN_COPY.agentActivity;
-  const banner = falseGreenBanner(agentOutputPass1);
-  const trace = buildAgentActivityTrace({
-    businessGoal,
-    agentOutputPass1,
-    governanceCase,
-    linearWorkstreamPayload,
-  });
 
   return (
     <section className="screen screen--agent-activity" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title="False-green agent output" className="agent-activity__claim-card">
-        <div className="agent-activity__status-row">
-          <StatusBadge status={agentOutputPass1.reportedStatus} />
-          <span className={`agent-activity__banner agent-activity__banner--${banner.tone}`}>
-            {banner.label}
-          </span>
-        </div>
-        <p className="agent-activity__claim">{demoBeats.agentClaim}</p>
+      <Card title={copy.title}>
+        <p className="screen__fact">
+          Deal under governance: {agentOutputPass1.dealName} (first-pass agent output)
+        </p>
+        <p className="screen__fact">
+          Agent claim: <strong>{demoBeats.agentClaim}</strong>
+        </p>
+        <p className="screen__fact">
+          Reported status: <StatusBadge status={agentOutputPass1.reportedStatus} />
+        </p>
         <p className="screen__fact">{agentOutputPass1.summary}</p>
-        <p className="agent-activity__false-green-line">{trace.falseGreenLine}</p>
       </Card>
-
-      <div className="agent-trace-grid" aria-label="Per-agent trace cards">
-        {trace.cards.map((card) => (
-          <Card
-            key={card.id}
-            title={card.agentRole}
-            className={`agent-trace-card agent-trace-card--${card.tone}`}
-          >
-            <p className="agent-trace-card__summary">{card.traceSummary}</p>
-            <ul className="agent-trace-card__artifacts" aria-label={`${card.agentRole} artifacts used`}>
-              {card.artifacts.map((artifact) => (
-                <li
-                  key={`${card.id}-${artifact.label}-${artifact.value}`}
-                  className={`agent-trace-card__artifact agent-trace-card__artifact--${artifact.state}`}
-                >
-                  <span className="agent-trace-card__artifact-label">{artifact.label}</span>
-                  <span className="agent-trace-card__artifact-value">{artifact.value}</span>
-                </li>
-              ))}
-            </ul>
-            {card.missingRequirementLine && (
-              <p className="agent-trace-card__missing-line">
-                {card.missingRequirementLine}
-              </p>
-            )}
-          </Card>
-        ))}
-      </div>
-
-      <p className="agent-activity__evidence-line" aria-label="Missing requirement evidence line">
-        <span className="agent-activity__evidence-label">Missing requirement evidence</span>
-        <span>{trace.missingRequirementEvidenceLine.line}</span>
-      </p>
     </section>
   );
 }
