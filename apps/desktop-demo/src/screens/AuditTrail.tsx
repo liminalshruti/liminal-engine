@@ -20,16 +20,17 @@
  */
 import { Card, TraceRow } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 /**
  * AuditTrail screen content — renders audit events with null checks.
  * Throws if required fields are missing (caught by parent ErrorBoundary).
+ *
+ * Everything renders from the live loop output (useDemo()), including the
+ * data-residency redacted ref — no raw fixture import (UI == engine, all 7 screens).
  */
 function AuditTrailContent() {
-  const demo = useDemo();
-  const { auditEvent } = demo;
+  const { auditEvent, dataResidencyRef } = useDemo();
 
   // Null checks for required fields
   if (!auditEvent) {
@@ -48,11 +49,9 @@ function AuditTrailContent() {
     );
   }
 
-  const { dataResidencyRef } = acmeScenario;
-
   if (!dataResidencyRef || !dataResidencyRef.label || !dataResidencyRef.hash) {
     throw new Error(
-      "AuditTrail requires acmeScenario.dataResidencyRef with label and hash but data is incomplete",
+      "AuditTrail requires dataResidencyRef with label and hash but data is incomplete",
     );
   }
 

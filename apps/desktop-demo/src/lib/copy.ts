@@ -7,44 +7,52 @@
  * copy — labels, screen intros, operator-role language.
  *
  * Persona rule (CLAUDE.md / DEMO_CONTRACT): refer to the demo user only by ROLE,
- * never an invented name. The «persona» task (LIM-1190) replaces these strings with
- * persona-accurate copy once a role/persona is extracted from `liminal-prototype`.
+ * never an invented name.
+ *
+ * Register (LIM-1247): the demo's daily-operator persona is distinct from
+ * liminal-prototype's investor/evaluator persona (PRODUCT.md is explicit: that
+ * surface is "evaluative, not operational"). So we do NOT import a name or that
+ * persona — we lift only the canonical REGISTER, marked ADAPTED FROM below:
+ *   // ADAPTED FROM: liminal-prototype/PRODUCT.md "Brand Personality" — bounded,
+ *   //   forensic, inevitable; "judgment infrastructure" framing. Register only.
+ * Forensic = evidence over assertion. Bounded = the system refuses, visibly.
+ * Inevitable = calm, declarative, already-true. Role stays generic.
  */
 
-/** Operator role label — generic until persona extraction. Never an invented name. */
+/** Operator role label — role only, never an invented name (CLAUDE.md lock). */
 export const OPERATOR_ROLE = "VP Ops / Head of AI Transformation";
 
 /** Per-screen framing copy (titles + one-line intros). Facts come from fixtures. */
 export const SCREEN_COPY = {
   initialize: {
     title: "Initialize governance workspace",
-    intro: "Liminal Engine observes the Acme expansion and the agents working it.",
+    intro: "Judgment infrastructure for agentic work. Liminal Engine watches the Acme expansion and the agents running it.",
   },
   agentActivity: {
     title: "Agent output",
-    intro: "What the AI agents reported on the deal — as the operator first sees it.",
+    intro: "What the agents reported on the deal — the on-track claim, as the operator first sees it.",
   },
   contextTray: {
     title: "Context",
-    intro: "The source material the agents worked from — where the requirement lived.",
+    intro: "The source material the agents worked from — provenance for where the requirement lived.",
   },
   governanceCase: {
     title: "Governance case",
-    intro: "Liminal detects a load-bearing customer requirement was silently dropped.",
+    intro: "A load-bearing customer requirement was silently dropped. Liminal surfaces it with evidence, not assertion.",
   },
   enforcementPanel: {
     title: "Approve + Enforce",
-    intro: `The ${"operator"} approves the correction; it becomes enforceable operating state.`,
+    intro: "The operator approves; the correction becomes enforceable operating state, and the downstream action is bounded until it holds.",
   },
   auditTrail: {
     title: "Audit trail",
-    intro: "The correction and the deciding actor, recorded as audit evidence.",
+    intro: "The correction and the deciding actor, recorded as tamper-evident audit evidence.",
     dataResidencyNote:
       "Sensitive customer data is recorded in the audit ledger by reference (canonical-hash), never stored raw — so the trail can be replicated across regions without moving EU-personal data.",
   },
   secondPassEval: {
     title: "Second pass + eval",
-    intro: "The agents re-run under enforcement; the eval proves the next pass improved.",
+    intro: "The agents re-run under enforcement; the eval proves the next pass improved — Fail → Pass.",
   },
 } as const;
 
