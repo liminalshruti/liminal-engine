@@ -1,216 +1,196 @@
 /**
- * VoiceCorrection — GENUINELY LIVE voice capture + browser mic publish via LiveKit.
+ * VoiceCorrection — GENUINELY LIVE browser mic publish via LiveKit (client-only).
  *
- * REAL BEHAVIOR:
- * 1. Operator clicks "Record correction" → VoiceCorrection connects to REAL LiveKit room
- *    (via connectToLiveKitRoom() which creates/verifies room on live server)
- * 2. Uses livekit-client to connect with browser mic access (getUserMedia)
- * 3. Publishes real microphone track to the live room
- * 4. Shows "live audio published to room <name>" + connection state
- * 5. Transcript can be operator-entered or paired with audio (STT not wired, so labeled honestly)
+ * REAL BEHAVIOR (no scripted transcript, no server SDK in the browser):
+ * 1. Operator clicks "Capture voice correction".
+ * 2. The browser fetches a join token from the SERVER token endpoint
+ *    (POST /livekit/token on apps/api) — the LiveKit API secret stays on the server.
+ * 3. With livekit-client only: `new Room()`, `room.connect(url, token)`,
+ *    `createLocalTracks({ audio: true })` (real getUserMedia mic permission),
+ *    then `localParticipant.publishTrack(...)` — the operator's REAL microphone
+ *    audio is published to the live room.
+ * 4. The published-track state is reported truthfully.
  *
- * FALLBACK-SAFE: If LiveKit unavailable or mic denied, shows "live unavailable" honestly.
- * The demo spine stays green (optional feature).
+ * There is no STT wired in this build, so we DO NOT fabricate a transcript. When
+ * the server has no LiveKit credentials (HTTP 503), the control shows a truthful
+ * "live voice unavailable" state — never a fake transcript.
  */
 
-import { useCallback, useRef, useState } from "react";
-import { Room } from "livekit-client";
-import { connectToLiveKitRoom } from "@liminal-engine/integration-livekit";
-
-/**
- * TranscriptLine — the shape of captured voice transcript.
- * (Imported from @liminal-engine/integration-livekit)
- */
-export interface TranscriptLine {
-  speaker: string;
-  text: string;
-}
-
-/**
- * scriptedTranscript — fallback when LiveKit is unavailable.
- */
-function scriptedTranscript(): TranscriptLine[] {
-  return [
-    { speaker: "the operator", text: "Acme shows on-track — but did we keep EU data residency?" },
-    { speaker: "Liminal Engine", text: "No. It was silently dropped. Opening a governance case." },
-    { speaker: "the operator", text: "Approve and enforce the correction." },
-  ];
-}
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Room, createLocalTracks, type LocalTrack } from "livekit-client";
 
 import "./VoiceCorrection.css";
 
-export interface VoiceCorrectionProps {
-  /** Callback when voice transcript is captured. Receives the full transcript. */
-  onTranscriptCaptured?: (transcript: TranscriptLine[]) => void;
+/** Base URL of the apps/api server (defaults to same-origin via the dev proxy). */
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const TOKEN_ENDPOINT = `${API_BASE}/livekit/token`;
+
+type CaptureStatus = "idle" | "connecting" | "publishing" | "stopping";
+
+interface TokenResponse {
+  token?: string;
+  url?: string;
+  room?: string;
 }
 
-export function VoiceCorrection({ onTranscriptCaptured }: VoiceCorrectionProps) {
-  const [isCapturing, setIsCapturing] = useState(false);
-  const [transcript, setTranscript] = useState<TranscriptLine[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [liveKitStatus, setLiveKitStatus] = useState<string | null>(null);
-  const roomRef = useRef<Room | null>(null);
+export interface VoiceCorrectionProps {
+  /** Room to publish into. Defaults to "correction-room". */
+  room?: string;
+}
 
-  const handleStartCapture = useCallback(async () => {
-    setIsCapturing(true);
+export function VoiceCorrection({ room = "correction-room" }: VoiceCorrectionProps) {
+  const [status, setStatus] = useState<CaptureStatus>("idle");
+  const [liveRoom, setLiveRoom] = useState<string | null>(null);
+  const [unavailable, setUnavailable] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const roomRef = useRef<Room | null>(null);
+  const tracksRef = useRef<LocalTrack[]>([]);
+
+  const teardown = useCallback(async () => {
+    for (const track of tracksRef.current) {
+      try {
+        track.stop();
+      } catch {
+        /* releasing the mic is best-effort */
+      }
+    }
+    tracksRef.current = [];
+    if (roomRef.current) {
+      try {
+        await roomRef.current.disconnect();
+      } catch {
+        /* disconnect is best-effort */
+      }
+      roomRef.current = null;
+    }
+  }, []);
+
+  // Release the mic + room if the screen unmounts while publishing.
+  useEffect(() => {
+    return () => {
+      void teardown();
+    };
+  }, [teardown]);
+
+  const handleStart = useCallback(async () => {
+    setStatus("connecting");
     setError(null);
-    setLiveKitStatus("Connecting to LiveKit...");
+    setUnavailable(null);
 
     try {
-      // ──────────────────────────────────────────────────────────────
-      // GENUINELY LIVE: Connect to real LiveKit room and publish mic
-      // ──────────────────────────────────────────────────────────────
-      const roomInfo = await connectToLiveKitRoom("correction-room");
+      const identity = `operator-${Date.now()}`;
+      const res = await fetch(TOKEN_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ room, identity }),
+      });
 
-      if (roomInfo.source === "scripted-fallback") {
-        // LiveKit unavailable (creds missing or network failure)
-        setLiveKitStatus("Live connection unavailable — using scripted transcript");
-        console.debug("[VoiceCorrection] LiveKit unavailable, using fallback");
-
-        const captured = scriptedTranscript();
-        setTranscript(captured);
-        onTranscriptCaptured?.(captured);
-      } else {
-        // REAL connection: use livekit-client to join room + publish mic
-        if (!roomInfo.accessToken) {
-          throw new Error("No access token returned from LiveKit server");
-        }
-
-        setLiveKitStatus(`Connecting to room "${roomInfo.roomName}"...`);
-
-        // Create a new Room instance and connect with the server token
-        // The LiveKit server URL should be available (set during deployment/config)
-        const liveKitUrl = process.env.REACT_APP_LIVEKIT_URL || "ws://localhost:7880";
-
-        const room = new Room();
-        roomRef.current = room;
-
-        // Connect to the room with url + token
-        try {
-          await room.connect(liveKitUrl, roomInfo.accessToken);
-          setLiveKitStatus(`Connected to "${roomInfo.roomName}". Publishing audio...`);
-
-          // Request mic access and publish audio track
-          // This is a real browser microphone permission + real audio publication
-          const audioTracks = await room.localParticipant.createTracks({
-            audio: true,
-            video: false,
-          });
-
-          for (const track of audioTracks) {
-            await room.localParticipant.publishTrack(track);
-          }
-
-          setLiveKitStatus(
-            `✓ Live audio published to room "${roomInfo.roomName}". ` +
-            `Transcript: operator-entered (real STT not wired in this build).`
-          );
-
-          // For the demo: show the scripted transcript paired with the real audio stream
-          // (In production, we'd run actual STT on the published audio)
-          const captured = scriptedTranscript();
-          setTranscript(captured);
-          onTranscriptCaptured?.(captured);
-
-          // Keep the room open for a brief moment so the audio is published
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        } finally {
-          // Disconnect (cleanup)
-          if (roomRef.current) {
-            await roomRef.current.disconnect();
-            roomRef.current = null;
-          }
-          setLiveKitStatus(null);
-        }
+      // Server has no LiveKit credentials → truthful disabled state (no fake transcript).
+      if (res.status === 503) {
+        setUnavailable(
+          "Live voice unavailable — the server has no LiveKit credentials configured.",
+        );
+        setStatus("idle");
+        return;
       }
+      if (!res.ok) {
+        throw new Error(`Token endpoint returned HTTP ${res.status}`);
+      }
+
+      const data = (await res.json()) as TokenResponse;
+      const token = data.token;
+      const url = data.url ?? import.meta.env.VITE_LIVEKIT_URL;
+      if (!token || !url) {
+        throw new Error("Token endpoint did not return a token and url");
+      }
+
+      // GENUINELY LIVE: connect + publish the REAL microphone track.
+      const liveKitRoom = new Room();
+      roomRef.current = liveKitRoom;
+      await liveKitRoom.connect(url, token);
+
+      const tracks = await createLocalTracks({ audio: true, video: false });
+      tracksRef.current = tracks;
+      for (const track of tracks) {
+        await liveKitRoom.localParticipant.publishTrack(track);
+      }
+
+      setLiveRoom(data.room ?? room);
+      setStatus("publishing");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error("[VoiceCorrection] Capture failed:", message, err);
-      setError(`Capture failed: ${message}`);
-
-      // Fallback to scripted if anything goes wrong
-      const fallback = scriptedTranscript();
-      setTranscript(fallback);
-      onTranscriptCaptured?.(fallback);
-    } finally {
-      setIsCapturing(false);
+      console.error("[VoiceCorrection] live capture failed:", message, err);
+      setError(`Live capture failed: ${message}`);
+      await teardown();
+      setStatus("idle");
     }
-  }, [onTranscriptCaptured]);
+  }, [room, teardown]);
+
+  const handleStop = useCallback(async () => {
+    setStatus("stopping");
+    await teardown();
+    setLiveRoom(null);
+    setStatus("idle");
+  }, [teardown]);
+
+  const isBusy = status === "connecting" || status === "stopping";
+  const isPublishing = status === "publishing";
 
   return (
     <div className="voice-correction">
       <div className="voice-correction__header">
         <p className="voice-correction__eyebrow">Voice Correction (Optional)</p>
         <p className="voice-correction__description">
-          Speak a correction to be captured and compiled into a CorrectionEvent.
+          Publish a live voice correction. Your real microphone audio is streamed to a
+          LiveKit room via a server-minted token.
         </p>
       </div>
 
-      {liveKitStatus && (
-        <div className="voice-correction__status-message">
-          {liveKitStatus}
-        </div>
-      )}
-
-      {!transcript ? (
+      {!isPublishing ? (
         <div className="voice-correction__capture">
           <button
             type="button"
             className="voice-correction__button"
-            disabled={isCapturing}
-            onClick={handleStartCapture}
-            aria-busy={isCapturing}
+            disabled={isBusy}
+            onClick={handleStart}
+            aria-busy={isBusy}
           >
-            <span className={`voice-correction__icon${isCapturing ? " is-listening" : ""}`}>
+            <span className={`voice-correction__icon${isBusy ? " is-listening" : ""}`}>
               🎤
             </span>
             <span className="voice-correction__text">
-              {isCapturing ? "Connecting to LiveKit…" : "Capture Voice Correction"}
+              {status === "connecting"
+                ? "Connecting to LiveKit…"
+                : "Capture Voice Correction"}
             </span>
           </button>
         </div>
       ) : (
         <div className="voice-correction__result">
           <div className="voice-correction__transcript">
-            <p className="voice-correction__status">✓ Voice correction captured</p>
-            <div className="voice-correction__lines">
-              {transcript.map((line, i) => (
-                <div key={i} className="voice-correction__line">
-                  <span className="voice-correction__speaker">{line.speaker}:</span>
-                  <span className="voice-correction__text-content">{line.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="voice-correction__workflow">
-            <p className="voice-correction__workflow-title">Correction flow:</p>
-            <div className="voice-correction__steps">
-              <div className="voice-correction__step voice-correction__step--done">
-                <span className="voice-correction__step-label">Voice captured</span>
-              </div>
-              <span className="voice-correction__step-arrow">→</span>
-              <div className="voice-correction__step voice-correction__step--next">
-                <span className="voice-correction__step-label">CorrectionEvent created</span>
-              </div>
-              <span className="voice-correction__step-arrow">→</span>
-              <div className="voice-correction__step voice-correction__step--next">
-                <span className="voice-correction__step-label">EvalCase generated</span>
-              </div>
-              <span className="voice-correction__step-arrow">→</span>
-              <div className="voice-correction__step voice-correction__step--next">
-                <span className="voice-correction__step-label">Second pass improves</span>
-              </div>
-            </div>
+            <p className="voice-correction__status">
+              ● Live — publishing your microphone to room "{liveRoom}"
+            </p>
+            <p className="voice-correction__placeholder">
+              Real audio is being published to the live room. Speech-to-text
+              transcription is not yet wired in this build, so no transcript is shown.
+            </p>
           </div>
 
           <button
             type="button"
             className="voice-correction__reset"
-            onClick={() => setTranscript(null)}
+            onClick={handleStop}
           >
-            Capture again
+            Stop publishing
           </button>
+        </div>
+      )}
+
+      {unavailable && (
+        <div className="voice-correction__unavailable" role="status">
+          {unavailable}
         </div>
       )}
 
