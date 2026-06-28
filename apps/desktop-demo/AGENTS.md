@@ -72,6 +72,23 @@ import { StatusBadge, Card } from "../components";
 </Card>
 ```
 
+For the eval table (MNC#7), build rows with `toRows` from the eval-harness:
+
+```typescript
+import { toRows } from "@liminal-engine/eval-harness";
+import { EvalTable } from "../components";
+
+const { evalPass1, evalPass2 } = acmeScenario;
+<EvalTable rows={toRows([evalPass1, evalPass2])} />
+```
+
+> **Component props are FROZEN.** Screens adapt to the props below — do not
+> change a component's props to fit a screen. In particular, `LinearWorkstreamPayload`
+> is a `specs/SPEC.md` contract that does **not yet exist**; `LinearPayloadView` is
+> intentionally typed to a local shape (`projectName` / `issues[]` / `requiredOwners[]`).
+> The enforcement-panel screen (LIM-1219) must construct that data by reading the
+> Acme fixture — never by inventing issue keys / titles / owners ad hoc.
+
 ### 3. **No live calls on the spine**
 
 - ✅ Use fixture data from `acmeScenario`

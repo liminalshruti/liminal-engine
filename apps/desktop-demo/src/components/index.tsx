@@ -7,9 +7,9 @@
  *   import { StatusBadge, Card } from "../components";
  */
 
-export { StatusBadge, type StatusBadgeProps } from "./StatusBadge.js";
-export { EvalTable, type EvalTableProps } from "./EvalTable.js";
-export { LinearPayloadView, type LinearPayloadViewProps, type LinearWorkstreamIssue } from "./LinearPayloadView.js";
-export { BlockedActionBanner, type BlockedActionBannerProps } from "./BlockedActionBanner.js";
-export { TraceRow, type TraceRowProps } from "./TraceRow.js";
-export { Card, type CardProps } from "./Card.js";
+export { StatusBadge, type StatusBadgeProps } from "./StatusBadge.tsx";
+export { EvalTable, type EvalTableProps } from "./EvalTable.tsx";
+export { LinearPayloadView, type LinearPayloadViewProps, type LinearWorkstreamIssue } from "./LinearPayloadView.tsx";
+export { BlockedActionBanner, type BlockedActionBannerProps } from "./BlockedActionBanner.tsx";
+export { TraceRow, type TraceRowProps } from "./TraceRow.tsx";
+export { Card, type CardProps } from "./Card.tsx";
