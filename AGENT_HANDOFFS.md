@@ -5,6 +5,51 @@ this first.
 
 ---
 
+## Session: review + merge harness, start LIM-1165 (2026-06-27 eve)
+
+**Did:**
+- Reviewed Shayaun's control-harness PR (#1) end to end. Ran its own gates on a
+  fresh `pnpm install --frozen-lockfile`: `pnpm verify` green (43 tests, 0 boundary
+  violations), goldens current, smoke runs, secrets/legal/identity scans clean.
+  Posted a dev-environment review (verdict: merge-after-trivial-fix).
+- Retitled PR #1 to lead with **LIM-1199** (real Linear prefix is `LIM-`, not the
+  draft `LE-`) so the `linear-id` CI gate passes. Shayaun then pushed `06d4ed4`
+  fixing smoke.sh (npm→pnpm) + reconciling draft IDs to `LIM-`. **Merged PR #1**
+  (`3792b84`). `main` clean + green.
+- **LIM-1165 (Create Acme fixture set):** ratify + harden. The fixture data already
+  existed (PR #1's `acme.ts`), so rather than rebuild: added `acmeDemoBeats`
+  (verbatim DEMO_CONTRACT display copy for steps 2–4, kept separate from the
+  contract-hashed fields so no golden changes), exposed `demoBeats` + `requiredOwners`
+  on the single `acmeScenario` source, and added `acme-beats.test.ts` locking beats
+  2–4 to the validated fixtures. `pnpm verify` green (47 tests). Branch
+  `feature/lim-1165-create-acme-fixture-set`, commit `b065b70` — **not pushed yet.**
+
+**Decided:**
+- Treat LIM-1165 as ratify-not-rebuild (user-confirmed) — the harness already
+  satisfied AC#1; the honest gap was beat-string fidelity + a single-source test.
+- Demo-beat wording lives as presentation copy (`acmeDemoBeats`), NOT in the hashed
+  canonical fields — keeps golden hashes stable while matching DEMO_CONTRACT verbatim.
+
+**Did NOT do (by design):**
+- No demo UI, no governance use cases, no eval-harness impl, no Gemini/LiveKit/real
+  Linear, no persona extraction. Did not push the LIM-1165 branch or open its PR.
+- Killed the background adversarial review workflow (it was writing scratch files
+  into the repo); its output is advisory, found no blocker before stop.
+
+**Next session should:**
+1. Open the LIM-1165 PR (title `LIM-1165: …`, fill the conformance matrix) and merge.
+2. **LIM-1166** — build the seven-screen static clickable demo in `apps/desktop-demo/`
+   (needs the UI-stack decision: Solid / React / Vite-vanilla — human call).
+3. **LIM-1167** — implement typed local state for the click-through.
+   Goal: the 14-step Acme loop runs end-to-end on fixtures.
+
+**Risks / watch:**
+- UI-stack decision for LIM-1166 is a human gate (LIM-1199 marks it yellow).
+- Persona name must NOT be invented; keep generic operator language.
+- Branch/PR must carry the `LIM-####` ID or CI's linear-id gate fails.
+
+---
+
 ## Session: development control harness (2026-06-27)
 
 **Did:**

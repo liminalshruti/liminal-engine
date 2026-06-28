@@ -14,6 +14,16 @@ All notable changes to scope, contract, and structure. Newest first.
   coverage table flagging where the demo does not yet serve a criterion. No
   contract change — reads the locked path. Cross-linked from `SUBMISSION.md`.
 
+### Changed — LIM-1165 Acme fixture set (2026-06-27 eve)
+- Control harness (PR #1) **merged to `main`**.
+- `packages/contracts/src/fixtures/acme.ts` — added `acmeDemoBeats`: verbatim
+  DEMO_CONTRACT display copy for demo steps 2–4 (goal, false-green claim, dropped
+  EU requirement), held separate from the contract-hashed fixture fields so on-screen
+  wording matches the contract without changing any golden hash. Exposed `demoBeats`
+  + `requiredOwners` on the single-source `acmeScenario`.
+- `packages/contracts/test/acme-beats.test.ts` — new test locking beats 2–4 and the
+  single-source invariant to the validated fixtures. No contract/golden change.
+
 ### Added — control-harness session (2026-06-27)
 - **Development control harness** layered onto the scaffold (additive; product
   locks untouched). Materialized the pnpm/TypeScript workspace.

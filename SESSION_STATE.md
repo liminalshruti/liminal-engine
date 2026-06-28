@@ -2,15 +2,19 @@
 
 Current state of the build, right now. Keep this short and true.
 
-## As of: control-harness session (2026-06-27)
+## As of: harness merged + LIM-1165 in progress (2026-06-27 eve)
 
-- **Phase:** Control harness in place + verified, reconciled to the 14-step / 7
-  must-not-cut demo contract. **No app/UI yet** (the demo spine; see LIM-1199 / ops/linear/ISSUES.md).
+- **Phase:** Control harness **merged to `main`** (PR #1, `3792b84`). First fixture
+  issue **LIM-1165 in progress** on `feature/lim-1165-create-acme-fixture-set`
+  (`b065b70`, not pushed). **No app/UI yet** (demo spine = LIM-1166/1167).
 - **Harness:** pnpm/TS workspace; `packages/contracts` (7 locked primitives as
   hashed contracts + golden tests + Acme fixtures asserting every must-not-cut);
   boundary lint enforcing fixtures-on-spine; CI + hooks + PR template; AGENTS.md +
-  5 agent roles; Linear packets/issues in `ops/linear/`. `pnpm verify` green (43
-  tests). Commits = allsmog only (hook-enforced). **Local only — not pushed.**
+  5 agent roles; Linear packets/issues in `ops/linear/`. `pnpm verify` green (47
+  tests after LIM-1165). Commits = allsmog only (hook-enforced).
+- **LIM-1165:** Acme fixture set ratified — `acmeDemoBeats` (verbatim DEMO_CONTRACT
+  display copy for steps 2–4) + single-source `acmeScenario` + `acme-beats.test.ts`.
+  No golden changes (display copy kept out of hashed fields). Branch not yet PR'd.
 - **Scaffold:** All folders + docs + `.claude` dev env + `scripts/smoke.sh` created.
 - **Official repo name:** `liminal-engine`.
 - **Public repo:** ✅ Created and live — `github.com/liminalshruti/liminal-engine`
@@ -35,6 +39,9 @@ Current state of the build, right now. Keep this short and true.
 
 ## Next concrete step
 
-Decide the demo-app UI stack (demo-spine issue under LIM-1199), then stand up the static clickable demo in
-`apps/desktop-demo/` covering the full 14-step required demo path, rendering the
-deterministic Acme fixtures from `@liminal-engine/contracts/fixtures`.
+Open + merge the **LIM-1165** PR (branch `feature/lim-1165-create-acme-fixture-set`;
+title must carry `LIM-1165`; fill the conformance matrix). Then **LIM-1166**: decide
+the demo-app UI stack (Solid / React / Vite-vanilla — human gate) and stand up the
+seven-screen static clickable demo in `apps/desktop-demo/` covering the full 14-step
+required path, rendering Acme fixtures from `@liminal-engine/contracts/fixtures`,
+followed by **LIM-1167** (typed local state).
