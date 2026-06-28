@@ -171,6 +171,45 @@
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
     },
+    "liminal_engine.intercepted_action.v1::pr20-merge-intercepted": {
+      "schema": "liminal_engine.intercepted_action.v1",
+      "purpose": "the PR-#20 replay action — gh pr-merge with split reviews, full provenance",
+      "input": {
+        "id": "ia_pr20_merge",
+        "tool": "gh",
+        "action": "pr-merge",
+        "target": "PR#20",
+        "args": {
+          "reviews": {
+            "approved": 1,
+            "rejected": 1
+          }
+        },
+        "agentId": "claude-implementer",
+        "sessionId": "sess_pr20_replay",
+        "goalId": "LIM-1266",
+        "lane": "shayaun-main",
+        "requestedAt": "2026-06-27T10:00:00.000Z"
+      },
+      "canonical_string": "{\"action\":\"pr-merge\",\"agent_id\":\"claude-implementer\",\"args\":{\"reviews\":{\"approved\":1,\"rejected\":1}},\"goal_id\":\"LIM-1266\",\"id\":\"ia_pr20_merge\",\"lane\":\"shayaun-main\",\"requested_at\":\"2026-06-27T10:00:00.000Z\",\"schema\":\"liminal_engine.intercepted_action.v1\",\"session_id\":\"sess_pr20_replay\",\"target\":\"PR#20\",\"tool\":\"gh\"}",
+      "sha256": "492182b60adec542f651a34e6060035bf856b8d5af1bfd80a0a98b0e3f7fac12"
+    },
+    "liminal_engine.intercepted_action.v1::git-force-push-minimal": {
+      "schema": "liminal_engine.intercepted_action.v1",
+      "purpose": "minimal action — required fields only; optional target/provenance omitted",
+      "input": {
+        "id": "ia_git_force_push",
+        "tool": "git",
+        "action": "push",
+        "args": {
+          "force": true,
+          "ref": "main"
+        },
+        "requestedAt": "2026-06-27T10:01:00.000Z"
+      },
+      "canonical_string": "{\"action\":\"push\",\"args\":{\"force\":true,\"ref\":\"main\"},\"id\":\"ia_git_force_push\",\"requested_at\":\"2026-06-27T10:01:00.000Z\",\"schema\":\"liminal_engine.intercepted_action.v1\",\"tool\":\"git\"}",
+      "sha256": "6d8545bf10a191c5e5bb2df7707a6fda21ebc1dcc2e3afdd04894eebf2d83863"
+    },
     "liminal_engine.requirement.v1::acme-eu-residency-active": {
       "schema": "liminal_engine.requirement.v1",
       "purpose": "an active hard requirement — approved + activated, governs the Acme surfaces",
