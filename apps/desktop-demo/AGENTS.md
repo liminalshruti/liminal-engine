@@ -112,9 +112,9 @@ const { evalPass1, evalPass2 } = acmeScenario;
 > `LinearPayloadView` is now typed to it (`{ payload: LinearWorkstreamPayload }`).
 > Its `workstreams: {title,status,owner}[]` shape matches the producer
 > `SimulatedLinearPanel.workstreams()`. **What's still missing:** there is no
-> `LinearWorkstreamPayload` instance in `acmeScenario` yet — see the dedicated
-> fixture task. The enforcement-panel screen (LIM-1219) must read that fixture once
-> it lands; do **not** invent workstreams/owners ad hoc (Locked Rule #2).
+> `LinearWorkstreamPayload` instance in `acmeScenario` yet — tracked as **LIM-1249**
+> (blocks LIM-1219). The enforcement-panel screen (LIM-1219) must read that fixture
+> once it lands; do **not** invent workstreams/owners ad hoc (Locked Rule #2).
 
 ### 3. **No live calls on the spine**
 
@@ -247,7 +247,7 @@ Before opening your PR:
 - [x] Component barrel: `apps/desktop-demo/src/components/index.tsx`
 - [x] Component CSS: appended to `apps/desktop-demo/src/styles/app.css`
 - [x] This handoff doc: `apps/desktop-demo/AGENTS.md`
-- [x] Each component typed against contracts, no live calls
+- [x] Components type-aligned to the data layer (contract types where applicable — see the typing note above), no live calls
 - [x] Reference example in this doc (Initialize pseudocode)
 
 You have everything you need. Go build the screens.
