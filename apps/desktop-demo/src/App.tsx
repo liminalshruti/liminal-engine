@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { DEMO_STEPS, PHASE_LABEL } from "./steps.ts";
+import { DEMO_STEPS, PHASE_LABEL } from "./steps.tsx";
 
 /**
  * Demo spine SHELL — the static clickable frame for the 14-step required path
- * (DEMO_CONTRACT.md). Renders the stepper, the loop-phase rail, and the current
- * beat's fixture summary. Per-beat screens (the false-green card, the
- * GovernanceCase, the status flip, the eval table) land in subsequent P0s and
- * mount into <main> keyed by the active step.
+ * (DEMO_CONTRACT.md). Renders the stepper rail and, in the stage, the SCREEN
+ * mapped to the active beat (`step.screen`). The 14 beats map onto 7 screens
+ * (LIM-1226 «spine-shell-v2»); screen agents fill each screen's stub — App.tsx
+ * is not edited per screen.
  */
 export function App() {
   const [i, setI] = useState(0);
   const step = DEMO_STEPS[i]!;
   const last = DEMO_STEPS.length - 1;
+  const Screen = step.screen;
 
   return (
     <div className="app">
@@ -45,13 +46,9 @@ export function App() {
             )}
           </div>
           <h1 className="stage__title">{step.title}</h1>
-          <p className="stage__summary">{step.summary}</p>
 
-          <div className="stage__placeholder">
-            <span>Screen for this beat lands in a later P0.</span>
-            <span className="stage__placeholder-note">
-              Rendering the deterministic Acme fixture summary above — the spine is wired end to end.
-            </span>
+          <div className="stage__screen">
+            <Screen />
           </div>
 
           <div className="stage__nav">
