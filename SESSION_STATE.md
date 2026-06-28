@@ -4,6 +4,11 @@ Current state of the build, right now. Keep this short and true.
 
 ## As of: backend loop on main, M1 UI next (2026-06-28 early)
 
+- **LIM-1242 branch:** `agent/LIM-1242-audit-reconstruction-test` adds
+  governance-local audit reconstruction support + tests. It verifies
+  hash-chained AuditEvents and rebuilds the Acme GovernanceCase lifecycle from
+  event snapshots only. `pnpm verify` is green with 64/64 tests; smoke automated
+  tests are green. Pending PR/review; not merged.
 - **Phase:** Backend governance loop is **DONE and on `main`**. The demo-spine
   **shell** is on `main`. Remaining critical path = **M1 per-beat screens** (wire
   the real loop output into the 14-step UI). 56/56 tests green on trunk.
