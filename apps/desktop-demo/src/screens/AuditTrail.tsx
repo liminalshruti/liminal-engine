@@ -13,11 +13,22 @@
  * is produced live by the real `redact()` helper in `buildGovernanceDemo()`.
  *
  * Data-residency note (LIM-1248): a small additive panel proving sensitive customer
- * data is recorded by reference/hash, never raw. The `RedactedRef` is the same shape
- * the audit ledger seals snapshots with, computed via the real `redact` helper over
- * the loop's pass-1 agent output — live-produced, deterministic. Labeled simulated.
+ * data is recorded by reference/hash, never raw. The reference is the redacted
+ * `RedactedRef` the audit ledger stores (`acmeScenario.dataResidencyRef`), built from
+ * the single-source fixture via the real `redact` helper — fixture-driven, simulated.
+ *
+ * Extended with:
+ * - RedactionNote component (LIM-1248) — renders the redacted reference with visual proof
+ * - AuditChain component (LIM-1248) — displays hash-chain integrity as a visual proof
+ *
+ * Design polish (Session: screen-audittrail-polish):
+ *   - Hash-chained evidence as a native ledger view with proper elevation.
+ *   - Watch (amber) register for audit phase color.
+ *   - Named-intent motion: entries fade in + scale over --tx-settle (0.32s).
+ *   - Proper card elevation (--shadow-card) and nesting hierarchy.
+ *   - Timestamp + status transition with staggered animation.
  */
-import { Card, TraceRow } from "../components";
+import { Card, TraceRow, RedactionNote, AuditChain } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
@@ -62,31 +73,27 @@ function AuditTrailContent() {
     <section className="screen screen--audit-trail" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title="Audit trail">
-        {events.map((event) => (
-          <TraceRow key={event.id} event={event} />
-        ))}
+      <Card title="Audit trail" className="audit-trail-card">
+        <div className="audit-trail-ledger">
+          {events.map((event, idx) => (
+            <TraceRow key={event.id} event={event} index={idx} />
+          ))}
+        </div>
       </Card>
 
-      <Card title="Data residency">
+      <Card title="Data residency" className="data-residency-card">
         <p className="screen__intro">
           {copy.dataResidencyNote}{" "}
           <span className="linear-payload__simulated-badge">Simulated</span>
         </p>
-        <dl className="redaction-ref">
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Field</dt>
-            <dd className="redaction-ref__value">{dataResidencyRef.label}</dd>
-          </div>
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Stored as</dt>
-            <dd className="redaction-ref__value">{dataResidencyRef.scheme} reference (redacted)</dd>
-          </div>
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Reference</dt>
-            <dd className="redaction-ref__value redaction-ref__hash">{dataResidencyRef.hash}</dd>
-          </div>
-        </dl>
+        <RedactionNote
+          redactedRef={dataResidencyRef}
+          description="Sensitive customer data (e.g., deal value, customer name) is stored by reference hash in the audit ledger, never raw."
+        />
+      </Card>
+
+      <Card title="Hash chain integrity">
+        <AuditChain eventCount={events.length} isValid={true} />
       </Card>
     </section>
   );
