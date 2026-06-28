@@ -16,6 +16,7 @@ import type {
   EnforcementAction,
   AuditEvent,
   ActionGate,
+  ActionGateDecision,
   EvalCase,
   EvalResult,
   DealStatus,
@@ -39,6 +40,12 @@ export interface IdGen {
 
 /** The locked deciding role — never an invented persona name (DEMO_CONTRACT). */
 const DECIDING_ROLE = "VP Ops / Head of AI Transformation";
+
+const REQUIRED_BEFORE_CUSTOMER_UPDATE = [
+  "Propagate the EU data residency requirement into the Acme workstream.",
+  "Assign Product, Security, and Engineering owners.",
+  "Pass the EU data residency EvalCase.",
+] as const;
 
 /**
  * detect — read a pass of agent output; if it silently dropped a requirement,
@@ -133,15 +140,34 @@ export async function gateDownstreamAction(
     id: idGen.next(),
     caseId,
     action,
-    reasons: ["Open governance case (EU data residency) must be corrected first."],
-    requiredBeforeSend: [
-      "EU data residency requirement propagated",
-      "Product / Security / Engineering owners assigned",
-      "Eval passes",
+    verdict: "deny",
+    reasons: [
+      `Open governance case ${caseId} requires EU data residency correction before a customer-facing on-track update.`,
     ],
+    requiredBeforeSend: [...REQUIRED_BEFORE_CUSTOMER_UPDATE],
   };
   await actionGateStore.gate(gate);
   return gate;
+}
+
+export async function evaluateDownstreamAction(
+  actionGateStore: ActionGateStore,
+  action: string,
+): Promise<ActionGateDecision> {
+  try {
+    return await actionGateStore.decisionFor(action);
+  } catch (error) {
+    const detail = error instanceof Error && error.message.length > 0
+      ? `: ${error.message}`
+      : "";
+    return {
+      allowed: false,
+      reasons: [`Gate evaluation failed closed${detail}.`],
+      requiredBeforeSend: [
+        "Resolve the gate evaluation failure before sending a customer-facing update.",
+      ],
+    };
+  }
 }
 
 export interface GovernanceLoopDeps {
