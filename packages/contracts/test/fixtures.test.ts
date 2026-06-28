@@ -15,6 +15,7 @@ import { actionGateContract } from "../src/action-gate.contract.ts";
 import { actionGateDecision } from "../src/action-gate.contract.ts";
 import { evalCaseContract } from "../src/eval-case.contract.ts";
 import { evalResultContract } from "../src/eval-result.contract.ts";
+import { linearWorkstreamPayloadContract } from "../src/linear-workstream-payload.contract.ts";
 
 test("all Acme fixtures validate through their contracts", () => {
   assert.doesNotThrow(() => agentOutputContract.parse(acmeScenario.agentOutputPass1));
@@ -26,6 +27,7 @@ test("all Acme fixtures validate through their contracts", () => {
   assert.doesNotThrow(() => evalCaseContract.parse(acmeScenario.evalCase));
   assert.doesNotThrow(() => evalResultContract.parse(acmeScenario.evalPass1));
   assert.doesNotThrow(() => evalResultContract.parse(acmeScenario.evalPass2));
+  assert.doesNotThrow(() => linearWorkstreamPayloadContract.parse(acmeScenario.linearWorkstreamPayload));
 });
 
 test("must-not-cut #1: pass 1 is a false green (on-track but a requirement was dropped)", () => {
@@ -47,6 +49,11 @@ test("must-not-cut #3: EnforcementAction flips status on-track -> at-risk", () =
 
 test("must-not-cut #4: simulated Linear workstream requires Product/Security/Engineering owners", () => {
   assert.deepEqual([...acmeScenario.requiredOwners], ["Product", "Security", "Engineering"]);
+  // the workstream payload carries the same required owners + a workstream per owner
+  const payload = acmeScenario.linearWorkstreamPayload;
+  assert.deepEqual([...payload.requiredOwners], ["Product", "Security", "Engineering"]);
+  assert.equal(payload.dealId, acmeScenario.governanceCase.dealId);
+  assert.ok(payload.workstreams.some((w) => w.owner === "Engineering" && w.status === "at-risk"));
 });
 
 test("must-not-cut #5: a downstream customer action is blocked until corrected", () => {

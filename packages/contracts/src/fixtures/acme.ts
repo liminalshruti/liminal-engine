@@ -16,6 +16,7 @@ import { auditEventContract, type AuditEvent } from "../audit-event.contract.ts"
 import { actionGateContract, type ActionGate } from "../action-gate.contract.ts";
 import { evalCaseContract, type EvalCase } from "../eval-case.contract.ts";
 import { evalResultContract, type EvalResult } from "../eval-result.contract.ts";
+import { linearWorkstreamPayloadContract, type LinearWorkstreamPayload } from "../linear-workstream-payload.contract.ts";
 
 /** The Acme business goal shown at the top of the demo (DEMO_CONTRACT step 2). */
 export const acmeBusinessGoal = "Close Acme expansion by Friday — $1.2M ARR";
@@ -134,6 +135,20 @@ export const acmeEvalPass2: EvalResult = evalResultContract.parse({
   result: "pass",
 });
 
+// Simulated Linear remediation workstream (DEMO_CONTRACT step 8 / must-not-cut #4).
+// Mirrors SimulatedLinearPanel.workstreams() + acmeRequiredOwners; the EnforcementPanel
+// screen (LIM-1219) renders this via LinearPayloadView. Deterministic, no live Linear call.
+export const acmeLinearWorkstreamPayload: LinearWorkstreamPayload = linearWorkstreamPayloadContract.parse({
+  title: "Acme expansion — EU data residency remediation",
+  dealId: "deal_acme",
+  requiredOwners: ["Product", "Security", "Engineering"],
+  workstreams: [
+    { title: "Commercial terms", status: "green", owner: "Product" },
+    { title: "Security review", status: "green", owner: "Security" },
+    { title: "Data residency (EU)", status: "at-risk", owner: "Engineering" },
+  ],
+});
+
 /** The whole locked scenario, in 14-step demo-path order (DEMO_CONTRACT). */
 export const acmeScenario = {
   businessGoal: acmeBusinessGoal,
@@ -142,6 +157,7 @@ export const acmeScenario = {
   agentOutputPass1: acmeAgentOutputPass1,
   governanceCase: acmeGovernanceCase,
   enforcementAction: acmeEnforcementAction,
+  linearWorkstreamPayload: acmeLinearWorkstreamPayload,
   blockedAction: acmeBlockedAction,
   auditEvent: acmeAuditEvent,
   evalCase: acmeEvalCase,
