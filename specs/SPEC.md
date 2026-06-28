@@ -46,7 +46,7 @@ Greenfield TS monorepo, hexagonal:
 ```
 packages/contracts        shared kernel — zod contracts + canonical-hash golden tests (the 7 below)
 packages/engine-core      pure domain (status state machine, governance phases)
-packages/governance       application use cases over ports (detect/enforce/proxy/second-pass)
+packages/governance       use cases over ports (detect / correct / enforce / proxy / second-pass / audit-ledger)
 packages/eval-harness     EvalCase generation + Fail→Pass
 packages/integrations/*   adapters (gemini/linear/livekit) — FIXTURE STUBS, no live calls on the spine
 packages/ui-components    framework-agnostic view-model helpers
@@ -67,10 +67,10 @@ them; only the **Add** rows are net-new (landed by the foundation task LIM-«con
 | Merged-spec concept | Repo contract | Action |
 |---|---|---|
 | Agent false-green output | `AgentOutput` | exists |
-| Detected governance incident | `GovernanceCase` | **extend**: `businessImpact`, `missingFrom[]`, `evidenceIds[]`, `recommendedActions[]` |
-| Approve+Enforce action | `EnforcementAction` | **extend**: `actionType` enum (`change_status`/`create_linear_workstream`/`assign_owner`/`block_agent_action`/`require_approval`/`generate_eval`/`activate_policy`/`record_audit_event`), `targetSystem`, `payload` |
-| Audit evidence | `AuditEvent` | **extend**: `beforeState`/`afterState`, `evidenceIds[]`, `actionIds[]`, `affectedSystems[]` |
-| Blocked future action / proxy result | `ActionGate` | exists (models the blocked customer-facing update) |
+| Detected governance incident | `GovernanceCase` | **extend**: `businessImpact`, `missingFrom[]`, `evidenceIds[]`, `recommendedActions[]`, status lifecycle `open\|corrected\|enforced\|dismissed\|reopened\|closed` |
+| Approve+Enforce action | `EnforcementAction` | **extend**: `actionType` enum (`change_status`/`create_linear_workstream`/`assign_owner`/`block_agent_action`/`require_approval`/`generate_eval`/`activate_policy`/`record_audit_event`) — **fixed enum, NOT a policy DSL** — plus `targetSystem`, `payload`. The `gov-correct` correction templates compile **onto** this enum. |
+| Audit evidence | `AuditEvent` | **extend**: `beforeState`/`afterState`, `evidenceIds[]`, `actionIds[]`, `evalIds[]`, `affectedSystems[]`, `prevHash` (hash-chain, consumed by `audit-ledger`) |
+| Blocked future action / proxy result | `ActionGate` | **extend**: `reasons[]`, `requiredBeforeSend[]`; derive `allowed` from the gate verdict (do NOT persist a contradictory `blocked` boolean) |
 | Eval regression case | `EvalCase` | exists |
 | Fail→Pass result | `EvalResult` | exists |
 | Operator correction text | — | **Add** `CorrectionEvent` contract |
@@ -89,11 +89,15 @@ fixtures (`businessGoal`, `demoBeats`, context cards) rather than as contracts.
   ("Acme expansion appears on track"); detector finds the EU-data-residency
   requirement present in the call but missing from proposal/scope/launch/owners/
   deal-risk → emits a critical `GovernanceCase` with evidence + missing artifacts.
+- **Correct (beat #5→#6):** the operator's correction is captured as a
+  `CorrectionEvent` and compiled (pure function, `gov-correct`) onto the fixed
+  `EnforcementAction.actionType` enum — never free-form. Reject vague corrections;
+  preview the compiled actions before enforce.
 - **Enforce (beats #6–#9/#11, MNC#3/#4/#6):** `Approve + Enforce` is **atomic** —
   status `on-track → at-risk`; require Product/Security/Engineering owners; create
   the simulated `LinearWorkstreamPayload`; register the proxy block; record one
-  `AuditEvent` (before/after/evidence/actions); generate the `EvalCase`. (PolicyRule
-  + ApprovalGate optional.)
+  `AuditEvent` **via the hash-chained `audit-ledger`** (before/after/evidence/actions/
+  prevHash); generate the `EvalCase`. (PolicyRule + ApprovalGate optional.)
 - **Proxy gate (beat #10, MNC#5):** a check function — attempting "mark on track" /
   "send customer-facing on-track update" returns `{ allowed:false, reasons[],
   requiredBeforeSend[] }` until requirement propagated + owner assigned + eval passed.

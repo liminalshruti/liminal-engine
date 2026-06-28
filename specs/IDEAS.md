@@ -15,9 +15,8 @@ is the strongest signal an idea is right. **Lands in** = the `specs/TASKS.md` ta
 
 ### Detection
 - **Deterministic hard-checks first; LLM only as an optional secondary grader returning strict JSON.** Consensus: 12/12. → `gov-detect`. Removes the demo's #1 reliability risk.
-- **`DriftSignal` as a separate entity from `GovernanceCase`** (type, severity, numeric score, evidence, `detector_version`); many signals → one case. Consensus: high. → add `DriftSignal` contract + `gov-detect`.
 - **Detector taxonomy menu** beyond lost-context: `missing_required_anchor`, `hard_constraint_violation`, `unsupported_claim` (confidence w/o evidence), `scope_expansion`, `output_schema_violation`, **`completion_gate`** (blocks "mark done" while a check is unresolved), **`conflict_with_prior_correction`**. Consensus: high. → `gov-detect`.
-- **`conflict_with_prior_correction` = the regression detector** — a future run that violates an already-active rule emits a top-severity signal. Consensus: 4 specs. → `gov-detect`/`gov-proxy`. This is what proves "future behavior is gated."
+- **`conflict_with_prior_correction` = the regression detector** — a future run that violates an already-active rule emits a `GovernanceCase` directly (no separate `DriftSignal` entity needed for MVP). Consensus: 4 specs. → `gov-detect`/`gov-proxy`. This is what proves "future behavior is gated."
 - **Explicit case-open threshold rule** (open if any hard-fail OR judge confidence ≥0.70 OR ≥2 medium signals OR manual flag). Consensus: high. → `gov-detect`. Turns "detect drift" into one testable decision.
 - **Detectors emit structured evidence (line/field/span refs), never booleans.** → `gov-detect`. Makes the case reviewable + UI legible.
 - **Good-output → no case** (false-positive control); cases are dismissable. → `gov-detect` + tests.
@@ -28,7 +27,7 @@ is the strongest signal an idea is right. **Lands in** = the `specs/TASKS.md` ta
 - **Reject vague/empty corrections with an actionable error; persist the human text for provenance.** → `gov-correct`.
 - **Preview compiled rules before activate; "no correction is complete until ≥1 active EnforcementAction exists."** → `gov-correct` + `gov-enforce`.
 - **Split compound corrections into atomic rules** (one scope · one stage · one action each). → `gov-correct`.
-- **Tiny fixed action-type vocabulary with per-action typed JSON payloads** (`require_fields`/`forbid_patterns`/`prepend_constraint`/`retry_once`/`block_on_fail`/`require_approval` + business actions `change_status`/`assign_owner`/`create_linear_workstream`). Consensus: 12/12 (and "explicitly NO policy DSL"). → extend `EnforcementAction` contract.
+- **Correction templates compile ONTO the canonical `EnforcementAction.actionType` enum defined in `SPEC.md`** (`change_status`/`create_linear_workstream`/`assign_owner`/`block_agent_action`/`require_approval`/`generate_eval`/`activate_policy`/`record_audit_event`) — a fixed enum with per-action typed payloads, **explicitly NO policy DSL**. Consensus: 12/12. → `gov-correct` uses the enum the `contracts` task owns (do not introduce a competing vocabulary).
 
 ### Enforcement
 - **Fail-CLOSED on gate error** — if evaluation throws, deny/hold; never silently bypass. Consensus: high. → `gov-enforce`/`gov-proxy`.
@@ -53,8 +52,8 @@ is the strongest signal an idea is right. **Lands in** = the `specs/TASKS.md` ta
 - **Data-boundary/redaction:** store references/hashes/redacted snapshots, never raw secrets (directly serves the EU-data-residency angle). → ADOPT-lite note in `contracts`/fixtures; deeper path is STRETCH.
 
 ### Domain model (contracts to add/extend)
-- **Add contracts:** `DriftSignal`, `CorrectionEvent`, `LinearWorkstreamPayload` (already in SPEC), and optionally `OperatingConstraint`/`PolicyRule`. → `contracts`.
-- **Extend `GovernanceCase`** (`businessImpact`, `missingFrom[]`, `evidenceIds[]`, `dominantSignalType`, `recommendedActions[]`); **`EnforcementAction`** (`actionType` enum, `matcher`+`effect`/`payload`, `scope`, `status`, `effectiveFrom/Until`, `supersededBy`); **`AuditEvent`** (`beforeState`/`afterState`, `evidenceIds`/`actionIds`/`evalIds`, `prevHash`). → `contracts`.
+- **Add contracts:** `CorrectionEvent`, `LinearWorkstreamPayload` (both already in SPEC). (`DriftSignal` is **STRETCH**, not MVP — for the MVP the regression detector emits a `GovernanceCase` directly; see STRETCH below. `OperatingConstraint`/`PolicyRule` optional.) → `contracts`.
+- **Extend `GovernanceCase`** (`businessImpact`, `missingFrom[]`, `evidenceIds[]`, `recommendedActions[]`, status lifecycle); **`EnforcementAction`** (the fixed `actionType` enum + `targetSystem`/`payload`, `scope`, `status`, versioning); **`AuditEvent`** (`beforeState`/`afterState`, `evidenceIds`/`actionIds`/`evalIds`, `affectedSystems`, `prevHash`); **`ActionGate`** (`reasons[]`, `requiredBeforeSend[]`, derive `allowed`). → `contracts`. (Matches the SPEC.md mapping table exactly.)
 - **Structured goal in fixtures:** `successCriteria[]`, `hardConstraints[]`, `requiredAnchors[]`, `requiredEvidenceType`, `outputSchema` — what makes deterministic detection possible. → fixtures/`contracts`.
 - **AgentRun lineage** (`parentRunId`, `runKind` = first_pass|second_pass|replay) + `resolvedContext` snapshot. → fixtures (AgentOutput already carries pass number).
 
@@ -87,10 +86,13 @@ is the strongest signal an idea is right. **Lands in** = the `specs/TASKS.md` ta
 ---
 
 ## STRETCH (post-spine, if the loop is solid)
-pre-tool interception · scope inheritance across `goalClass` · rule `expiresAt` ·
-`PolicyRule`/`ApprovalGate` as entities · full data-boundary/redaction path ·
-model-graded eval behind a deterministic fallback · `GoalStatusSnapshot` ·
-CLI review fallback · structured telemetry namespace.
+**`DriftSignal` as a separate entity** (type/severity/score/evidence/`detector_version`,
+many→one case, `dominantSignalType` on the case) · pre-tool interception · scope
+inheritance across `goalClass` · rule `expiresAt` · `PolicyRule`/`ApprovalGate` as
+entities · full data-boundary/redaction path · model-graded eval behind a
+deterministic fallback · `GoalStatusSnapshot` · structured-goal fixture fields
+(`successCriteria`/`hardConstraints`/`requiredAnchors`) · CLI review fallback ·
+structured telemetry namespace.
 
 ## FUTURE (beyond the hackathon)
 `ResourceAllocation` / governance-ROI numbers · OpenTelemetry KPI set · an eval
@@ -102,7 +104,7 @@ NIST AI RMF / goal-drift + correction-compilation research citations for the pit
 ## What this changes in `specs/TASKS.md`
 - **New Wave-2 task `gov-correct`** — `CorrectionEvent` + the pure-function correction compiler (template vocab + phrase→action table). Owns `packages/governance/src/compile-correction.ts` (+test).
 - **New Wave-2 task `audit-ledger`** — hash-chained append-only audit service + reconstruction test. Owns `packages/governance/src/audit-ledger.ts` (+test).
-- **`contracts` task extended** — add `DriftSignal` + `CorrectionEvent`; extend `EnforcementAction` / `AuditEvent` / `GovernanceCase` per above.
+- **`contracts` task extended** — add `CorrectionEvent` (+ `LinearWorkstreamPayload`); extend `EnforcementAction` / `AuditEvent` / `GovernanceCase` / `ActionGate` per the SPEC.md table. (`DriftSignal` is STRETCH.)
 - **Screen tasks** gain the specific UX affordances listed under Demo/UX.
 - **Cross-cutting tests** (audit-reconstruction, determinism, good-output-negative, schema round-trip) attach to `e2e` + the owning task.
 
