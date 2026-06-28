@@ -58,8 +58,8 @@ provides:
 |-----------|-------|----------|
 | **StatusBadge** | `{ status: AgentOutput["reportedStatus"] }` (`"on-track" \| "at-risk"`) | Shows deal status visually; handles the On Track → At Risk flip (MNC#3). |
 | **EvalTable** | `{ rows: EvalRow[] }` — build with `toRows([evalPass1, evalPass2])` | Renders Fail → Pass result table. Handles MNC#7 (eval proof). |
-| **LinearPayloadView** | `{ projectName, issues: { key; title; assignee? }[], requiredOwners[] }` | Simulated Linear workstream panel. Label says "Simulated". MNC#4. **See the LinearPayloadView note below — its prop shape does not yet match any fixture.** |
-| **BlockedActionBanner** | `{ gate: ActionGate }` | Renders blocked action + reason + unblock condition. MNC#5. |
+| **LinearPayloadView** | `{ payload: LinearWorkstreamPayload }` (`title`, `workstreams: {title,status,owner}[]`, `requiredOwners[]`) | Simulated Linear workstream panel. Label says "Simulated". MNC#4. **See the LinearPayloadView note below — needs a fixture instance.** |
+| **BlockedActionBanner** | `{ gate: ActionGate }` (`reasons[]`, `requiredBeforeSend[]`) | Renders the gated action + why (`reasons`) + what's required before send. Returns null if `isAllowed(gate)`. MNC#5. |
 | **TraceRow** | `{ event: AuditEvent }` | Single row in an audit trail. Renders actor (role), action, before/after, timestamp. MNC#6. |
 | **Card** | `{ title?, children }` | Generic container. Consistent padding, border, background. Screens compose with this. |
 
@@ -107,17 +107,14 @@ const { evalPass1, evalPass2 } = acmeScenario;
 > **Component props are FROZEN.** Screens adapt to the props — do not change a
 > component's props to fit a screen.
 >
-> **⚠️ LinearPayloadView — known data gap (resolved by LIM-1227).** Its props
-> (`issues: { key; title; assignee? }[]`) do **not** match any current data source:
-> the producer `SimulatedLinearPanel.workstreams()`
-> (`packages/integrations/linear/src/index.ts`) returns `{ title; status; owner }[]`
-> (no `key`, `owner`≠`assignee`, `status` dropped), and there is **no `projectName`/
-> `issues` fixture** in `acmeScenario`. The `LinearWorkstreamPayload` contract +
-> fixture that closes this gap is **LIM-1227 «contracts»** (in flight, PR #13). The
-> enforcement-panel screen (LIM-1219) is **blocked on LIM-1227 merging**; once it
-> lands, read the payload from the new fixture and (if needed) the LIM-1214 owner
-> reconciles `LinearPayloadView`'s prop shape to the contract. Until then, do NOT
-> invent issue keys / titles / owners — that violates Locked Rule #2.
+> **⚠️ LinearPayloadView — needs a fixture instance (contract now landed).** The
+> `LinearWorkstreamPayload` contract shipped in **LIM-1227 (PR #13, merged)** and
+> `LinearPayloadView` is now typed to it (`{ payload: LinearWorkstreamPayload }`).
+> Its `workstreams: {title,status,owner}[]` shape matches the producer
+> `SimulatedLinearPanel.workstreams()`. **What's still missing:** there is no
+> `LinearWorkstreamPayload` instance in `acmeScenario` yet — see the dedicated
+> fixture task. The enforcement-panel screen (LIM-1219) must read that fixture once
+> it lands; do **not** invent workstreams/owners ad hoc (Locked Rule #2).
 
 ### 3. **No live calls on the spine**
 

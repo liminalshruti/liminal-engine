@@ -1,51 +1,40 @@
 /**
  * LinearPayloadView — renders a simulated Linear workstream payload.
- * Shows the project name, workstream issues, and required owners (Product/Security/Engineering).
- * Labeled as "simulated" to indicate this is not a real Linear API call.
+ * Typed against the `LinearWorkstreamPayload` contract (title + workstreams
+ * [{title,status,owner}] + requiredOwners). Labeled "Simulated" — this is not a
+ * real Linear API call (DEMO_CONTRACT cut-if-risky).
  * (DEMO_CONTRACT must-not-cut #4: Simulated Linear workstream appears +
  * required Product/Security/Engineering owners.)
  */
-
-export interface LinearWorkstreamIssue {
-  key: string;
-  title: string;
-  assignee?: string;
-}
+import type { LinearWorkstreamPayload } from "@liminal-engine/contracts";
 
 export interface LinearPayloadViewProps {
-  /** The workstream project name. */
-  projectName: string;
-  /** The workstream issues (simulated). */
-  issues: LinearWorkstreamIssue[];
-  /** Required owners for this workstream (e.g., ["Product", "Security", "Engineering"]). */
-  requiredOwners: readonly string[];
+  /** The simulated Linear workstream payload (LinearWorkstreamPayload contract). */
+  payload: LinearWorkstreamPayload;
   /** Optional class name for styling override. */
   className?: string;
 }
 
-export function LinearPayloadView({
-  projectName,
-  issues,
-  requiredOwners,
-  className,
-}: LinearPayloadViewProps) {
+export function LinearPayloadView({ payload, className }: LinearPayloadViewProps) {
+  const { title, workstreams, requiredOwners } = payload;
+
   return (
     <div className={`linear-payload${className ? ` ${className}` : ""}`}>
       <div className="linear-payload__header">
         <span className="linear-payload__simulated-badge">Simulated</span>
-        <h3 className="linear-payload__title">{projectName}</h3>
+        <h3 className="linear-payload__title">{title}</h3>
       </div>
 
       <div className="linear-payload__section">
-        <h4 className="linear-payload__section-title">Workstream Issues</h4>
+        <h4 className="linear-payload__section-title">Workstreams</h4>
         <ul className="linear-payload__issues">
-          {issues.map((issue) => (
-            <li key={issue.key} className="linear-payload__issue">
-              <span className="linear-payload__issue-key">{issue.key}</span>
-              <span className="linear-payload__issue-title">{issue.title}</span>
-              {issue.assignee && (
-                <span className="linear-payload__issue-assignee">{issue.assignee}</span>
-              )}
+          {workstreams.map((ws, idx) => (
+            <li key={idx} className="linear-payload__issue">
+              <span className={`linear-payload__issue-status linear-payload__issue-status--${ws.status}`}>
+                {ws.status}
+              </span>
+              <span className="linear-payload__issue-title">{ws.title}</span>
+              <span className="linear-payload__issue-assignee">{ws.owner}</span>
             </li>
           ))}
         </ul>

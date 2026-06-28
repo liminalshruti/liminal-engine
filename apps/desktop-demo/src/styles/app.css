@@ -199,10 +199,13 @@ body {
   padding: var(--space-2, 8px) var(--space-3, 12px); background: var(--frame-bg, #0E0E11);
   border-radius: var(--radius-2, 6px); font-size: 0.9rem;
 }
-.linear-payload__issue-key {
-  font-family: var(--font-mono, monospace); font-size: 0.8rem;
-  color: var(--text-faint, #8A8780); flex-shrink: 0;
+.linear-payload__issue-status {
+  font-family: var(--font-mono, monospace); font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.03em; flex-shrink: 0; padding: var(--space-1, 4px) var(--space-2, 8px);
+  border-radius: var(--radius-1, 4px);
 }
+.linear-payload__issue-status--green { color: var(--judgment, #8FB573); }
+.linear-payload__issue-status--at-risk { color: var(--outreach, #D54D44); }
 .linear-payload__issue-title { color: var(--text-soft, #B8B5AE); flex: 1; }
 .linear-payload__issue-assignee {
   font-size: 0.8rem; color: var(--text-faint, #8A8780);
@@ -235,15 +238,26 @@ body {
   font-size: 1.05rem; font-weight: 600; margin: 0 0 var(--space-2, 8px);
   color: var(--text, #E8E6E1);
 }
+.blocked-action-banner__reasons {
+  margin: 0 0 var(--space-3, 12px); padding-left: var(--space-4, 16px);
+  list-style: disc;
+}
 .blocked-action-banner__reason {
-  margin: 0 0 var(--space-3, 12px); color: var(--text-soft, #B8B5AE); font-size: 0.95rem;
+  margin: 0 0 var(--space-2, 8px); color: var(--text-soft, #B8B5AE); font-size: 0.95rem;
   line-height: 1.5;
 }
 .blocked-action-banner__unblock-condition {
   padding-top: var(--space-3, 12px); border-top: 1px solid var(--outreach-edge, rgba(213,77,68,0.40));
 }
 .blocked-action-banner__unblock-label {
-  margin: 0; font-size: 0.9rem; color: var(--text-faint, #8A8780); font-style: italic;
+  margin: 0 0 var(--space-2, 8px); font-size: 0.9rem; color: var(--text-faint, #8A8780); font-style: italic;
+}
+.blocked-action-banner__required {
+  margin: 0; padding-left: var(--space-4, 16px); list-style: circle;
+}
+.blocked-action-banner__required-item {
+  margin: 0 0 var(--space-2, 8px); color: var(--text-soft, #B8B5AE); font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 /* ── components: TraceRow ── */
