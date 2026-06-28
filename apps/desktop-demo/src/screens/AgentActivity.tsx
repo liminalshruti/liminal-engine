@@ -51,10 +51,10 @@ export function AgentActivity() {
         <p className="screen__fact">
           Agent claim: <strong>{demoBeats.agentClaim}</strong>
         </p>
-        <p className="screen__fact">
-          Reported status: <StatusBadge status={agentOutputPass1.reportedStatus} />
-        </p>
-        <p className="screen__fact">{agentOutputPass1.summary}</p>
+        <div className="agent-activity__beat3-status">
+          <StatusBadge status={agentOutputPass1.reportedStatus} />
+        </div>
+        <p className="agent-activity__beat3-summary">{agentOutputPass1.summary}</p>
       </Card>
     </section>
   );
