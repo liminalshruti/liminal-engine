@@ -11,5 +11,6 @@ export { StatusBadge, type StatusBadgeProps } from "./StatusBadge.tsx";
 export { EvalTable, type EvalTableProps } from "./EvalTable.tsx";
 export { LinearPayloadView, type LinearPayloadViewProps } from "./LinearPayloadView.tsx";
 export { BlockedActionBanner, type BlockedActionBannerProps } from "./BlockedActionBanner.tsx";
+export { EnforcementPreview, type EnforcementPreviewProps } from "./EnforcementPreview.tsx";
 export { TraceRow, type TraceRowProps } from "./TraceRow.tsx";
 export { Card, type CardProps } from "./Card.tsx";

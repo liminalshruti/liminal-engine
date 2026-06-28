@@ -16,6 +16,13 @@ All notable changes to scope, contract, and structure. Newest first.
   the exact highlighted span, and fail closed on fixture drift. No contract,
   fixture, or golden changes.
 
+### Added — LIM-1234 compiled-enforcement preview (2026-06-28)
+- `apps/desktop-demo/src/components/EnforcementPreview.tsx` — contract-typed preview
+  of the compiled `EnforcementAction` objects queued for approval.
+- `apps/desktop-demo/src/screens/EnforcementPanel.tsx` now renders the preview before
+  the enforce transition text so demo beat #6 shows the rule set before
+  Approve + Enforce. No contract or golden changes.
+
 ### Added — LIM-1242 audit reconstruction test (2026-06-27)
 - `packages/governance/src/audit-reconstruction.ts` — verifies AuditEvent hash
   chains by recomputing `sha256(prevHash + canonical_json(event))` and rebuilds a
