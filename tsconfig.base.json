@@ -21,6 +21,7 @@
       "@liminal-engine/governance": ["packages/governance/src/index.ts"],
       "@liminal-engine/policy": ["packages/policy/src/index.ts"],
       "@liminal-engine/eval-harness": ["packages/eval-harness/src/index.ts"],
+      "@liminal-engine/signal-harness": ["packages/signal-harness/src/index.ts"],
       "@liminal-engine/ui-components": ["packages/ui-components/src/index.ts"],
       "@liminal-engine/integration-gemini": ["packages/integrations/gemini/src/index.ts"],
       "@liminal-engine/integration-linear": ["packages/integrations/linear/src/index.ts"],

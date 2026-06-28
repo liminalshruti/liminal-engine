@@ -5,6 +5,65 @@ this first.
 
 ---
 
+## Session: LIM-1372 unbuilt real-product contracts + harnesses (2026-06-28)
+
+**Did:**
+- Created isolated worktree
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1372` on branch
+  `agent/LIM-1372-unbuilt-real-product` because no Linear ID was supplied in the
+  user request.
+- Added and registered eight shared-kernel contracts with golden vectors:
+  `DriftSignal`, `LlmRequest`, `LlmOutcome`, `EndpointConfig`, `TransformRule`,
+  `ResourceAllocation`, `RoutingRule`, and `NlIntent`. Rebased over LIM-1367,
+  LIM-1340, and LIM-1373, preserving upstream `PolicyRule`, `ActionPolicyRule`,
+  `ApprovalGate`, `OperatorMessage`, `ParsedIntent`, and `AssistantReply`
+  registry entries.
+- Added `packages/signal-harness` with real deterministic logic for requirement
+  drift detection over arbitrary active requirements, transform-rule application,
+  signal/intent routing to enabled endpoint configs, and severe-signal resource
+  allocation.
+- Strengthened `packages/eval-harness` beyond store reads: it validates read
+  results through contracts and can generate eval cases / grade requirement
+  coverage from arbitrary `GovernanceCase` + `AgentOutput` inputs while keeping
+  upstream `ruleHealthTable`.
+- Expanded `packages/ui-components` from two helpers to framework-agnostic
+  view-model helpers for drift signals, endpoint configs, NL intents, resource
+  allocations, routing rules, and eval summaries.
+- Added `GeminiRestAgentOutputSource`, a real Gemini REST adapter behind the
+  existing governance `AgentOutputSource` port that records `LlmRequest` /
+  `LlmOutcome` receipts. Upstream cache-backed `GeminiAgentOutputSource` remains
+  intact, and `FixtureAgentOutputSource` remains explicit for fixture-chosen roots.
+- Serialized the root `pnpm test` script with `--test-concurrency=1` after Node
+  26 repeatedly failed deserializing a passed child test file in the concurrent
+  full suite. The same 508 tests still run; no test was skipped or weakened.
+
+**Verified before PR open:**
+- `pnpm install` refreshed workspace metadata.
+- `pnpm regen:goldens` wrote `contracts.golden.json` with 41 vectors across 27
+  registered contracts after the rebase.
+- `pnpm verify` is green after rebasing onto current `origin/main`: typecheck,
+  app typecheck, 508 tests, and boundary lint.
+- `./scripts/smoke.sh` is green after the final rebase.
+
+**Did NOT do (by design):**
+- Did not wire live Gemini into the deterministic desktop-demo spine.
+- Did not make a real live Gemini network call because no `GEMINI_API_KEY` was
+  required/provided; the REST adapter path is tested with injected fetch over real
+  request construction/parsing code.
+- Did not merge or mark any Linear issue Done.
+
+**Risks / watch:**
+- `detectRequirementDrift` is deliberately generic and may need product tuning once
+  real operator data is available.
+- This branch now layers on top of LIM-1367's policy intercept control plane, so
+  reviewers should inspect the model split: remediation `PolicyRule`,
+  intercept `ActionPolicyRule`, and general `RoutingRule` are distinct contracts.
+- This branch also layers on LIM-1340's operator-NL contracts. `ParsedIntent`
+  models an unratified operator chat turn; `NlIntent` is the normalized
+  control-plane artifact used for routing/config/allocation workflows.
+
+---
+
 ## Session: LIM-1367 policy intercept control plane PR-ready (2026-06-28)
 
 **Did:**
