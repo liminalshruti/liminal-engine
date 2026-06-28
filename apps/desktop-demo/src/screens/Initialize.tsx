@@ -16,21 +16,40 @@
  * stubbed panel, so nothing carries a "Simulated" badge — that label is reserved for
  * the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
+import "./Initialize.css";
 import { Card } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { OPERATOR_ROLE, SCREEN_COPY } from "../lib/copy.ts";
 
-export function Initialize() {
-  // Neutral facts only: the deal/workspace subject (`dealName`) and the goal — never
-  // the pass-1 false-green claim, which is the later reveal (beat #3, AgentActivity).
-  const { businessGoal, agentOutputPass1 } = useDemo();
+/**
+ * Initialize screen content — renders with null checks for required fields.
+ * Throws if demo data is missing (caught by parent ErrorBoundary).
+ */
+function InitializeContent() {
+  const demo = useDemo();
+  const { businessGoal, agentOutputPass1 } = demo;
+
+  // Null checks for required fields
+  if (!agentOutputPass1 || !businessGoal) {
+    throw new Error(
+      `Initialize requires businessGoal and agentOutputPass1; got ${!businessGoal ? "missing businessGoal" : ""} ${!agentOutputPass1 ? "missing agentOutputPass1" : ""}`.trim(),
+    );
+  }
+
+  if (!agentOutputPass1.dealName) {
+    throw new Error("agentOutputPass1.dealName is required but missing");
+  }
+
   const copy = SCREEN_COPY.initialize;
 
   return (
     <section className="screen screen--initialize" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title={copy.title}>
+      <Card
+        title={copy.title}
+        className="initialize__workspace-card"
+      >
         <p className="screen__fact">
           Deal under governance: {agentOutputPass1.dealName}
         </p>
@@ -43,6 +62,10 @@ export function Initialize() {
       </Card>
     </section>
   );
+}
+
+export function Initialize() {
+  return <InitializeContent />;
 }
 
 export default Initialize;
