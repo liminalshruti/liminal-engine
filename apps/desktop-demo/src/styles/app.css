@@ -275,6 +275,26 @@ button { touch-action: manipulation; }
   font-size: 0.72rem; font-weight: 750;
   letter-spacing: 0.06em; text-transform: uppercase;
 }
+
+/* ── AgentActivity beat #3 false-green prominence (design direction) ── */
+/* Pulsing animation for the status badge: opacity 1.0 → 0.85 → 1.0 over 2 seconds */
+@keyframes agent-activity-pulse {
+  0%, 100% { opacity: 1.0; }
+  50% { opacity: 0.85; }
+}
+.agent-activity__beat3-status {
+  font-size: var(--fs-base, 15px);
+  padding: var(--space-3, 12px);
+  animation: agent-activity-pulse 2s var(--ease) infinite;
+  display: inline-flex;
+  margin-bottom: var(--space-4, 16px);
+}
+.agent-activity__beat3-summary {
+  font-size: var(--fs-base, 15px);
+  line-height: var(--lh-relaxed, 1.55);
+  color: var(--text, #F4F2EE);
+  margin: 0;
+}
 /* ── screen: GovernanceCase (beat #5 · MNC#2) ── */
 .case__headline { margin: 0 0 var(--space-4, 16px); font-size: 1.05rem; line-height: 1.45; }
 .case__headline strong { color: var(--alarm, #D98A7A); }
