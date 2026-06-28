@@ -128,27 +128,32 @@ export async function connectToLiveKitRoom(
       maxParticipants: 10,
     });
 
+    // The server-assigned sid is the proof of a real round-trip: LiveKit cloud
+    // accepted the createRoom call and minted a server-side room id. (We do NOT
+    // gate liveness on a follow-up listRooms() — LiveKit can reap an empty,
+    // zero-participant room before the next call, so that check is fragile and
+    // would turn a genuinely-successful connection into a false fallback.)
+    if (!room.sid) {
+      throw new Error("createRoom returned no server sid — connection not confirmed");
+    }
+
     console.debug(
-      `[LiveKit] Room created/verified: "${room.name}" (sid=${room.sid}). Participants: ${room.numParticipants}`
+      `[LiveKit] Room created/verified on live cloud: "${room.name}" (sid=${room.sid}). Participants: ${room.numParticipants}`
     );
 
-    // List rooms to confirm the round-trip worked
-    const rooms = await roomService.listRooms();
-    console.debug(
-      `[LiveKit] Listed ${rooms.length} room(s). Confirming "${roomName}" exists...`
-    );
-
-    // Verify our room is in the list (this is the proof of real connection)
-    const roomExists = rooms.some((r) => r.name === roomName || r.name === room.name);
-    if (!roomExists) {
-      throw new Error(`Room created but not found in listing — unexpected state`);
+    // Best-effort confirmation log only (never fatal).
+    try {
+      const rooms = await roomService.listRooms();
+      console.debug(`[LiveKit] listRooms() round-trip OK — ${rooms.length} active room(s).`);
+    } catch {
+      /* listing is informational; the createRoom sid already proves the live connection */
     }
 
     // ──────────────────────────────────────────────────────────────
     // LAYER 2: Generate AccessToken for the browser to join + publish mic
     // ──────────────────────────────────────────────────────────────
-    const at = new AccessToken(config.apiKey, config.apiSecret);
     const identity = `operator-${Date.now()}`;
+    const at = new AccessToken(config.apiKey, config.apiSecret, { identity });
 
     at.addGrant({
       room: roomName,
