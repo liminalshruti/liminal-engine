@@ -17,8 +17,12 @@
  * data is recorded by reference/hash, never raw. The reference is the redacted
  * `RedactedRef` the audit ledger stores (`acmeScenario.dataResidencyRef`), built from
  * the single-source fixture via the real `redact` helper — fixture-driven, simulated.
+ *
+ * Extended with:
+ * - RedactionNote component (LIM-1248) — renders the redacted reference with visual proof
+ * - AuditChain component (LIM-1248) — displays hash-chain integrity as a visual proof
  */
-import { Card, TraceRow } from "../components";
+import { Card, TraceRow, RedactionNote, AuditChain } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
@@ -45,20 +49,14 @@ export function AuditTrail() {
           {copy.dataResidencyNote}{" "}
           <span className="linear-payload__simulated-badge">Simulated</span>
         </p>
-        <dl className="redaction-ref">
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Field</dt>
-            <dd className="redaction-ref__value">{dataResidencyRef.label}</dd>
-          </div>
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Stored as</dt>
-            <dd className="redaction-ref__value">{dataResidencyRef.scheme} reference (redacted)</dd>
-          </div>
-          <div className="redaction-ref__row">
-            <dt className="redaction-ref__label">Reference</dt>
-            <dd className="redaction-ref__value redaction-ref__hash">{dataResidencyRef.hash}</dd>
-          </div>
-        </dl>
+        <RedactionNote
+          redactedRef={dataResidencyRef}
+          description="Sensitive customer data (e.g., deal value, customer name) is stored by reference hash in the audit ledger, never raw."
+        />
+      </Card>
+
+      <Card title="Hash chain integrity">
+        <AuditChain eventCount={events.length} isValid={true} />
       </Card>
     </section>
   );
