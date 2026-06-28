@@ -21,11 +21,11 @@
  */
 import { Card } from "../components";
 import { caseHeadline } from "@liminal-engine/ui-components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function GovernanceCase() {
-  const { governanceCase: c } = acmeScenario;
+  const { governanceCase: c } = useDemo();
   const copy = SCREEN_COPY.governanceCase;
 
   return (

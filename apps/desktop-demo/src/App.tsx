@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DEMO_STEPS, PHASE_LABEL } from "./steps.tsx";
+import { DemoProvider } from "./lib/demo-context.tsx";
 
 /**
  * Demo spine SHELL — the static clickable frame for the 14-step required path
@@ -7,8 +8,21 @@ import { DEMO_STEPS, PHASE_LABEL } from "./steps.tsx";
  * mapped to the active beat (`step.screen`). The 14 beats map onto 7 screens
  * (LIM-1226 «spine-shell-v2»); screen agents fill each screen's stub — App.tsx
  * is not edited per screen.
+ *
+ * Data: wrapped in <DemoProvider>, which runs the REAL governance loop once
+ * (`buildGovernanceDemo`) and feeds its output to the screens via `useDemo()` —
+ * the screens render live engine output, not raw fixtures (LIM-1255). The result is
+ * byte-identical to the locked fixtures (determinism), so the walkthrough is unchanged.
  */
 export function App() {
+  return (
+    <DemoProvider>
+      <DemoShell />
+    </DemoProvider>
+  );
+}
+
+function DemoShell() {
   const [i, setI] = useState(0);
   const step = DEMO_STEPS[i]!;
   const last = DEMO_STEPS.length - 1;

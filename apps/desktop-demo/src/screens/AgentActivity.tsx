@@ -30,14 +30,14 @@
  * that label is reserved for the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
 import { Card, StatusBadge } from "../components";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function AgentActivity() {
   // First-pass agent output (the false green) + the verbatim beat-#3 claim. Neutral,
   // on-track facts only: the drop is NOT read here (`droppedRequirements` is left for
   // the beat-#4 reveal), keeping the requirement silently absent on this screen.
-  const { agentOutputPass1, demoBeats } = acmeScenario;
+  const { agentOutputPass1, demoBeats } = useDemo();
   const copy = SCREEN_COPY.agentActivity;
 
   return (
