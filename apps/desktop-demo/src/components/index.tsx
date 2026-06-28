@@ -15,3 +15,5 @@ export { EnforcementPreview, type EnforcementPreviewProps } from "./EnforcementP
 export { TraceRow, type TraceRowProps } from "./TraceRow.tsx";
 export { Card, type CardProps } from "./Card.tsx";
 export { ErrorBoundary } from "./ErrorBoundary.tsx";
+export { RedactionNote, type RedactionNoteProps } from "./RedactionNote.tsx";
+export { AuditChain, type AuditChainProps } from "./AuditChain.tsx";
