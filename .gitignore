@@ -28,3 +28,7 @@ __pycache__/
 # Large demo media — keep curated assets, ignore raw captures
 demos/recordings/*.mov
 demos/recordings/*.mp4.raw
+
+# GitHub Pages local build artifacts (built in CI, not committed)
+site/
+pages-serve/

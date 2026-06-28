@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liminal Engine — Agentic Work Governance</title>
+  <style>
+    :root {
+      --bg:           #0A0A0B;
+      --frame-bg:     #0E0E11;
+      --frame-bg-2:   #0C0C0F;
+      --frame-bg-3:   #15161A;
+      --frame-border: #1F1F23;
+      --card-border:  #232327;
+      --text:         #F4F2EE;
+      --text-mid:     #C9C5BD;
+      --text-soft:    #B8B5AE;
+      --text-dim:     #8A8780;
+      --text-faint:   #807D78;
+      --clarity-50:   rgba(142,102,251,0.04);
+      --clarity-100:  rgba(142,102,251,0.08);
+      --clarity-300:  rgba(142,102,251,0.26);
+      --clarity-400:  rgba(142,102,251,0.42);
+      --clarity-500:  #8E66FB;
+      --clarity-600:  #6F4DDA;
+      --wholeness-500: #E90095;
+      --vitality-500:  #FF9549;
+      --alarm-500:     #ED214F;
+      --connection-500: #31E682;
+      --signal-500:    #70F32F;
+      --shadow-card:   0 8px 24px rgba(0,0,0,0.35);
+      --ease:          cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Geist", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      overflow: hidden;
+    }
+
+    .deck-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slides {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 10;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      visibility: hidden;
+      z-index: 5;
+    }
+
+    /* Slide content structure */
+    .slide-content {
+      max-width: 1440px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .slide-title {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.2;
+      max-width: 70%;
+      margin: 0;
+    }
+
+    .slide-title-main {
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .slide-title-accent {
+      background: linear-gradient(120deg, var(--clarity-500), var(--wholeness-500));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .stat-box {
+      background: var(--frame-bg-2);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 24px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .stat-label {
+      color: var(--text-faint);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      color: var(--text);
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .loop-diagram {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .loop-step {
+      background: var(--frame-bg-3);
+      border: 1px solid var(--frame-border);
+      border-radius: 4px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      min-width: fit-content;
+    }
+
+    .loop-step.active {
+      background: var(--clarity-100);
+      color: var(--clarity-600);
+      border-color: var(--clarity-500);
+    }
+
+    .loop-arrow {
+      color: var(--text-dim);
+      margin: 0 4px;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--frame-border);
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .slide-number {
+      font-family: "Geist Mono", monospace;
+      letter-spacing: 0.16em;
+    }
+
+    /* Demo slide special handling */
+    .demo-slide {
+      background: var(--frame-bg);
+      justify-content: flex-start;
+      padding-top: 40px;
+    }
+
+    .demo-stage {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .demo-placeholder-icon {
+      font-size: 48px;
+      opacity: 0.4;
+    }
+
+    .backup-video-container {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      background: var(--frame-bg-2);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .backup-video {
+      width: 100%;
+      display: none;
+      background: var(--bg);
+    }
+
+    .backup-video.visible {
+      display: block;
+    }
+
+    .backup-placeholder {
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--frame-bg-2), var(--frame-bg-3));
+      border: 2px dashed var(--frame-border);
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    .backup-placeholder:hover {
+      border-color: var(--clarity-500);
+      color: var(--clarity-500);
+    }
+
+    .backup-icon {
+      font-size: 48px;
+    }
+
+    .backup-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .backup-hint {
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 8px;
+    }
+
+    /* Loop progress spine */
+    .loop-progress-spine {
+      width: 100%;
+      height: 4px;
+      background: var(--frame-bg-3);
+      border-radius: 2px;
+      margin-bottom: 32px;
+      overflow: hidden;
+      display: flex;
+      gap: 2px;
+    }
+
+    .loop-progress-segment {
+      flex: 1;
+      height: 100%;
+      background: var(--frame-border);
+      border-radius: 1px;
+      transition: background 0.3s var(--ease);
+    }
+
+    .loop-progress-segment.active {
+      background: var(--clarity-500);
+    }
+
+    /* Notes panel */
+    .notes-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--frame-bg-2);
+      border-top: 1px solid var(--frame-border);
+      padding: 24px;
+      max-height: 0;
+      overflow-y: auto;
+      transition: max-height 0.3s var(--ease);
+      z-index: 100;
+    }
+
+    .notes-panel.visible {
+      max-height: 300px;
+    }
+
+    .notes-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.55;
+    }
+
+    .notes-section {
+      margin-bottom: 16px;
+    }
+
+    .notes-label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 6px;
+    }
+
+    .notes-text {
+      margin: 0;
+    }
+
+    /* Controls */
+    .deck-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--frame-bg);
+      border-top: 1px solid var(--frame-border);
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .control-button {
+      background: var(--frame-bg-2);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s var(--ease);
+    }
+
+    .control-button:hover {
+      background: var(--frame-bg-3);
+    }
+
+    .control-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .control-info {
+      display: flex;
+      gap: 24px;
+      color: var(--text-faint);
+      font-size: 11px;
+    }
+
+    .kbd {
+      background: var(--frame-bg-3);
+      border: 1px solid var(--card-border);
+      border-radius: 3px;
+      padding: 2px 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      color: var(--text);
+    }
+
+    /* Slide-specific styles */
+    .slide-1 {
+      background: linear-gradient(135deg, var(--frame-bg) 0%, var(--frame-bg-2) 100%);
+    }
+
+    .slide-2 {
+      background: var(--frame-bg);
+    }
+
+    .slide-3 {
+      background: var(--frame-bg);
+      padding-top: 30px;
+    }
+
+    .slide-4 {
+      background: var(--frame-bg);
+    }
+
+    .slide-5 {
+      background: linear-gradient(135deg, var(--frame-bg) 0%, var(--frame-bg-3) 100%);
+    }
+
+    .technicality-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .tech-item {
+      background: var(--frame-bg-2);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .tech-label {
+      color: var(--clarity-500);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .tech-title {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .tech-body {
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .real-badge {
+      display: inline-block;
+      background: var(--clarity-100);
+      color: var(--clarity-600);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .simulated-badge {
+      display: inline-block;
+      background: var(--watch-100);
+      color: var(--watch-600);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .close-statement {
+      background: var(--clarity-100);
+      border-left: 4px solid var(--clarity-500);
+      padding: 20px 24px;
+      border-radius: 4px;
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    .close-statement-text {
+      color: var(--clarity-600);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    @media (max-width: 1440px) {
+      .slide {
+        padding: 40px;
+      }
+      .slide-title {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .slide {
+        padding: 30px;
+      }
+      .slide-title {
+        font-size: 28px;
+      }
+      .technicality-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-container">
+    <div class="slides">
+      <!-- SLIDE 1: HOOK/PROBLEM -->
+      <div class="slide slide-1 active">
+        <div class="slide-content">
+          <div class="slide-header">
+            <div>
+              <h1 class="slide-title slide-title-main">
+                The False Green
+              </h1>
+              <p style="color: var(--text-mid); font-size: 18px; margin-top: 8px;">
+                AI agents report on-track while silently dropping the business goal.
+              </p>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div class="stat-box">
+              <div class="stat-label">Real Scenario</div>
+              <div class="stat-value">$1.2M Acme Deal</div>
+              <p style="color: var(--text-soft); font-size: 13px; margin-top: 8px; line-height: 1.45;">
+                Agents close it on track. Customer EU data-residency requirement drops silently. Deal goes at-risk undetected.
+              </p>
+            </div>
+          </div>
+
+          <div class="slide-footer">
+            <span class="slide-number">01 / 05</span>
+            <span>Press → or click to advance</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: WHAT LIMINAL IS -->
+      <div class="slide slide-2">
+        <div class="slide-content">
+          <div class="slide-header">
+            <div>
+              <h1 class="slide-title slide-title-main">
+                Liminal Engine
+              </h1>
+              <p style="color: var(--clarity-500); font-size: 16px; margin-top: 8px; font-weight: 600;">
+                The self-improvement stack for agentic work
+              </p>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <p style="color: var(--text); font-size: 16px; line-height: 1.55; max-width: 800px; margin-bottom: 24px;">
+              Closed-loop governance that catches drift, forces correction, and proves the next pass improved.
+            </p>
+
+            <div class="loop-diagram">
+              <div class="loop-step">observe</div>
+              <div class="loop-arrow">→</div>
+              <div class="loop-step">detect</div>
+              <div class="loop-arrow">→</div>
+              <div class="loop-step">correct</div>
+              <div class="loop-arrow">→</div>
+              <div class="loop-step">enforce</div>
+              <div class="loop-arrow">→</div>
+              <div class="loop-step">audit</div>
+              <div class="loop-arrow">→</div>
+              <div class="loop-step">improve</div>
+            </div>
+
+            <p style="color: var(--text-dim); font-size: 13px; margin-top: 32px;">
+              ◇ Open a governance case · flip status to at-risk · block the bad action · seal audit proof · grade the correction
+            </p>
+          </div>
+
+          <div class="slide-footer">
+            <span class="slide-number">02 / 05</span>
+            <span>↻ Ready to see it work →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: DEMO + BACKUP VIDEO -->
+      <div class="slide slide-3 demo-slide">
+        <div class="slide-content">
+          <div class="loop-progress-spine">
+            <div class="loop-progress-segment active"></div>
+            <div class="loop-progress-segment"></div>
+            <div class="loop-progress-segment"></div>
+            <div class="loop-progress-segment"></div>
+            <div class="loop-progress-segment"></div>
+            <div class="loop-progress-segment"></div>
+          </div>
+
+          <h2 style="color: var(--text); font-size: 24px; font-weight: 600; margin-bottom: 16px;">
+            Live Demo: $1.2M Acme Expansion
+          </h2>
+
+          <div class="demo-stage" id="liveDemo">
+            <div class="demo-placeholder">
+              <div class="demo-placeholder-icon">▶</div>
+              <div>Live demo running on desktop-demo app</div>
+              <div style="font-size: 12px; color: var(--text-dim);">Press SPACE or click to start</div>
+            </div>
+          </div>
+
+          <div class="backup-video-container">
+            <div class="backup-placeholder" onclick="toggleBackupVideo()">
+              <div class="backup-icon">📹</div>
+              <div class="backup-label">Backup demo video — drop demo-backup.mp4 here</div>
+              <div class="backup-hint">Press B or click to toggle if live demo fails</div>
+            </div>
+            <video
+              id="backupVideo"
+              class="backup-video"
+              controls
+              style="display: none;"
+            >
+              <source src="./demo-backup.mp4" type="video/mp4">
+              <source src="./demo-backup.webm" type="video/webm">
+            </video>
+          </div>
+
+          <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--frame-border); color: var(--text-faint); font-size: 12px;">
+            <span style="display: inline-block; margin-right: 24px;">14-step governance loop • Acme → GovernanceCase → Enforce → At-Risk • Audit sealed • Eval Fail → Pass</span>
+          </div>
+
+          <div class="slide-footer">
+            <span class="slide-number">03 / 06</span>
+            <span>Press B to toggle backup video; Esc to dismiss</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: AND THERE'S MORE — INFERENCE PROXY (Technicality beat) -->
+      <div class="slide slide-proxy">
+        <div class="slide-content">
+          <div class="slide-header">
+            <div style="font-family: var(--mono, monospace); font-size: 12px; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px;">
+              Same engine · second axis · Burp for LLM traffic
+            </div>
+            <h1 class="slide-title slide-title-main">
+              We governed work quality. <span class="slide-title-accent">Now govern the spend.</span>
+            </h1>
+          </div>
+          <div class="slide-body">
+            <p style="color: var(--text-soft); font-size: 18px; line-height: 1.5; margin-bottom: 28px; max-width: 60ch;">
+              Every agent's model call routes through an inference proxy. The same governance loop — policy + mission alignment + audit seal — applied to <strong style="color: var(--text);">cost and safety</strong>, in real time.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+              <div style="border: 1px solid var(--frame-border); border-left: 3px solid var(--clarity-500); border-radius: 8px; padding: 16px; background: var(--frame-bg-2);">
+                <div style="font-family: var(--mono, monospace); font-size: 11px; color: var(--clarity-500); font-weight: 700; letter-spacing: 0.06em; margin-bottom: 8px;">TRANSFORM · COST</div>
+                <div style="color: var(--text); font-size: 15px; font-weight: 600; margin-bottom: 4px;">Calendar work asks for Opus → downgraded to Haiku</div>
+                <div style="color: var(--text-faint); font-size: 13px;">25× cheaper, automatically. Low-complexity work doesn't get the flagship model.</div>
+              </div>
+              <div style="border: 1px solid var(--frame-border); border-left: 3px solid var(--wholeness-500); border-radius: 8px; padding: 16px; background: var(--frame-bg-2);">
+                <div style="font-family: var(--mono, monospace); font-size: 11px; color: var(--wholeness-500); font-weight: 700; letter-spacing: 0.06em; margin-bottom: 8px;">DENY · MISSION</div>
+                <div style="color: var(--text); font-size: 15px; font-weight: 600; margin-bottom: 4px;">A "crypto trading bot" request → denied</div>
+                <div style="color: var(--text-faint); font-size: 13px;">Off-mission. The company ships enterprise infra — not shadow-AI side projects.</div>
+              </div>
+              <div style="border: 1px solid var(--frame-border); border-left: 3px solid var(--connection-500); border-radius: 8px; padding: 16px; background: var(--frame-bg-2);">
+                <div style="font-family: var(--mono, monospace); font-size: 11px; color: var(--connection-500); font-weight: 700; letter-spacing: 0.06em; margin-bottom: 8px;">ALLOW · JUDGMENT</div>
+                <div style="color: var(--text); font-size: 15px; font-weight: 600; margin-bottom: 4px;">Enterprise SSO at Opus → allowed</div>
+                <div style="color: var(--text-faint); font-size: 13px;">Security-critical work earns the best model. Policy with judgment, not a blanket rule.</div>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--frame-border); padding-top: 16px; color: var(--text-soft); font-size: 15px;">
+              And the proxy <strong style="color: var(--text);">proposes new routing policies from the traffic it sees</strong> — the operator ratifies, nothing auto-activates. <span style="color: var(--clarity-500);">Corrections become policy. Spend governs itself.</span>
+            </div>
+          </div>
+          <div class="slide-footer">
+            <span class="slide-number">04 / 06</span>
+            <span>Demo cue: click the "Inference proxy" tab live, or stay on slide</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: WHY IT'S HARD / WHAT'S REAL -->
+      <div class="slide slide-4">
+        <div class="slide-content">
+          <div class="slide-header">
+            <div>
+              <h1 class="slide-title slide-title-main">
+                What's <span class="slide-title-accent">Real</span>
+              </h1>
+              <p style="color: var(--text-mid); font-size: 16px; margin-top: 8px;">
+                Engineering depth + honest honesty
+              </p>
+            </div>
+          </div>
+
+          <div class="technicality-grid">
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Governance loop engine</div>
+              <div class="tech-body">
+                Detect → Correct → Enforce → Audit → Eval. Deterministic, tested, runs on arbitrary data.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Hash-chained audit ledger</div>
+              <div class="tech-body">
+                Tamper-evident. Reconstructs case lifecycle. Redaction keeps integrity.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Eval Fail → Pass grading</div>
+              <div class="tech-body">
+                EvalCase persisted. Second pass graded against correction. Proves improvement.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Policy + correction pipeline</div>
+              <div class="tech-body">
+                CorrectionEvent → PolicyRule/ApprovalGate. Real enforcement gates.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Live Gemini inference</div>
+              <div class="tech-body">
+                Cache-backed. Runs on arbitrary substrate ingest, not baked fixtures.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="real-badge">Built</span>
+              </div>
+              <div class="tech-title">Genuinely-live LiveKit</div>
+              <div class="tech-body">
+                Room create/connect + browser mic publish. Real voice round-trip.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="simulated-badge">Fixture</span>
+              </div>
+              <div class="tech-title">Linear workstream panel</div>
+              <div class="tech-body">
+                Simulated by deterministic fixture. No live Linear write during demo.
+              </div>
+            </div>
+
+            <div class="tech-item">
+              <div class="tech-label">
+                <span class="simulated-badge">Fixture</span>
+              </div>
+              <div class="tech-title">Voice STT transcript</div>
+              <div class="tech-body">
+                Operator-entered, labeled. Not live speech-to-text in this build.
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-footer">
+            <span class="slide-number">05 / 06</span>
+            <span>Honesty first. Questions about what's real?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: CLOSE / WHY NOW -->
+      <div class="slide slide-5">
+        <div class="slide-content">
+          <div class="slide-header">
+            <div>
+              <h1 class="slide-title slide-title-main">
+                Why Now
+              </h1>
+              <p style="color: var(--vitality-500); font-size: 16px; margin-top: 8px; font-weight: 600;">
+                Corrections are the moat
+              </p>
+            </div>
+          </div>
+
+          <div class="slide-body">
+            <div>
+              <p style="color: var(--text); font-size: 15px; line-height: 1.55; margin-bottom: 20px;">
+                Every agent system will drift. The teams that can <strong>catch it, enforce it, prove it improved</strong> move faster than teams that just retrain weights.
+              </p>
+
+              <p style="color: var(--text-soft); font-size: 15px; line-height: 1.55; margin-bottom: 24px;">
+                <strong>What Liminal enables:</strong>
+              </p>
+
+              <ul style="list-style: none; color: var(--text-soft); font-size: 14px; line-height: 1.65;">
+                <li style="margin-bottom: 12px;">◇ Corrections become durable eval/policy — continual learning without retraining.</li>
+                <li style="margin-bottom: 12px;">◇ Operators govern any agent, any substrate, any data — one control plane.</li>
+                <li style="margin-bottom: 12px;">◇ The system gets more useful the more it's corrected.</li>
+              </ul>
+            </div>
+
+            <div class="close-statement">
+              <p class="close-statement-text">
+                <strong>Liminal is the governance layer for agentic work that gets smarter every time a human corrects it — it catches drift from the goal, enforces the fix, and proves the next pass improved.</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="slide-footer">
+            <span class="slide-number">06 / 06</span>
+            <span>Questions?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES PANEL -->
+    <div class="notes-panel" id="notesPanel">
+      <div class="notes-content" id="notesContent">
+        <div class="notes-section">
+          <div class="notes-label">Speaker Note</div>
+          <p class="notes-text" id="speakerNote"></p>
+        </div>
+        <div class="notes-section">
+          <div class="notes-label">Demo Cue</div>
+          <p class="notes-text" id="demoCue"></p>
+        </div>
+        <div class="notes-section">
+          <div class="notes-label">Timing</div>
+          <p class="notes-text" id="timing"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="deck-controls">
+      <div style="display: flex; gap: 12px;">
+        <button class="control-button" onclick="prevSlide()" id="prevBtn">← Prev</button>
+        <button class="control-button" onclick="nextSlide()" id="nextBtn">Next →</button>
+      </div>
+      <div class="control-info">
+        <span>Press <span class="kbd">→</span> to advance</span>
+        <span>Press <span class="kbd">N</span> to toggle notes</span>
+        <span>Press <span class="kbd">B</span> for backup video</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        title: "Hook / Problem",
+        speakerNote: "AI agents now do real work, but they silently drop the requirements the work was resourced for. This is the false green — status says on-track while a load-bearing customer requirement is gone. We're about to see that happen on a $1.2M deal.",
+        demoCue: "Stay here for ~30s to let the problem land. When you're ready to move to the next slide, press →. The live demo is on slide 3.",
+        timing: "~30 seconds",
+        r1Note: "R1: more time for Q&A on this problem; let them absorb the stakes. R2: punchier; move faster to the demo.",
+      },
+      {
+        title: "What Liminal Is",
+        speakerNote: "This is Liminal Engine — the governance layer. Closed-loop: observe the agent output, detect the drift, open a case, get human correction, enforce it, seal audit proof, and grade the next pass to prove it improved. That's not a dashboard — it's the machinery that runs every time an agent outputs something.",
+        demoCue: "On the next slide, you'll see the full 14-step loop on the Acme expansion. When you're ready to hand off to the live demo, press →. The demo runs in a separate window; click back here to resume slides.",
+        timing: "~30 seconds",
+        r1Note: "R1: slower, more space for detail. Judges want to hear what the loop *does*. R2: faster; move straight to demo.",
+      },
+      {
+        title: "Live Demo Anchor",
+        speakerNote: "The demo is running live on the Acme expansion — $1.2M deal, EU data-residency requirement gets dropped, agents report green. You'll see Liminal catch it, open a case, flip the status to at-risk, block the false downstream update, seal the audit, and prove the second pass improves to Fail → Pass.",
+        demoCue: "Click to the live demo window now. Run through the 14-step path: Initialize → AgentActivity (false green) → ContextTray (EU requirement shown) → GovernanceCase (opened) → EnforcementPanel (Approve + Enforce, status flip, workstream, blocked action) → AuditTrail (sealed) → SecondPassEval (Fail → Pass). Total time: ~90 seconds. When the demo ends, click back here and press → to slide 4.",
+        timing: "~90 seconds (demo)",
+        r1Note: "R1: be ready to pause and zoom into any screen if a judge asks. Have the live app ready to click into. R2: same, but keep pacing tight — no zooms unless asked.",
+        fallbackLine: "If the live demo fails to start, press B to bring up the backup video recording. Or alt+tab to the desktop-demo app and refresh in browser.",
+      },
+      {
+        title: "And there's more — Inference Proxy",
+        speakerNote: "That was governing work quality. Same engine, second axis: the inference plane — Burp for LLM traffic. Every agent's model call routes through here. Calendar work asking for Opus? Auto-downgraded to Haiku — 25x cheaper. A crypto-bot request? Denied — off-mission. Enterprise SSO at Opus? Allowed — security work earns it. And the proxy proposes new routing policies from the traffic it sees; the operator ratifies. Corrections become policy. Spend governs itself.",
+        demoCue: "OPTIONAL live handoff: alt+tab to the desktop-demo app and click the 'Inference proxy' tab to show the intercepted calls + TRANSFORM/DENY/ALLOW verdicts live. If short on time, the slide alone carries it — the three verdict cards are the whole story.",
+        timing: "~30 seconds (R1) / ~15 seconds (R2)",
+        r1Note: "R1: do the live tab-switch; mention the LlmRequest contract + audit seal for technicality depth. R2: stay on the slide; just hit the Opus->Haiku downgrade and the crypto DENY, then the 'spend governs itself' line.",
+        fallbackLine: "Honesty if asked: the policy engine, verdicts, and audit seal are REAL and run on the real LlmRequest contract — the intercepted traffic is seeded for a deterministic demo. Point it at a live proxy endpoint and it governs real calls. The functionality exists; the traffic is the fixture.",
+      },
+      {
+        title: "What's Real",
+        speakerNote: "This is the honesty slide. Built during the hackathon: the full governance loop, hash-chained audit, Fail → Pass eval grading, policy + correction pipeline, live Gemini inference on arbitrary data, genuinely-live LiveKit. Simulated by fixture: Linear workstream panel and voice STT transcript. This stack is generic — it runs on any posted agent output, not just Acme.",
+        demoCue: "No demo handoff needed here. This slide answers the judge Q: 'Is it real?' Show the grid, call out what's real vs fixture. It's not a weakness — it's honest. Judges respect that.",
+        timing: "~20 seconds",
+        r1Note: "R1: more time; let them ask deep questions about the architecture. R2: faster; just establish honesty and move on.",
+      },
+      {
+        title: "Why Now / Close",
+        speakerNote: "Corrections are the moat. Every agent system drifts. The teams that can catch it, enforce it, prove it improved win. That's what Liminal does — one control plane for any agent, any data. The system gets more useful the more it's corrected. Close on the one-line spine: Liminal is the governance layer that catches drift, enforces the fix, and proves the next pass improved.",
+        demoCue: "No demo handoff. Lean on the close statement. Pause, let it land, then open to questions.",
+        timing: "~15 seconds + Q&A",
+        r1Note: "R1: more time for founder narrative. R2: punchier; straight to the close line, then Q&A.",
+      },
+    ];
+
+    let currentSlide = 0;
+    let notesVisible = false;
+    let backupVideoVisible = false;
+
+    const slideNotes = {
+      0: slides[0],
+      1: slides[1],
+      2: slides[2],
+      3: slides[3],
+      4: slides[4],
+    };
+
+    function updateSlide() {
+      const allSlides = document.querySelectorAll('.slide');
+      allSlides.forEach((slide, idx) => {
+        slide.classList.remove('active', 'prev');
+        if (idx === currentSlide) {
+          slide.classList.add('active');
+        } else if (idx < currentSlide) {
+          slide.classList.add('prev');
+        }
+      });
+
+      updateNotes();
+      updateControls();
+    }
+
+    function updateNotes() {
+      const note = slideNotes[currentSlide];
+      if (note) {
+        document.getElementById('speakerNote').textContent = note.speakerNote;
+        document.getElementById('demoCue').textContent = note.demoCue;
+        document.getElementById('timing').textContent = note.timing;
+      }
+    }
+
+    function updateControls() {
+      document.getElementById('prevBtn').disabled = currentSlide === 0;
+      document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesVisible = !notesVisible;
+      document.getElementById('notesPanel').classList.toggle('visible', notesVisible);
+    }
+
+    function toggleBackupVideo() {
+      backupVideoVisible = !backupVideoVisible;
+      const placeholder = document.querySelector('.backup-placeholder');
+      const video = document.getElementById('backupVideo');
+
+      if (backupVideoVisible) {
+        placeholder.style.display = 'none';
+        video.classList.add('visible');
+        video.play();
+      } else {
+        placeholder.style.display = 'flex';
+        video.classList.remove('visible');
+        video.pause();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'b' || e.key === 'B') {
+        toggleBackupVideo();
+      } else if (e.key === 'Escape' && backupVideoVisible) {
+        toggleBackupVideo();
+      }
+    });
+
+    // Handle backup video load error
+    const backupVideo = document.getElementById('backupVideo');
+    backupVideo.addEventListener('error', () => {
+      if (backupVideoVisible) {
+        backupVideoVisible = false;
+        document.querySelector('.backup-placeholder').style.display = 'flex';
+        backupVideo.classList.remove('visible');
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>

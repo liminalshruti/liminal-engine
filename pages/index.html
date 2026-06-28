@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liminal Engine — Launch</title>
+  <style>
+    :root {
+      --bg: #0A0A0B; --frame-bg: #0E0E11; --frame-bg-2: #0C0C0F; --frame-border: #1F1F23;
+      --text: #F4F2EE; --text-soft: #B8B5AE; --text-dim: #8A8780; --text-faint: #807D78;
+      --clarity: #8E66FB; --wholeness: #E90095; --connection: #3EE878;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    body {
+      display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 32px;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(142,102,251,0.10), transparent 38%),
+        radial-gradient(circle at 82% 70%, rgba(233,0,149,0.07), transparent 40%),
+        var(--bg);
+    }
+    .wrap { max-width: 760px; width: 100%; }
+    .eyebrow { font-family: ui-monospace, monospace; font-size: 12px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .diamond { color: var(--clarity); }
+    h1 { font-size: 40px; line-height: 1.12; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .accent { background: linear-gradient(120deg, var(--clarity), var(--wholeness));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .sub { color: var(--text-soft); font-size: 17px; line-height: 1.5; margin-bottom: 36px; max-width: 60ch; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } h1 { font-size: 30px; } }
+    a.card { display: block; text-decoration: none; color: inherit; background: var(--frame-bg-2);
+      border: 1px solid var(--frame-border); border-radius: 12px; padding: 22px 20px;
+      transition: border-color 160ms, transform 160ms, box-shadow 160ms; }
+    a.card:hover { border-color: var(--clarity); transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+    a.card.primary { border-left: 3px solid var(--connection); }
+    a.card.deck { border-left: 3px solid var(--clarity); }
+    .card-k { font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+    .card-t { font-size: 19px; font-weight: 600; margin-bottom: 6px; }
+    .card-d { font-size: 13px; color: var(--text-faint); line-height: 1.45; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+    .row a { color: var(--text-dim); font-size: 13px; text-decoration: none; border-bottom: 1px dotted var(--frame-border); padding-bottom: 1px; }
+    .row a:hover { color: var(--clarity); border-color: var(--clarity); }
+    .foot { margin-top: 28px; color: var(--text-faint); font-size: 12px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="eyebrow"><span class="diamond">◇</span> Liminal Engine · Agentic Work Governance</div>
+    <h1>The governance layer for agentic work that <span class="accent">gets smarter every time a human corrects it.</span></h1>
+    <p class="sub">Catch when AI agents drift from the goal, enforce the human correction as real operating state, and prove the next pass improved. Everything below runs in your browser — nothing to install.</p>
+
+    <div class="cards">
+      <a class="card primary" href="./demo/">
+        <div class="card-k">▶ Run it</div>
+        <div class="card-t">Open the live demo</div>
+        <div class="card-d">Operating Workspace · Inference proxy · the guided 14-step Acme walkthrough (false green → Fail→Pass).</div>
+      </a>
+      <a class="card deck" href="./deck.html">
+        <div class="card-k">◇ Present it</div>
+        <div class="card-t">Open the pitch deck</div>
+        <div class="card-d">6-slide deck. Arrow keys to navigate · <b>N</b> presenter notes · <b>B</b> backup demo video.</div>
+      </a>
+    </div>
+
+    <div class="row">
+      <a href="./demo-backup.mp4">Backup demo video</a>
+      <a href="https://github.com/liminalshruti/liminal-engine">GitHub repo</a>
+      <a href="./PRESENTER_GUIDE.md">Presenter guide</a>
+    </div>
+
+    <p class="foot">Click-to-present: no clone, no setup. The demo is a static in-browser build on deterministic fixtures — the engine, verdicts, and audit are real; the demo traffic is seeded so it can't flake on stage.</p>
+  </main>
+</body>
+</html>
