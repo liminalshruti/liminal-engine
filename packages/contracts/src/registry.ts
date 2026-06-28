@@ -31,6 +31,7 @@ import { TRANSFORM_RULE_SCHEMA, transformRuleContract, transformRuleGoldenVector
 import { RESOURCE_ALLOCATION_SCHEMA, resourceAllocationContract, resourceAllocationGoldenVectors } from "./resource-allocation.contract.ts";
 import { ROUTING_RULE_SCHEMA, routingRuleContract, routingRuleGoldenVectors } from "./routing-rule.contract.ts";
 import { NL_INTENT_SCHEMA, nlIntentContract, nlIntentGoldenVectors } from "./nl-intent.contract.ts";
+import { REQUEST_TRANSFORM_SCHEMA, requestTransformContract, requestTransformGoldenVectors } from "./request-transform.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -72,4 +73,5 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: RESOURCE_ALLOCATION_SCHEMA, contract: resourceAllocationContract, vectors: resourceAllocationGoldenVectors },
   { schema: ROUTING_RULE_SCHEMA, contract: routingRuleContract, vectors: routingRuleGoldenVectors },
   { schema: NL_INTENT_SCHEMA, contract: nlIntentContract, vectors: nlIntentGoldenVectors },
+  { schema: REQUEST_TRANSFORM_SCHEMA, contract: requestTransformContract, vectors: requestTransformGoldenVectors },
 ] as unknown as ContractEntry[];

@@ -945,6 +945,74 @@
       },
       "canonical_string": "{\"actor_role\":\"VP Ops / Head of AI Transformation\",\"confidence\":0.98,\"detected_at\":\"2026-06-27T10:03:00.000Z\",\"entities\":[{\"confidence\":0.99,\"name\":\"deal\",\"value\":\"Acme expansion\"},{\"confidence\":0.99,\"name\":\"requirement\",\"value\":\"EU data residency\"}],\"id\":\"intent_acme_approve_enforce\",\"intent_type\":\"approve_enforce\",\"normalized_utterance\":\"approve enforce acme eu data residency correction\",\"schema\":\"liminal_engine.nl_intent.v1\",\"source\":\"chat\",\"source_message_id\":\"msg_acme_operator_1\",\"target\":\"gc_acme_eu\",\"utterance\":\"Approve and enforce the Acme EU data residency correction.\"}",
       "sha256": "3ce245edc8c17d4863d14bb9406b38ca9356c3cdf077fa037efe12b0cdb72579"
+    },
+    "liminal_engine.request_transform.v1::redact-secret-pattern": {
+      "schema": "liminal_engine.request_transform.v1",
+      "purpose": "redact an API-key pattern from a request when the tool is the LLM provider",
+      "input": {
+        "id": "rt_redact_secret",
+        "fromRuleId": "aprule_no_secret_leak",
+        "kind": "redact",
+        "match": {
+          "field": "tool",
+          "op": "==",
+          "value": "openai"
+        },
+        "payload": {
+          "pattern": "sk-[A-Za-z0-9]{20,}",
+          "replacement": "[REDACTED]"
+        }
+      },
+      "canonical_string": "{\"from_rule_id\":\"aprule_no_secret_leak\",\"id\":\"rt_redact_secret\",\"kind\":\"redact\",\"match\":{\"field\":\"tool\",\"op\":\"==\",\"value\":\"openai\"},\"payload\":{\"pattern\":\"sk-[A-Za-z0-9]{20,}\",\"replacement\":\"[REDACTED]\"},\"schema\":\"liminal_engine.request_transform.v1\"}",
+      "sha256": "3a582d7d71faacfbadca35718c590178edf895bb8e7556808023d20400f71791"
+    },
+    "liminal_engine.request_transform.v1::inject-eu-residency": {
+      "schema": "liminal_engine.request_transform.v1",
+      "purpose": "inject a system constraint before forwarding — no match (applies to all)",
+      "input": {
+        "id": "rt_inject_eu",
+        "fromRuleId": "aprule_eu_residency",
+        "kind": "inject_system_constraint",
+        "payload": {
+          "text": "Honor EU data residency: do not route this request outside the EU."
+        }
+      },
+      "canonical_string": "{\"from_rule_id\":\"aprule_eu_residency\",\"id\":\"rt_inject_eu\",\"kind\":\"inject_system_constraint\",\"payload\":{\"text\":\"Honor EU data residency: do not route this request outside the EU.\"},\"schema\":\"liminal_engine.request_transform.v1\"}",
+      "sha256": "f66e6f6b8b7a0f70d2b16c9d887c12a7118118576b6471d1e84b4bc53e9dd0de"
+    },
+    "liminal_engine.request_transform.v1::require-consent-fields": {
+      "schema": "liminal_engine.request_transform.v1",
+      "purpose": "require explicit consent fields on the request",
+      "input": {
+        "id": "rt_require_consent",
+        "fromRuleId": "aprule_consent",
+        "kind": "require_fields",
+        "payload": {
+          "fields": [
+            "user_consent",
+            "data_region"
+          ]
+        }
+      },
+      "canonical_string": "{\"from_rule_id\":\"aprule_consent\",\"id\":\"rt_require_consent\",\"kind\":\"require_fields\",\"payload\":{\"fields\":[\"user_consent\",\"data_region\"]},\"schema\":\"liminal_engine.request_transform.v1\"}",
+      "sha256": "40f4f6fdbde9711376f9d298036c0051745fcd32f06b55fe1f62fa556c7eb981"
+    },
+    "liminal_engine.request_transform.v1::forbid-key-patterns": {
+      "schema": "liminal_engine.request_transform.v1",
+      "purpose": "forbid request bodies that carry private-key / access-key patterns",
+      "input": {
+        "id": "rt_forbid_keys",
+        "fromRuleId": "aprule_no_keys",
+        "kind": "forbid_patterns",
+        "payload": {
+          "patterns": [
+            "BEGIN RSA PRIVATE KEY",
+            "AKIA[0-9A-Z]{16}"
+          ]
+        }
+      },
+      "canonical_string": "{\"from_rule_id\":\"aprule_no_keys\",\"id\":\"rt_forbid_keys\",\"kind\":\"forbid_patterns\",\"payload\":{\"patterns\":[\"BEGIN RSA PRIVATE KEY\",\"AKIA[0-9A-Z]{16}\"]},\"schema\":\"liminal_engine.request_transform.v1\"}",
+      "sha256": "f354a93f8eca9cf25c3584b1b18a952e5444d2c76eea897f1c27754ff8326bd2"
     }
   }
 }
