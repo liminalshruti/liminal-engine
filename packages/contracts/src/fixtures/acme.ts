@@ -71,7 +71,34 @@ export const acmeGovernanceCase: GovernanceCase = governanceCaseContract.parse({
   severity: "blocking",
   status: "open",
   detectedAt: "2026-06-27T10:00:00.000Z",
+  // SPEC.md evidence extensions (LIM-1254) — the judge-facing copy the GovernanceCase
+  // screen (LIM-1218, beat 5) renders conditionally. The live loop PRODUCES these via
+  // injected CaseEvidence (governance-demo.ts), so engine output == this fixture
+  // (proven by governance-demo.test.ts). Optional on the contract; projected into the
+  // canonical hash here because present.
+  businessImpact: "$1.2M Acme expansion at risk",
+  missingFrom: ["proposal", "launch plan", "owner assignment"],
+  recommendedActions: [
+    "Move Acme On Track → At Risk",
+    "Create EU Data Residency workstream",
+    "Require Product/Security/Engineering owners",
+    "Block customer-facing on-track update",
+  ],
 });
+
+/**
+ * The case evidence (LIM-1254) the governance loop INJECTS into the detected case
+ * — business impact / where the requirement went missing / recommended enforcement.
+ * Not derivable from agent output, so the composition root (governance-demo.ts) and
+ * the governance tests pass this into `runGovernanceLoop`/`detectMiss`. Sourced from
+ * `acmeGovernanceCase` so this object stays the single source of truth: the loop
+ * produces a case byte-identical to the fixture (proven by governance-demo.test.ts).
+ */
+export const acmeCaseEvidence = {
+  businessImpact: acmeGovernanceCase.businessImpact,
+  missingFrom: acmeGovernanceCase.missingFrom,
+  recommendedActions: acmeGovernanceCase.recommendedActions,
+} as const;
 
 export const acmeEnforcementAction: EnforcementAction = enforcementActionContract.parse({
   id: "ea_acme_enforce",

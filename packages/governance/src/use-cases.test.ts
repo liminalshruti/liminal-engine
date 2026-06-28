@@ -5,7 +5,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";
 import { FixtureAgentOutputSource } from "@liminal-engine/integration-gemini";
 import { InMemoryGovernanceCaseStore } from "@liminal-engine/integration-governance-case-store";
 import { InMemoryAuditSink } from "@liminal-engine/integration-audit-sink";
@@ -30,7 +30,18 @@ const DEAL = "deal_acme";
 test("must-not-cut #2: detectMiss surfaces the dropped EU requirement as a blocking GovernanceCase", async () => {
   const source = new FixtureAgentOutputSource();
   const caseStore = new InMemoryGovernanceCaseStore();
-  const gc = await detectMiss(source, caseStore, DEAL, 1, createAcmeClock(), createAcmeIdGen());
+  // Inject the locked case evidence so the detector produces the ENRICHED case
+  // (LIM-1254) — proving the loop, not a raw fixture, is the source of the evidence
+  // the GovernanceCase screen renders.
+  const gc = await detectMiss(
+    source,
+    caseStore,
+    DEAL,
+    1,
+    createAcmeClock(),
+    createAcmeIdGen(),
+    acmeCaseEvidence,
+  );
 
   assert.ok(gc, "a case should be detected on the false-green pass");
   assert.equal(gc.missedRequirement, "EU data residency");
@@ -134,6 +145,9 @@ test("must-not-cut #7: runGovernanceLoop drives detect->enforce->audit->gate->ev
     evalStore: new InMemoryEvalStore(),
     clock: createAcmeClock(),
     idGen: createAcmeIdGen(),
+    // inject the locked case evidence so the loop reproduces the enriched case
+    // (LIM-1254) — the round-trip below asserts engine output == fixture.
+    caseEvidence: acmeCaseEvidence,
   };
 
   const { evalCase, evals } = await runGovernanceLoop(deps, DEAL);
