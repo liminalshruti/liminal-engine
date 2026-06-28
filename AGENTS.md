@@ -1,3 +1,5 @@
+> ⛔ Read [`DIRECTIVE.md`](./DIRECTIVE.md) FIRST — NO DEMO FLOWS, build a real product on real data. It overrides any demo-path / 14-step / DEMO_CONTRACT framing in this repo.
+
 <!-- ════════════════════════════════════════════════════════════════════════ -->
 <!-- ⛔⛔⛔  NO DEMO FLOWS. BUILD A REAL PRODUCT.  ⛔⛔⛔                          -->
 <!-- READ `DIRECTIVE.md` FIRST. No scripted / guided / single-scenario          -->
