@@ -26,7 +26,8 @@ import {
   type IdGen,
 } from "@liminal-engine/governance";
 import {
-  isAllowed,
+  actionGateDecision,
+  type ActionGateDecision,
   type AuditEvent,
   type ActionGate,
 } from "@liminal-engine/contracts";
@@ -49,12 +50,13 @@ class InMemoryActionGateStore implements ActionGateStore {
   async gate(gate: ActionGate): Promise<void> {
     this.gates.set(gate.id, gate);
   }
-  async isBlocked(action: string): Promise<boolean> {
+  async decisionFor(action: string): Promise<ActionGateDecision> {
     for (const g of this.gates.values()) {
-      // a gate with any reasons is not allowed ⇒ the action is blocked
-      if (g.action === action && !isAllowed(g)) return true;
+      const decision = actionGateDecision(g);
+      // a denied gate ⇒ the action is blocked; return why + what's required
+      if (g.action === action && !decision.allowed) return decision;
     }
-    return false;
+    return { allowed: true, reasons: [], requiredBeforeSend: [] };
   }
 }
 

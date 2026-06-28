@@ -80,9 +80,11 @@ test("LIM-1169 AC#2: approveAndEnforce opens the action-gate state for the downs
   assert.ok(result.gate.requiredBeforeSend.length > 0, "an opened gate lists what to fix before send");
   assert.deepEqual(result.gate, acmeScenario.blockedAction);
 
-  // the opened gate state is persisted + queryable from the store
-  assert.equal(await deps.actionGateStore.isBlocked(GATED_CUSTOMER_ACTION), true);
-  assert.equal(await deps.actionGateStore.isBlocked("Some unrelated action"), false);
+  // the opened gate state is persisted + queryable from the store (deny verdict)
+  const decision = await deps.actionGateStore.decisionFor(GATED_CUSTOMER_ACTION);
+  assert.equal(decision.allowed, false);
+  assert.ok(decision.reasons.length > 0);
+  assert.equal((await deps.actionGateStore.decisionFor("Some unrelated action")).allowed, true);
 });
 
 test("LIM-1169: enforce + gate happen together — one operator action yields both effects", async () => {
@@ -100,7 +102,7 @@ test("LIM-1169: enforce + gate happen together — one operator action yields bo
 
   // both the enforcement audit and the opened gate are present after the one call
   assert.deepEqual(await deps.auditSink.all(), [acmeScenario.auditEvent]);
-  assert.equal(await deps.actionGateStore.isBlocked(GATED_CUSTOMER_ACTION), true);
+  assert.equal((await deps.actionGateStore.decisionFor(GATED_CUSTOMER_ACTION)).allowed, false);
   assert.equal(result.enforcement.caseId, result.gate.caseId);
 });
 
