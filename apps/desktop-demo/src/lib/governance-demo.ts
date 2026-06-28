@@ -1,29 +1,38 @@
 /**
  * governance-demo — the demo's SINGLE SOURCE OF TRUTH for what the screens render.
  *
- * Instead of reading raw fixtures, this runs the REAL governance loop
- * (`runGovernanceLoop`) and eval harness (`runEvals`) over the in-memory,
- * fixture-backed adapters, then reads the produced artifacts back out of the
- * stores. So every screen renders what the loop actually computed — the UI cannot
+ * Runs the REAL governance loop (`runGovernanceLoop`) + eval harness (`runEvals`)
+ * over the in-memory, fixture-backed adapters, and exposes EVERY artifact the loop
+ * produced. So every screen renders what the loop actually computed — the UI cannot
  * diverge from the engine (DEMO_CONTRACT / Rule 6: real logic, fixtures as input).
  *
- * This is the app COMPOSITION ROOT for governance: it is the one place allowed to
- * import the concrete `packages/integrations/*` adapters and wire them to the
- * loop (the spine packages never do — boundary lint). Determinism: the Acme
- * clock + id generators reproduce the locked fixture values, so running the loop
- * yields byte-identical artifacts to `acmeScenario` — proven real, not staged.
+ * App COMPOSITION ROOT for governance: the one place allowed to import the concrete
+ * in-memory `packages/integrations/*` adapters (the spine never does — boundary
+ * lint; live gemini/linear/livekit remain forbidden here too). Determinism: the
+ * Acme clock + id generators reproduce the locked fixture values, so the loop's
+ * output is byte-identical to `acmeScenario` — proven real, not staged.
+ *
+ * Demo data (agent output, required owners, Linear payload) is sourced from
+ * `@liminal-engine/contracts/fixtures` — never re-inlined here (AGENTS.md Locked
+ * Rule 2: one source for demo data).
  */
 import type {
   GovernanceCase,
+  EnforcementAction,
   AuditEvent,
+  ActionGate,
   ActionGateDecision,
   EvalCase,
   EvalResult,
   AgentOutput,
-  DealStatus,
+  LinearWorkstreamPayload,
 } from "@liminal-engine/contracts";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
-import { runGovernanceLoop, type AgentOutputSource } from "@liminal-engine/governance";
+import {
+  runGovernanceLoop,
+  GATED_CUSTOMER_ACTION,
+  type AgentOutputSource,
+} from "@liminal-engine/governance";
 import { runEvals, toRows, type EvalRow } from "@liminal-engine/eval-harness";
 import { InMemoryGovernanceCaseStore } from "@liminal-engine/integration-governance-case-store";
 import { InMemoryAuditSink } from "@liminal-engine/integration-audit-sink";
@@ -48,11 +57,13 @@ export interface GovernanceDemo {
   agentOutputPass2: AgentOutput;
   /** beat 5: the detected miss, as the loop opened it. */
   governanceCase: GovernanceCase;
-  /** beat 7: the status flip the loop enforced (from the recorded audit). */
-  statusFlip: { from: DealStatus; to: DealStatus; actor: string };
-  /** beat 8/9: the simulated Linear remediation workstream + required owners. */
-  workstreams: { title: string; status: string; owner: string }[];
-  /** beat 10: the LIVE gate verdict on the customer-facing update (allowed:false). */
+  /** beat 7: the full EnforcementAction the loop applied (On Track → At Risk). */
+  enforcementAction: EnforcementAction;
+  /** beat 8/9: the simulated Linear remediation workstream payload + required owners. */
+  linearWorkstreamPayload: LinearWorkstreamPayload;
+  /** beat 10: the full gate the loop produced (deny verdict + reasons). */
+  gate: ActionGate;
+  /** beat 10: the LIVE fail-closed decision on the gated action (allowed:false). */
   gateDecision: ActionGateDecision;
   /** beat 10: the action that is gated. */
   gatedAction: string;
@@ -66,26 +77,22 @@ export interface GovernanceDemo {
 }
 
 /**
- * Run the loop once over fresh fixture-backed adapters and read the produced
- * artifacts back out. Deterministic: the Acme clock/idGen make the output equal
- * the locked fixtures, so the demo is the engine's real output, not a copy.
+ * AgentOutputSource fed by the locked fixtures. (The Gemini fixture stub lives in
+ * the integration-gemini package, which the demo app may not import — that's a
+ * LIVE-integration slot — so the composition root provides the same fixture
+ * behavior directly from contracts.)
  */
-// Inline fixture providers at the composition root, fed by the locked fixtures.
-// (The agent-output + Linear-workstream stubs live in the gemini/linear packages,
-// which the demo app may not import — those are the LIVE-integration slots. Here
-// we provide the same fixture behavior directly from contracts.)
 const acmeAgentSource: AgentOutputSource = {
   async getOutput(_dealId, passNumber) {
     return passNumber <= 1 ? acmeScenario.agentOutputPass1 : acmeScenario.agentOutputPass2;
   },
 };
-const acmeRequiredOwners = ["Product", "Security", "Engineering"] as const;
-const acmeWorkstreams = [
-  { title: "Commercial terms", status: "green", owner: "Product" },
-  { title: "Security review", status: "green", owner: "Security" },
-  { title: "Data residency (EU)", status: "at-risk", owner: "Engineering" },
-];
 
+/**
+ * Run the loop once over fresh fixture-backed adapters and surface every artifact
+ * it produced. The loop now returns the full result; we read nothing back from raw
+ * fixtures except the locked Linear payload (which the simulated panel mirrors).
+ */
 export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
   const source = acmeAgentSource;
   const caseStore = new InMemoryGovernanceCaseStore();
@@ -95,42 +102,31 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
   const clock = createAcmeClock();
   const idGen = createAcmeIdGen();
 
-  // run the real loop — detect → enforce → gate → eval
-  const { evalCase, evals } = await runGovernanceLoop(
-    { source, caseStore, auditSink, actionGateStore, evalStore, clock, idGen },
-    DEAL_ID,
-  );
+  // run the real loop — detect → enforce → audit → gate → eval — and take every
+  // artifact it produced (no re-reading raw fixtures for these).
+  const { governanceCase, enforcementAction, auditEvent, gate, evalCase, evals } =
+    await runGovernanceLoop(
+      { source, caseStore, auditSink, actionGateStore, evalStore, clock, idGen },
+      DEAL_ID,
+    );
 
-  // read the produced artifacts back out of the stores (single source of truth)
-  const [governanceCase] = await caseStore.byDeal(DEAL_ID);
-  if (!governanceCase) throw new Error("demo: loop opened no governance case");
-  const [auditEvent] = await auditSink.all();
-  if (!auditEvent) throw new Error("demo: loop recorded no audit event");
-
-  // beat 10: the LIVE gate verdict the loop produced — ask the store to decide on
-  // the gated customer action. This is the real fail-closed evaluation, not a copy.
-  const gateDecision = await actionGateStore.decisionFor(
-    "Send customer-facing status update to Acme",
-  );
+  // beat 10: the LIVE fail-closed decision the gate yields for the gated action.
+  const gateDecision = await actionGateStore.decisionFor(GATED_CUSTOMER_ACTION);
   const evalResults = await runEvals(evalStore, DEAL_ID);
 
   return {
     dealId: DEAL_ID,
     businessGoal: acmeScenario.businessGoal,
     demoBeats: acmeScenario.demoBeats,
-    requiredOwners: acmeRequiredOwners,
-    agentOutputPass1: await source.getOutput(DEAL_ID, 1),
-    agentOutputPass2: await source.getOutput(DEAL_ID, 2),
+    requiredOwners: acmeScenario.linearWorkstreamPayload.requiredOwners,
+    agentOutputPass1: acmeScenario.agentOutputPass1,
+    agentOutputPass2: acmeScenario.agentOutputPass2,
     governanceCase,
-    // the status flip is the loop's enforcement, captured in the audit record
-    statusFlip: {
-      from: auditEvent.previousStatus,
-      to: auditEvent.newStatus,
-      actor: auditEvent.decidingActor,
-    },
-    workstreams: acmeWorkstreams,
+    enforcementAction,
+    linearWorkstreamPayload: acmeScenario.linearWorkstreamPayload,
+    gate,
     gateDecision,
-    gatedAction: "Send customer-facing status update to Acme",
+    gatedAction: GATED_CUSTOMER_ACTION,
     auditEvent,
     evalCase,
     evalResults,

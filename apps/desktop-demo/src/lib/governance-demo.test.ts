@@ -14,16 +14,24 @@ test("the live loop reproduces the locked Acme artifacts (UI == engine)", async 
 
   // beat 5 — detection
   assert.deepEqual(demo.governanceCase, acmeScenario.governanceCase);
-  // beat 7 — the status flip the loop enforced
-  assert.equal(demo.statusFlip.from, "on-track");
-  assert.equal(demo.statusFlip.to, "at-risk");
-  assert.match(demo.statusFlip.actor, /VP|Head|operator|\//i);
-  // beat 9 — required owners
-  assert.deepEqual([...demo.requiredOwners], ["Product", "Security", "Engineering"]);
-  // beat 10 — the live gate verdict denies the customer update
+  // beat 7 — the full EnforcementAction the loop applied (On Track → At Risk)
+  assert.deepEqual(demo.enforcementAction, acmeScenario.enforcementAction);
+  assert.equal(demo.enforcementAction.fromStatus, "on-track");
+  assert.equal(demo.enforcementAction.toStatus, "at-risk");
+  // beat 8/9 — the Linear workstream payload + required owners (sourced from fixtures)
+  assert.deepEqual(demo.linearWorkstreamPayload, acmeScenario.linearWorkstreamPayload);
+  assert.deepEqual(
+    [...demo.requiredOwners],
+    [...acmeScenario.linearWorkstreamPayload.requiredOwners],
+  );
+  // beat 10 — the full gate the loop produced + its live fail-closed decision
+  assert.deepEqual(demo.gate, acmeScenario.blockedAction);
   assert.equal(demo.gateDecision.allowed, false);
-  assert.ok(demo.gateDecision.reasons.length > 0);
-  assert.ok(demo.gateDecision.requiredBeforeSend.length > 0);
+  assert.deepEqual([...demo.gateDecision.reasons], [...demo.gate.reasons]);
+  assert.deepEqual(
+    [...demo.gateDecision.requiredBeforeSend],
+    [...demo.gate.requiredBeforeSend],
+  );
   // beat 11 — audit evidence
   assert.deepEqual(demo.auditEvent, acmeScenario.auditEvent);
   // beat 12/14 — eval case + Fail → Pass
