@@ -16,29 +16,29 @@
 
 /* ── intro & fact ── */
 .screen__intro {
-  font-size: var(--fs-base, 15px);
-  line-height: var(--lh-relaxed, 1.55);
-  color: var(--text-soft, #B8B5AE);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-soft);
 }
 .screen__fact {
-  font-size: var(--fs-base, 15px);
-  line-height: var(--lh-relaxed, 1.55);
-  color: var(--text-soft, #B8B5AE);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-soft);
 }
 .screen__fact strong {
-  color: var(--text, #F4F2EE);
+  color: var(--text);
   font-weight: 600;
 }
 
 /* ── legend ── */
 .context-tray__legend {
   margin: 0;
-  font-size: var(--fs-sm, 13.5px);
-  line-height: var(--lh-relaxed, 1.55);
-  color: var(--text-faint, #807D78);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-relaxed);
+  color: var(--text-faint);
 }
 .context-tray__legend-tag {
-  color: var(--text, #F4F2EE);
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -46,7 +46,7 @@
 .context-tray__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-6, 28px);
+  gap: var(--space-6);
 }
 
 /* The context card composes the shared Card widget; tighten its default spacing and
@@ -54,29 +54,29 @@
  * Apply card shadow elevation and fade-in motion per design direction. */
 .context-card.card {
   margin-bottom: 0;
-  padding: var(--space-6, 28px);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.35));
-  border: 1px solid var(--card-border, #232327);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--card-border);
   /* Fade-in animation: opacity 0→1 + translateY(8px)→0 over --tx-settle (0.32s) */
-  animation: card-float-up var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+  animation: card-float-up var(--tx-settle) var(--ease) forwards;
 }
-/* Stagger cards by +20ms each */
+/* Stagger cards by one govern-slate motion step each. */
 .context-card:nth-child(2) {
-  animation-delay: 20ms;
+  animation-delay: var(--govern-stagger-1);
 }
 .context-card:nth-child(3) {
-  animation-delay: 40ms;
+  animation-delay: var(--govern-stagger-2);
 }
 .context-card:nth-child(4) {
-  animation-delay: 60ms;
+  animation-delay: var(--govern-stagger-3);
 }
 .context-card:nth-child(5) {
-  animation-delay: 80ms;
+  animation-delay: var(--govern-stagger-4);
 }
 .context-card:nth-child(6) {
-  animation-delay: 100ms;
+  animation-delay: var(--govern-stagger-5);
 }
 
 @keyframes card-float-up {
@@ -93,7 +93,7 @@
 .context-card .card__content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4, 16px);
+  gap: var(--space-4);
   height: 100%;
 }
 
@@ -103,59 +103,59 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-3, 12px);
+  gap: var(--space-3);
 }
 .context-card__title {
   margin: 0;
-  font-size: var(--fs-lg, 19px);
+  font-size: var(--fs-lg);
   font-weight: 600;
-  line-height: var(--lh-snug, 1.2);
-  color: var(--text, #F4F2EE);
+  line-height: var(--lh-snug);
+  color: var(--text);
   flex: 1;
 }
 .context-card__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2, 8px);
+  gap: var(--space-2);
   justify-content: flex-end;
 }
 
 /* source-type tag — the IDEAS.md "source type" affordance. Mono so it reads as a type. */
 .context-card__type {
-  font-family: var(--mono, "Geist Mono", ui-monospace, monospace);
-  font-size: var(--fs-mono-xs, 10px);
-  letter-spacing: var(--ls-mono, 0.18em);
-  padding: var(--space-1, 4px) var(--space-2, 8px);
-  border-radius: var(--radius-1, 2px);
-  color: var(--text-faint, #807D78);
-  background: var(--frame-bg-2, #0C0C0F);
-  border: 1px solid var(--card-border-2, #2A2A2F);
+  font-family: var(--mono);
+  font-size: var(--fs-mono-xs);
+  letter-spacing: var(--ls-mono);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+  color: var(--text-faint);
+  background: var(--frame-bg-2);
+  border: 1px solid var(--card-border-2);
   text-transform: uppercase;
   white-space: nowrap;
 }
 /* provenance tag — the "live-stream vs pinned" affordance. */
 .context-card__capture {
-  font-size: var(--fs-mono-xs, 10px);
+  font-size: var(--fs-mono-xs);
   text-transform: uppercase;
-  letter-spacing: var(--ls-mono, 0.18em);
-  padding: var(--space-1, 4px) var(--space-2, 8px);
-  border-radius: var(--radius-1, 2px);
-  color: var(--text-faint, #807D78);
-  background: var(--frame-bg-2, #0C0C0F);
-  border: 1px solid var(--card-border-2, #2A2A2F);
+  letter-spacing: var(--ls-mono);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+  color: var(--text-faint);
+  background: var(--frame-bg-2);
+  border: 1px solid var(--card-border-2);
   white-space: nowrap;
 }
 /* simulated badge — highlights non-deterministic/scaffolding elements (watch register). */
 .context-card__simulated {
-  font-size: var(--fs-mono-xs, 10px);
+  font-size: var(--fs-mono-xs);
   text-transform: uppercase;
-  letter-spacing: var(--ls-mono, 0.18em);
+  letter-spacing: var(--ls-mono);
   font-weight: 600;
-  padding: var(--space-1, 4px) var(--space-2, 8px);
-  border-radius: var(--radius-1, 2px);
-  color: var(--watch, #FDC237);
-  background: var(--watch-bg, rgba(253, 194, 55, 0.12));
-  border: 1px solid var(--watch-edge, rgba(253, 194, 55, 0.40));
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+  color: var(--watch);
+  background: var(--watch-bg);
+  border: 1px solid var(--watch-edge);
   white-space: nowrap;
 }
 
@@ -163,66 +163,66 @@
 .context-card__evidence {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1, 4px);
-  padding: var(--space-3, 12px) var(--space-4, 16px);
-  border-radius: var(--radius-3, 4px);
-  background: var(--frame-bg-2, #0C0C0F);
-  border: 1px solid var(--card-border-2, #2A2A2F);
-  border-left: 3px solid var(--card-border, #232327);
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-3);
+  background: var(--frame-bg-2);
+  border: 1px solid var(--card-border-2);
+  border-left: 3px solid var(--card-border);
 }
 /* the cards where the load-bearing requirement actually lived (or was dropped) get a
  * warm green (--outreach) accent so the #4 reveal is legible at a glance. Per design
  * direction: "Dropped requirement highlighted with warm wash (not red box). Apply
  * --outreach-bg (coral wash, 12% alpha) as background tint only to that line/section." */
 .context-card__evidence--requirement {
-  border-left-color: var(--outreach, #31E682);
-  background: var(--outreach-bg, rgba(49, 230, 130, 0.12));
-  border-color: var(--outreach-edge, rgba(49, 230, 130, 0.42));
+  border-left-color: var(--outreach);
+  background: var(--outreach-bg);
+  border-color: var(--outreach-edge);
 }
 .context-card__evidence-label {
-  font-size: var(--fs-mono-xs, 10px);
+  font-size: var(--fs-mono-xs);
   text-transform: uppercase;
-  letter-spacing: var(--ls-mono, 0.18em);
+  letter-spacing: var(--ls-mono);
   font-weight: 600;
-  color: var(--text-faint, #807D78);
+  color: var(--text-faint);
 }
 .context-card__evidence-text {
-  font-size: var(--fs-base, 15px);
-  line-height: var(--lh-normal, 1.45);
-  color: var(--text-soft, #C9C5BD);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--text-soft);
 }
 
 /* ── card body ── */
 .context-card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3, 12px);
+  gap: var(--space-3);
 }
 .context-card__detail {
   margin: 0;
-  font-size: var(--fs-base, 15px);
-  line-height: var(--lh-normal, 1.45);
-  color: var(--text-soft, #C9C5BD);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--text-soft);
 }
 .context-card__status {
   margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-2, 8px);
-  font-size: var(--fs-sm, 13.5px);
-  color: var(--text-faint, #807D78);
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
 }
 .context-card__trace {
   margin: 0;
-  font-size: var(--fs-sm, 13.5px);
-  line-height: var(--lh-normal, 1.45);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
   font-weight: 500;
 }
 .context-card__trace--warn {
-  color: var(--watch, #FDC237);
+  color: var(--watch);
 }
 .context-card__trace--green {
-  color: var(--outreach, #31E682);
+  color: var(--outreach);
 }
 
 /* ── cited-in-case/audit indicators ── */
@@ -231,77 +231,77 @@
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
-  padding-top: var(--space-4, 16px);
-  border-top: 1px solid var(--card-border-2, #2A2A2F);
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--card-border-2);
 }
 .context-card__cite {
   display: grid;
   grid-template-columns: 20px 1fr auto;
   align-items: center;
-  gap: var(--space-2, 8px);
-  font-size: var(--fs-mono-xs, 10px);
+  gap: var(--space-2);
+  font-size: var(--fs-mono-xs);
 }
 .context-card__cite-mark {
   text-align: center;
   font-weight: 700;
-  font-size: var(--fs-base, 15px);
+  font-size: var(--fs-base);
   line-height: 1;
 }
 .context-card__cite-label {
-  color: var(--text-soft, #C9C5BD);
-  font-size: var(--fs-sm, 13.5px);
+  color: var(--text-soft);
+  font-size: var(--fs-sm);
 }
 .context-card__cite-verdict {
   justify-self: end;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: var(--ls-mono, 0.18em);
-  font-size: var(--fs-mono-xs, 10px);
+  letter-spacing: var(--ls-mono);
+  font-size: var(--fs-mono-xs);
 }
 .context-card__cite-ref {
   grid-column: 2 / -1;
-  font-family: var(--mono, "Geist Mono", ui-monospace, monospace);
-  font-size: var(--fs-mono-xs, 10px);
-  letter-spacing: var(--ls-mono-sm, 0.16em);
-  color: var(--text-faint, #807D78);
+  font-family: var(--mono);
+  font-size: var(--fs-mono-xs);
+  letter-spacing: var(--ls-mono-sm);
+  color: var(--text-faint);
 }
 /* cited → affirmative (matches the app's positive/on-track register). */
 .context-card__cite--yes .context-card__cite-mark,
 .context-card__cite--yes .context-card__cite-verdict {
-  color: var(--outreach, #31E682);
+  color: var(--outreach);
 }
 /* not cited → muted (informational, not an error). */
 .context-card__cite--no .context-card__cite-mark,
 .context-card__cite--no .context-card__cite-verdict {
-  color: var(--text-faint, #807D78);
+  color: var(--text-faint);
 }
 
 /* ── beat #4 reveal callout ── */
 .context-tray__reveal {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3, 12px);
-  padding: var(--space-6, 28px);
-  border-radius: var(--radius-3, 4px);
-  background: var(--outreach-bg, rgba(49, 230, 130, 0.12));
-  border: 1px solid var(--outreach-edge, rgba(49, 230, 130, 0.42));
-  border-left: 4px solid var(--outreach, #31E682);
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-3);
+  background: var(--outreach-bg);
+  border: 1px solid var(--outreach-edge);
+  border-left: 4px solid var(--outreach);
 }
 .context-tray__reveal-label {
-  font-size: var(--fs-mono-xs, 10px);
+  font-size: var(--fs-mono-xs);
   text-transform: uppercase;
-  letter-spacing: var(--ls-mono, 0.18em);
+  letter-spacing: var(--ls-mono);
   font-weight: 600;
-  color: var(--outreach, #31E682);
+  color: var(--outreach);
 }
 .context-tray__reveal-text {
   margin: 0;
-  font-size: var(--fs-base, 15px);
-  line-height: var(--lh-relaxed, 1.55);
-  color: var(--text-soft, #C9C5BD);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-soft);
 }
 .context-tray__reveal-text strong {
-  color: var(--text, #F4F2EE);
+  color: var(--text);
   font-weight: 600;
 }
