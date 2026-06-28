@@ -1,4 +1,4 @@
-// @liminal-engine/contracts — the shared kernel. Cross-package coupling goes
+// @liminal-engine/contracts - the shared kernel. Cross-package coupling goes
 // through these contracts only (enforced by .dependency-cruiser.cjs).
 
 export { stableStringify, sha256Hex, canonicalHash } from "./canonical-hash.ts";
@@ -26,5 +26,6 @@ export * from "./evidence-bundle.contract.ts";
 export * from "./requirement.contract.ts";
 export * from "./requirement-evidence.contract.ts";
 export * from "./policy-rule.contract.ts";
+export * from "./action-policy-rule.contract.ts";
 export * from "./approval-gate.contract.ts";
 export { CONTRACT_REGISTRY, type ContractEntry } from "./registry.ts";

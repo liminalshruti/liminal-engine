@@ -236,7 +236,7 @@
     },
     "liminal_engine.intercepted_action.v1::pr20-merge-intercepted": {
       "schema": "liminal_engine.intercepted_action.v1",
-      "purpose": "the PR-#20 replay action — gh pr-merge with split reviews, full provenance",
+      "purpose": "the PR-#20 replay action - gh pr-merge with split reviews, full provenance",
       "input": {
         "id": "ia_pr20_merge",
         "tool": "gh",
@@ -259,7 +259,7 @@
     },
     "liminal_engine.intercepted_action.v1::git-force-push-minimal": {
       "schema": "liminal_engine.intercepted_action.v1",
-      "purpose": "minimal action — required fields only; optional target/provenance omitted",
+      "purpose": "minimal action - required fields only; optional target/provenance omitted",
       "input": {
         "id": "ia_git_force_push",
         "tool": "git",
@@ -516,6 +516,102 @@
       },
       "canonical_string": "{\"captured_at\":\"2026-06-27T09:50:00.000Z\",\"hash\":\"2fbdb6b3ac952fb5b28317eba8114760b88f30c1237e4bf3542dd21b0c7d9023\",\"quote\":\"Processing of EU Personal Data shall occur solely within the European Economic Area.\",\"schema\":\"liminal_engine.requirement_evidence.v1\",\"source_id\":\"dpa_acme_v3\",\"source_type\":\"signed-contract\",\"span\":\"Section 7.2\"}",
       "sha256": "c70ead2aae9e03042c52938ff017ad00537c8fa22692afa05e61161b32cbed04"
+    },
+    "liminal_engine.policy_rule.v1::acme-eu-residency-policy": {
+      "schema": "liminal_engine.policy_rule.v1",
+      "purpose": "Policy rule enforcing EU data residency requirement for Acme deal",
+      "input": {
+        "id": "pr_acme_eu",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "requirement": "EU data residency is a hard requirement for the Acme expansion",
+        "severity": "critical",
+        "scope": {
+          "category": "data-residency",
+          "context": "deal_acme"
+        },
+        "remediationSteps": [
+          {
+            "id": "step_1",
+            "description": "Propagate EU data residency requirement into Acme workstream",
+            "owner": "Product",
+            "status": "open"
+          },
+          {
+            "id": "step_2",
+            "description": "Assign Security owner for compliance review",
+            "owner": "Security",
+            "status": "open"
+          },
+          {
+            "id": "step_3",
+            "description": "Assign Engineering owner for implementation",
+            "owner": "Engineering",
+            "status": "open"
+          }
+        ],
+        "createdAt": "2026-06-27T10:03:00.000Z",
+        "updatedAt": "2026-06-27T10:03:00.000Z",
+        "enforcer": "VP Ops / Head of AI Transformation"
+      },
+      "canonical_string": "{\"case_id\":\"gc_acme_eu\",\"created_at\":\"2026-06-27T10:03:00.000Z\",\"deal_id\":\"deal_acme\",\"enforcer\":\"VP Ops / Head of AI Transformation\",\"id\":\"pr_acme_eu\",\"remediation_steps\":[{\"description\":\"Propagate EU data residency requirement into Acme workstream\",\"id\":\"step_1\",\"owner\":\"Product\",\"status\":\"open\"},{\"description\":\"Assign Security owner for compliance review\",\"id\":\"step_2\",\"owner\":\"Security\",\"status\":\"open\"},{\"description\":\"Assign Engineering owner for implementation\",\"id\":\"step_3\",\"owner\":\"Engineering\",\"status\":\"open\"}],\"requirement\":\"EU data residency is a hard requirement for the Acme expansion\",\"schema\":\"liminal_engine.policy_rule.v1\",\"scope\":{\"category\":\"data-residency\",\"context\":\"deal_acme\"},\"severity\":\"critical\",\"updated_at\":\"2026-06-27T10:03:00.000Z\"}",
+      "sha256": "4f443872cb77f80c8c248b168fb07e78ffec61f4f16f1df097f045ddaec4a675"
+    },
+    "liminal_engine.action_policy_rule.v1::pr-merge-dual-approval-deny": {
+      "schema": "liminal_engine.action_policy_rule.v1",
+      "purpose": "learned action policy denies PR merges before two reviewer approvals",
+      "input": {
+        "id": "aprule_dual_approval",
+        "version": 1,
+        "fromCorrectionId": "ce_pr20_reject",
+        "evalCaseId": "ec_pr20_dual_approval",
+        "scope": {
+          "tool": "gh",
+          "action": "pr-merge",
+          "targetPattern": "PR#*",
+          "condition": {
+            "field": "reviews.approved",
+            "op": "<",
+            "value": 2
+          }
+        },
+        "effect": {
+          "verdict": "deny",
+          "actionType": "block_agent_action",
+          "reasons": [
+            "Never merge without both reviewers approving."
+          ],
+          "requiredBefore": [
+            "Collect at least two approving reviews before merging."
+          ]
+        },
+        "status": "proposed",
+        "createdAt": "2026-06-27T20:00:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T20:00:00.000Z\",\"effect\":{\"action_type\":\"block_agent_action\",\"reasons\":[\"Never merge without both reviewers approving.\"],\"required_before\":[\"Collect at least two approving reviews before merging.\"],\"verdict\":\"deny\"},\"eval_case_id\":\"ec_pr20_dual_approval\",\"from_correction_id\":\"ce_pr20_reject\",\"id\":\"aprule_dual_approval\",\"schema\":\"liminal_engine.action_policy_rule.v1\",\"scope\":{\"action\":\"pr-merge\",\"condition\":{\"field\":\"reviews.approved\",\"op\":\"<\",\"value\":2},\"target_pattern\":\"PR#*\",\"tool\":\"gh\"},\"status\":\"proposed\",\"version\":1}",
+      "sha256": "13dea5fba0a4bae4b4356dffedd1b29071f646dd907b4f13f4ccefc316959fb2"
+    },
+    "liminal_engine.approval_gate.v1::acme-eu-residency-approval": {
+      "schema": "liminal_engine.approval_gate.v1",
+      "purpose": "Approval gate for EU data residency requirement enforcement",
+      "input": {
+        "id": "ag_acme_eu",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "policyRuleId": "pr_acme_eu",
+        "approvalContext": "Enforce EU data residency requirement for Acme expansion",
+        "requiredApprovers": [
+          "Product",
+          "Security",
+          "Engineering"
+        ],
+        "approvals": [],
+        "createdAt": "2026-06-27T10:03:00.000Z",
+        "updatedAt": "2026-06-27T10:03:00.000Z",
+        "gateKeeper": "VP Ops / Head of AI Transformation"
+      },
+      "canonical_string": "{\"approval_context\":\"Enforce EU data residency requirement for Acme expansion\",\"approvals\":[],\"case_id\":\"gc_acme_eu\",\"created_at\":\"2026-06-27T10:03:00.000Z\",\"deal_id\":\"deal_acme\",\"gate_keeper\":\"VP Ops / Head of AI Transformation\",\"id\":\"ag_acme_eu\",\"policy_rule_id\":\"pr_acme_eu\",\"required_approvers\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.approval_gate.v1\",\"updated_at\":\"2026-06-27T10:03:00.000Z\"}",
+      "sha256": "816332e03bf7528c1654aed5d7f572f2f7f659df0174f27b9faf91be5b0e4685"
     }
   }
 }

@@ -4,8 +4,14 @@
   "private": true,
   "type": "module",
   "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "gemini:capture": "node --experimental-strip-types src/capture.ts"
+  },
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/governance": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@google/generative-ai": "^0.21.0"
   }
 }

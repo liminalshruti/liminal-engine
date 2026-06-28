@@ -21,3 +21,4 @@ export function toRows(table: EvalTable): EvalRow[] {
 }
 
 export { runEvals, type EvalReader } from "./use-cases.ts";
+export { ruleHealthTable, type RuleHealthRow } from "./rule-health.ts";

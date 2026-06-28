@@ -19,6 +19,7 @@ export * from "./second-pass.ts"; // improve
 export * from "./redact.ts"; // audit: data-residency redaction (LIM-1248)
 export * from "./audit-ledger.ts"; // audit: hash-chained ledger
 export * from "./audit-reconstruction.ts"; // audit: case reconstruction
+export * from "./policy-audit.ts"; // audit: policy verdict + rule lifecycle
 
 // orchestrator + the atomic Approve+Enforce handler
 export * from "./use-cases.ts"; // runGovernanceLoop
