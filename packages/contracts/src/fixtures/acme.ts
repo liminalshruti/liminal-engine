@@ -97,9 +97,12 @@ export const acmeBlockedAction: ActionGate = actionGateContract.parse({
   id: "ag_acme_update",
   caseId: "gc_acme_eu",
   action: "Send customer-facing status update to Acme",
-  blocked: true,
-  reason: "Blocked: open governance case (EU data residency) must be corrected first.",
-  unblockedByCaseCorrection: true,
+  reasons: ["Open governance case (EU data residency) must be corrected first."],
+  requiredBeforeSend: [
+    "EU data residency requirement propagated",
+    "Product / Security / Engineering owners assigned",
+    "Eval passes",
+  ],
 });
 
 export const acmeEvalCase: EvalCase = evalCaseContract.parse({

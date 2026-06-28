@@ -133,10 +133,12 @@ export async function gateDownstreamAction(
     id: idGen.next(),
     caseId,
     action,
-    blocked: true,
-    reason:
-      "Blocked: open governance case (EU data residency) must be corrected first.",
-    unblockedByCaseCorrection: true,
+    reasons: ["Open governance case (EU data residency) must be corrected first."],
+    requiredBeforeSend: [
+      "EU data residency requirement propagated",
+      "Product / Security / Engineering owners assigned",
+      "Eval passes",
+    ],
   };
   await actionGateStore.gate(gate);
   return gate;

@@ -10,6 +10,22 @@ import { dealStatus } from "./agent-output.contract.ts";
 
 export const ENFORCEMENT_ACTION_SCHEMA = "liminal_engine.enforcement_action.v1";
 
+/**
+ * The fixed set of enforcement effects (per specs/SPEC.md) — a closed enum, NOT a
+ * policy DSL. The gov-correct correction templates compile ONTO these.
+ */
+export const enforcementActionType = z.enum([
+  "change_status",
+  "create_linear_workstream",
+  "assign_owner",
+  "block_agent_action",
+  "require_approval",
+  "generate_eval",
+  "activate_policy",
+  "record_audit_event",
+]);
+export type EnforcementActionType = z.infer<typeof enforcementActionType>;
+
 export const enforcementActionShape = z.object({
   id: z.string().min(1),
   caseId: z.string().min(1),
@@ -18,6 +34,10 @@ export const enforcementActionShape = z.object({
   toStatus: dealStatus,
   actor: z.string().min(1), // a ROLE, never an invented persona name
   enforcedAt: z.string().datetime(),
+  // SPEC.md extensions — optional; only projected into the hash when present.
+  actionType: enforcementActionType.optional(),
+  targetSystem: z.string().min(1).optional(),
+  payload: z.record(z.unknown()).optional(),
 });
 export type EnforcementAction = z.infer<typeof enforcementActionShape>;
 
@@ -33,6 +53,9 @@ export const enforcementActionContract = defineContract({
     to_status: a.toStatus,
     actor: a.actor,
     enforced_at: a.enforcedAt,
+    ...(a.actionType !== undefined ? { action_type: a.actionType } : {}),
+    ...(a.targetSystem !== undefined ? { target_system: a.targetSystem } : {}),
+    ...(a.payload !== undefined ? { payload: a.payload } : {}),
   }),
 });
 

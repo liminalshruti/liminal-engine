@@ -9,6 +9,8 @@ import { AUDIT_EVENT_SCHEMA, auditEventContract, auditEventGoldenVectors } from 
 import { ACTION_GATE_SCHEMA, actionGateContract, actionGateGoldenVectors } from "./action-gate.contract.ts";
 import { EVAL_CASE_SCHEMA, evalCaseContract, evalCaseGoldenVectors } from "./eval-case.contract.ts";
 import { EVAL_RESULT_SCHEMA, evalResultContract, evalResultGoldenVectors } from "./eval-result.contract.ts";
+import { CORRECTION_EVENT_SCHEMA, correctionEventContract, correctionEventGoldenVectors } from "./correction-event.contract.ts";
+import { LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, linearWorkstreamPayloadContract, linearWorkstreamPayloadGoldenVectors } from "./linear-workstream-payload.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -30,4 +32,6 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: ACTION_GATE_SCHEMA, contract: actionGateContract, vectors: actionGateGoldenVectors },
   { schema: EVAL_CASE_SCHEMA, contract: evalCaseContract, vectors: evalCaseGoldenVectors },
   { schema: EVAL_RESULT_SCHEMA, contract: evalResultContract, vectors: evalResultGoldenVectors },
+  { schema: CORRECTION_EVENT_SCHEMA, contract: correctionEventContract, vectors: correctionEventGoldenVectors },
+  { schema: LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, contract: linearWorkstreamPayloadContract, vectors: linearWorkstreamPayloadGoldenVectors },
 ] as unknown as ContractEntry[];
