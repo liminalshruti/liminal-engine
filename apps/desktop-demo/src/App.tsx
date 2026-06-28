@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEMO_STEPS, PHASE_LABEL } from "./steps.tsx";
 import { DemoProvider } from "./lib/demo-context.tsx";
 
@@ -27,9 +27,26 @@ function DemoShell() {
   const step = DEMO_STEPS[i]!;
   const last = DEMO_STEPS.length - 1;
   const Screen = step.screen;
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const previousIndexRef = useRef(i);
+  const previousStep = i > 0 ? DEMO_STEPS[i - 1] : undefined;
+  const nextStep = i < last ? DEMO_STEPS[i + 1] : undefined;
+
+  useEffect(() => {
+    if (previousIndexRef.current === i) {
+      return;
+    }
+
+    previousIndexRef.current = i;
+    titleRef.current?.focus();
+  }, [i]);
 
   return (
     <div className="app">
+      <button type="button" className="skip-link" onClick={() => titleRef.current?.focus()}>
+        Skip to current demo beat
+      </button>
+
       <header className="app__bar">
         <span className="app__brand">Liminal Engine</span>
         <span className="app__scenario">Acme Expansion · $1.2M · governance demo</span>
@@ -43,6 +60,10 @@ function DemoShell() {
               key={d.n}
               className={`rail__step${idx === i ? " is-active" : ""}${idx < i ? " is-done" : ""}`}
               onClick={() => setI(idx)}
+              aria-current={idx === i ? "step" : undefined}
+              aria-label={`Beat ${d.n}: ${d.title}. ${PHASE_LABEL[d.phase]} phase${
+                d.mustNotCut ? `. Must-not-cut ${d.mustNotCut}` : ""
+              }.`}
             >
               <span className="rail__n">{d.n}</span>
               <span className="rail__title">{d.title}</span>
@@ -51,7 +72,7 @@ function DemoShell() {
           ))}
         </nav>
 
-        <main className="stage">
+        <main id="demo-stage" className="stage" aria-labelledby="demo-stage-title" tabIndex={-1}>
           <div className="stage__head">
             <span className="stage__beat">Beat {step.n} / 14</span>
             <span className={`stage__phase stage__phase--${step.phase}`}>{PHASE_LABEL[step.phase]}</span>
@@ -59,20 +80,35 @@ function DemoShell() {
               <span className="stage__mnc">must-not-cut #{step.mustNotCut}</span>
             )}
           </div>
-          <h1 className="stage__title">{step.title}</h1>
+          <h1 id="demo-stage-title" ref={titleRef} className="stage__title" tabIndex={-1}>
+            {step.title}
+          </h1>
 
           <div className="stage__screen">
             <Screen />
           </div>
 
           <div className="stage__nav">
-            <button disabled={i === 0} onClick={() => setI((v) => Math.max(0, v - 1))}>
+            <button
+              disabled={i === 0}
+              onClick={() => setI((v) => Math.max(0, v - 1))}
+              aria-label={
+                previousStep
+                  ? `Back to beat ${previousStep.n}: ${previousStep.title}`
+                  : "Back unavailable on first beat"
+              }
+            >
               ← Back
             </button>
             <button
               className="stage__nav-primary"
               disabled={i === last}
               onClick={() => setI((v) => Math.min(last, v + 1))}
+              aria-label={
+                nextStep
+                  ? `Next to beat ${nextStep.n}: ${nextStep.title}`
+                  : "End of demo"
+              }
             >
               {i === last ? "End of demo" : "Next →"}
             </button>

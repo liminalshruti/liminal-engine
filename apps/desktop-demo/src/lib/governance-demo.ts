@@ -27,7 +27,7 @@ import type {
   AgentOutput,
   LinearWorkstreamPayload,
 } from "@liminal-engine/contracts";
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { acmeScenario, acmeCaseEvidence } from "@liminal-engine/contracts/fixtures";
 import {
   runGovernanceLoop,
   GATED_CUSTOMER_ACTION,
@@ -102,11 +102,24 @@ export async function buildGovernanceDemo(): Promise<GovernanceDemo> {
   const clock = createAcmeClock();
   const idGen = createAcmeIdGen();
 
-  // run the real loop — detect → enforce → audit → gate → eval — and take every
-  // artifact it produced (no re-reading raw fixtures for these).
+  // The case evidence (business impact / missing-from / recommended actions) is
+  // scenario knowledge, not derivable from agent output — inject it so the loop
+  // PRODUCES the enriched case (LIM-1254). `acmeCaseEvidence` is sourced from the
+  // locked fixture, so the fixture stays the single source of truth and the
+  // round-trip test proves engine == fixture. Absent these keys, the loop produces
+  // a minimal case (existing behavior unchanged).
   const { governanceCase, enforcementAction, auditEvent, gate, evalCase, evals } =
     await runGovernanceLoop(
-      { source, caseStore, auditSink, actionGateStore, evalStore, clock, idGen },
+      {
+        source,
+        caseStore,
+        auditSink,
+        actionGateStore,
+        evalStore,
+        clock,
+        idGen,
+        caseEvidence: acmeCaseEvidence,
+      },
       DEAL_ID,
     );
 

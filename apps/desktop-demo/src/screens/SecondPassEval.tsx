@@ -23,7 +23,7 @@ import { toBeforeAfterCheckRows } from "./SecondPassEval.model.ts";
 function EvalResultBadge({ result }: { result: EvalRow["result"] }) {
   return (
     <span className="eval-table__result-badge">
-      <span className={`eval-table__result-dot eval-table__result-dot--${result}`} />
+      <span className={`eval-table__result-dot eval-table__result-dot--${result}`} aria-hidden="true" />
       <span className="eval-table__result-label">{result.toUpperCase()}</span>
     </span>
   );
@@ -111,6 +111,9 @@ export function SecondPassEval() {
       <Card title="Per-check before/after">
         <div className="eval-table" aria-label="Before and after checks table">
           <table className="eval-table__table">
+            <caption className="sr-only">
+              Before and after eval checks showing each criterion moving from fail to pass.
+            </caption>
             <thead>
               <tr>
                 <th className="eval-table__th eval-table__th--criterion">Check</th>
