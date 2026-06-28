@@ -5,6 +5,53 @@ this first.
 
 ---
 
+## Session: reconcile — spine complete, #51 gated, video is the last gap (2026-06-28)
+
+> Reconciliation pass. The per-PR session blocks below stop at LIM-1239 but the
+> build moved well past that. Current ground truth (verified via `gh`/`git`, not
+> Linear — board status flaps with multiple writers):
+
+**State of the build — STRUCTURALLY COMPLETE.**
+- All **7 screens** filled + merged (Initialize, ContextTray, AgentActivity,
+  GovernanceCase, EnforcementPanel, AuditTrail, SecondPassEval). Every must-not-cut
+  (#1–#7) renders on screen.
+- Backend governance loop, fail-closed ActionGate, hash-chained audit-ledger, eval
+  Fail→Pass, determinism, fixtures — all on main.
+- **Live-wire helper** `buildGovernanceDemo()` merged (LIM-1245 / PR #34) — runs the
+  REAL loop over in-memory fixture-seeded adapters.
+- **e2e** (`apps/desktop-demo/test/demo-path.e2e.test.ts`) merged (LIM-1240 / #45);
+  beat-#5 UI assertion activated (#49) → **0 skips**.
+- **Certified green cold** (clean checkout of main, fresh install): `pnpm verify`
+  ~124 tests, 0 fail, 0 boundary violations; app typecheck + build clean; smoke ok.
+
+**THE ONE OPEN TECHNICAL ITEM — PR #51 (LIM-1255), GATED before merge.**
+- #51 re-points all 7 screens to read live `buildGovernanceDemo()` output via a
+  `DemoProvider` context (branch `agent/LIM-1255-wire-screens-to-live-loop`, head
+  `c9f9730`). APPROVED + MERGEABLE/CLEAN; e2e proves UI==engine.
+- **DO NOT MERGE until this fix lands** in `apps/desktop-demo/src/lib/demo-context.tsx`:
+  the `DemoProvider` does `void buildGovernanceDemo().then(setDemo)` with **no
+  `.catch()`**. `buildGovernanceDemo()` can throw (`runGovernanceLoop` throws on
+  `detectMiss === null`) → the demo would hang forever on "Running the governance
+  loop…" on stage. Add a `.catch` + error state + `role="alert"` branch (exact
+  patch is posted as a comment on PR #51). Founder call: catch first, then merge.
+- After catch lands: `pnpm verify` green → `gh pr merge 51 --squash --delete-branch`
+  → mark LIM-1255 Done (confirm merge commit in origin/main first).
+
+**Other open PRs:** #52 (judge docs — APPROVE-WITH-NITS: refresh stale "114 tests"
+count to current; likely supersedes #48 → close #48). #44/#26 (PolicyRule SCOPE_SPEC
+docs — Shayaun's lanes, conflicting/changes-requested). #41 already merged.
+
+**Submission gates:** claim-scan clean (no Stanford/SPC; `Liminal, Inc.` only in the
+rules forbidding it). SUBMISSION.md + IP_RECEIPT present. ⚠️ **Demo video (LIM-1197)
+is the ONE remaining real gap** — `demos/recordings/` is empty (only `.gitkeep`); the
+written fallback walkthrough is merged, the video is not recorded.
+
+**Next session should:** (1) land #51's `.catch()` → merge #51; (2) record the demo
+video (LIM-1197); (3) refresh #52's test count + close #48; (4) final SUBMISSION.md
+pass. After #51 + video, the submission is complete.
+
+---
+
 ## Session: LIM-1239 agent-activity trace cards (2026-06-28)
 
 **Did:**
