@@ -22,10 +22,12 @@ What is in scope for the hackathon build, what is **deferred to a later wave**
   - **Eval result** — Fail → Pass across two passes.
 - The governance loop wired through the UI: `observe → detect → correct →
   enforce → audit → improve`.
-- **`PolicyRule` + `ApprovalGate`** as P0 entities (promoted from stretch
-  2026-06-28 per Demo Spine PRD §11): enforcement activates a policy rule and an
-  approval gate (demo steps 9 + 11). Fixture-backed; extend in `contracts`
-  (LIM-1227).
+- **`PolicyRule` + `ApprovalGate`: COVERED by existing contracts — NO new build**
+  (reconciled 2026-06-28, LIM-1251 / PR #26; supersedes the brief P0-promotion).
+  Demo steps 9 + 11 already render from contracts on `main`: `require_approval` /
+  `activate_policy` on `EnforcementAction.actionType` + `AuditEvent` +
+  `LinearWorkstreamPayload.requiredOwners`. First-class `PolicyRule`/`ApprovalGate`
+  entities are **post-hack** — do not build duplicate models for the hack.
 - **Deterministic fixtures** driving every screen on the demo spine.
 - A `smoke.sh` that runs available build/test and prints the manual checklist.
 

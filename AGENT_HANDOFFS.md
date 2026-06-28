@@ -5,6 +5,146 @@ this first.
 
 ---
 
+## Session: reconcile — spine complete, #51 gated, video is the last gap (2026-06-28)
+
+> Reconciliation pass. The per-PR session blocks below stop at LIM-1239 but the
+> build moved well past that. Current ground truth (verified via `gh`/`git`, not
+> Linear — board status flaps with multiple writers):
+
+**State of the build — STRUCTURALLY COMPLETE.**
+- All **7 screens** filled + merged (Initialize, ContextTray, AgentActivity,
+  GovernanceCase, EnforcementPanel, AuditTrail, SecondPassEval). Every must-not-cut
+  (#1–#7) renders on screen.
+- Backend governance loop, fail-closed ActionGate, hash-chained audit-ledger, eval
+  Fail→Pass, determinism, fixtures — all on main.
+- **Live-wire helper** `buildGovernanceDemo()` merged (LIM-1245 / PR #34) — runs the
+  REAL loop over in-memory fixture-seeded adapters.
+- **e2e** (`apps/desktop-demo/test/demo-path.e2e.test.ts`) merged (LIM-1240 / #45);
+  beat-#5 UI assertion activated (#49) → **0 skips**.
+- **Certified green cold** (clean checkout of main, fresh install): `pnpm verify`
+  ~124 tests, 0 fail, 0 boundary violations; app typecheck + build clean; smoke ok.
+
+**THE ONE OPEN TECHNICAL ITEM — PR #51 (LIM-1255), GATED before merge.**
+- #51 re-points all 7 screens to read live `buildGovernanceDemo()` output via a
+  `DemoProvider` context (branch `agent/LIM-1255-wire-screens-to-live-loop`, head
+  `c9f9730`). APPROVED + MERGEABLE/CLEAN; e2e proves UI==engine.
+- **DO NOT MERGE until this fix lands** in `apps/desktop-demo/src/lib/demo-context.tsx`:
+  the `DemoProvider` does `void buildGovernanceDemo().then(setDemo)` with **no
+  `.catch()`**. `buildGovernanceDemo()` can throw (`runGovernanceLoop` throws on
+  `detectMiss === null`) → the demo would hang forever on "Running the governance
+  loop…" on stage. Add a `.catch` + error state + `role="alert"` branch (exact
+  patch is posted as a comment on PR #51). Founder call: catch first, then merge.
+- After catch lands: `pnpm verify` green → `gh pr merge 51 --squash --delete-branch`
+  → mark LIM-1255 Done (confirm merge commit in origin/main first).
+
+**Other open PRs:** #52 (judge docs — APPROVE-WITH-NITS: refresh stale "114 tests"
+count to current; likely supersedes #48 → close #48). #44/#26 (PolicyRule SCOPE_SPEC
+docs — Shayaun's lanes, conflicting/changes-requested). #41 already merged.
+
+**Submission gates:** claim-scan clean (no Stanford/SPC; `Liminal, Inc.` only in the
+rules forbidding it). SUBMISSION.md + IP_RECEIPT present. ⚠️ **Demo video (LIM-1197)
+is the ONE remaining real gap** — `demos/recordings/` is empty (only `.gitkeep`); the
+written fallback walkthrough is merged, the video is not recorded.
+
+**Next session should:** (1) land #51's `.catch()` → merge #51; (2) record the demo
+video (LIM-1197); (3) refresh #52's test count + close #48; (4) final SUBMISSION.md
+pass. After #51 + video, the submission is complete.
+
+---
+
+## Session: LIM-1239 agent-activity trace cards (2026-06-28)
+
+**Did:**
+- Claimed LIM-1239 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1239` on branch
+  `agent/LIM-1239-agent-activity-trace-cards`.
+- Replaced the `AgentActivity` stub with fixture-backed beat #3 rendering:
+  the false-green `Acme expansion appears on track` claim, On Track status badge,
+  first-pass summary, per-agent trace cards, and an explicit missing-requirement
+  evidence line.
+- Added `AgentActivityTrace.ts` and focused tests so the trace cards are derived
+  from `acmeScenario` artifacts, prove the `EU data residency` requirement was
+  present in the customer call but missing from the first-pass output, and fail
+  closed on fixture drift.
+- Added scoped CSS for the AgentActivity trace-card grid and evidence line. No
+  contract, fixture, golden, live integration, or persona-name changes.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/screens/AgentActivityTrace.test.ts` green
+  (6 tests).
+- `pnpm --filter @liminal-engine/desktop-demo typecheck` green.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `pnpm verify` green: root typecheck, app typecheck, 100 tests, boundary lint.
+- `./scripts/smoke.sh` automated checks green; manual checklist printed.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live Gemini/Linear/LiveKit calls; no invented
+  persona names.
+- Did not merge or move Linear to Done.
+
+**Next session should:**
+- Review the LIM-1239 PR alongside the overlapping LIM-1217/LIM-1236
+  AgentActivity PRs and merge in an order that preserves the false-green base,
+  inline dropped-requirement highlight, and these trace cards.
+
+**Risks / watch:**
+- The app-safe source artifact is derived from `agentOutputPass1.dealName`
+  because the richer call transcript is not a spine-safe fixture yet. If a
+  transcript fixture lands in `@liminal-engine/contracts/fixtures`, use that as
+  the source artifact without importing `packages/integrations/*`.
+## Session: LIM-1244 quality a11y pass (2026-06-28)
+
+**Did:**
+- Claimed LIM-1244 in Linear, assigned it to Sean, moved it to In Progress, added
+  `agent-claimed`, and worked only in
+  `/Users/shayaunnejad/liminal/liminal-engine.worktrees/LIM-1244` on branch
+  `agent/LIM-1244-quality-a11y-pass`.
+- Added keyboard and focus hardening to the demo shell: first-tab skip button,
+  active-step `aria-current`, labeled Back/Next controls, and focus handoff to the
+  current beat title only after the beat index changes.
+- Hardened shared demo semantics: hidden captions for eval tables, decorative dots
+  and alert icon hidden from assistive tech, and the simulated Linear payload marked
+  as a named region.
+- Updated desktop-demo CSS for visible focus rings, 44px interactive targets,
+  higher-contrast pass/fail/focus colors, responsive wrapping, and no nonzero
+  `letter-spacing` in the app stylesheet.
+- Added `apps/desktop-demo/src/a11y-demo.test.ts` to guard the keyboard/focus,
+  target-size, contrast, and table-caption requirements.
+
+**Verified:**
+- `node --test apps/desktop-demo/src/a11y-demo.test.ts` green.
+- `pnpm typecheck:app` green.
+- `pnpm verify` green: root typecheck, app typecheck, 98 tests, boundary lint.
+- `pnpm --filter @liminal-engine/desktop-demo build` green.
+- `./scripts/smoke.sh` green for automated tests; manual checklist printed.
+- `git diff --check` clean.
+- Local Vite served at `http://localhost:5174/`; the browser plugin was unavailable,
+  so I used headless Chrome probes. Confirmed first Tab reaches the skip button and
+  Space moves focus to the beat title. Longer CDP key-loop automation was unreliable,
+  so the committed guard test is the durable regression check.
+
+**Did NOT do (by design):**
+- No contract/golden changes; no live integrations; no fixture rewrites; no persona
+  names.
+- Did not rewrite the existing GovernanceCase content stub because LIM-1244 owns the
+  cross-cutting accessibility pass, not MNC#2 content completion.
+- Did not merge or mark Linear Done.
+
+**Next session should:**
+- Review the LIM-1244 PR for keyboard/focus/contrast acceptance and merge only after
+  normal reviewer gates pass.
+- Coordinate with the GovernanceCase-fill PR so the existing MNC#2 content stub is
+  removed by its owning work, not by this quality pass.
+
+**Risks / watch:**
+- The app remains a static click-through; the keyboard path is through the demo rail
+  and Back/Next controls. If a later PR turns Approve + Enforce into an actual
+  in-screen action, that new control should inherit the same focus and 44px target
+  rules.
+
+---
+
 ## Session: LIM-1238 second-pass causal table (2026-06-28)
 
 **Did:**

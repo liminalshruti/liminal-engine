@@ -7,7 +7,7 @@
  * simulated Linear workstream (LinearPayloadView, MNC#4) → required owners → blocked
  * customer update (the 3-part BlockedActionBanner, MNC#5 / LIM-1235).
  */
-import { acmeScenario } from "@liminal-engine/contracts/fixtures";
+import { useDemo } from "../lib/demo-context.tsx";
 import {
   BlockedActionBanner,
   EnforcementPreview,
@@ -19,11 +19,11 @@ import { SCREEN_COPY } from "../lib/copy.ts";
 export function EnforcementPanel() {
   const {
     agentOutputPass1,
-    blockedAction,
+    gate,
     demoBeats,
     enforcementAction,
     linearWorkstreamPayload,
-  } = acmeScenario;
+  } = useDemo();
   const copy = SCREEN_COPY.enforcementPanel;
 
   return (
@@ -59,14 +59,14 @@ export function EnforcementPanel() {
 
       <div className="enforcement-panel__attempt" aria-label="Attempted customer-facing on-track update">
         <p className="enforcement-panel__eyebrow">Attempted customer update</p>
-        <p className="enforcement-panel__attempt-action">{blockedAction.action}</p>
+        <p className="enforcement-panel__attempt-action">{gate.action}</p>
         <p className="enforcement-panel__attempt-message">
           "{demoBeats.agentClaim}" would repeat the pass-{agentOutputPass1.passNumber} false green.
         </p>
       </div>
 
       {/* Beat #10 / MNC#5 — the 3-part block: not allowed · why · required before send. */}
-      <BlockedActionBanner gate={blockedAction} />
+      <BlockedActionBanner gate={gate} />
     </section>
   );
 }
