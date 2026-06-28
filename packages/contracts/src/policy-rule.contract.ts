@@ -1,5 +1,5 @@
 /**
- * PolicyRule — a declarative rule that enforces a requirement or constraint
+ * PolicyRule - a declarative rule that enforces a requirement or constraint
  * within a governance case. POST-HACK model for correction-pipeline stretch item.
  *
  * A PolicyRule specifies:
@@ -13,32 +13,19 @@ import { defineContract } from "./define-contract.ts";
 
 export const POLICY_RULE_SCHEMA = "liminal_engine.policy_rule.v1";
 
-/**
- * Condition severity: how critical the rule is.
- */
 export const policyRuleSeverity = z.enum(["critical", "high", "medium", "low"]);
 export type PolicyRuleSeverity = z.infer<typeof policyRuleSeverity>;
 
-/**
- * The scope where a rule applies (e.g., region, system, user group).
- */
 export const policyScopeShape = z.object({
-  /** e.g., "EU", "data-residency", "compliance-check" */
   category: z.string().min(1),
-  /** e.g., "all Acme contracts", "deal_acme" */
   context: z.string().min(1),
 });
 export type PolicyScope = z.infer<typeof policyScopeShape>;
 
-/**
- * A single remediation step required to satisfy the rule.
- */
 export const remediationStepShape = z.object({
   id: z.string().min(1),
   description: z.string().min(1),
-  /** e.g., "Product", "Security", "Engineering" */
   owner: z.string().min(1),
-  /** "open" | "in-progress" | "completed" | "blocked" */
   status: z.enum(["open", "in-progress", "completed", "blocked"]),
 });
 export type RemediationStep = z.infer<typeof remediationStepShape>;
@@ -47,17 +34,12 @@ export const policyRuleShape = z.object({
   id: z.string().min(1),
   caseId: z.string().min(1),
   dealId: z.string().min(1),
-  /** The requirement/constraint (e.g., "EU data residency is mandatory") */
   requirement: z.string().min(1),
   severity: policyRuleSeverity,
   scope: policyScopeShape,
-  /** Steps required to satisfy this rule */
   remediationSteps: z.array(remediationStepShape).min(1),
-  /** When this rule was created/activated */
   createdAt: z.string().datetime(),
-  /** When this rule's requirements were last updated */
   updatedAt: z.string().datetime(),
-  /** The role that enforces this rule (e.g., "VP Ops / Head of AI Transformation") */
   enforcer: z.string().min(1),
 });
 export type PolicyRule = z.infer<typeof policyRuleShape>;

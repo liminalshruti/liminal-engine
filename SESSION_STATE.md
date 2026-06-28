@@ -4,6 +4,22 @@ Current state of the build, right now. Keep this short and true. Reflects git/PR
 merge-state (the truth), not Linear status (a lagging cache — multiple sessions
 write the board concurrently, so it flaps).
 
+## As of: LIM-1367 policy intercept control plane branch ready (2026-06-28)
+
+- **LIM-1367 branch:** `agent/LIM-1367-policy-intercept-control-plane` adds the
+  live/dogfood proxy control plane: `ActionPolicyRule`, strict `InterceptedAction`,
+  pure policy decisions, correction compilation, verdict/rule audit, HTTP gateway,
+  `policy-gw` CLI, gh/git/deploy shims, MCP classifier, scope, match/replace,
+  repeater, queue controls, proxy history, and durable session storage.
+- **Model split:** main's remediation `PolicyRule` remains intact for
+  correction-pipeline/governance-case rules. Learned allow/deny/ask intercept rules
+  live in the new `ActionPolicyRule` contract to avoid semantic collision.
+- **Verification:** `pnpm regen:goldens`, `pnpm install --frozen-lockfile`,
+  focused contracts/policy/governance/gateway tests, and `pnpm verify` are green
+  on the rebased branch (`394` tests + boundary lint).
+- **Still not complete product parity:** CLI/HTTP proxy persistence is real, but a
+  browser-grade operator UI/live dogfood deployment is still the next fidelity gap.
+
 ## As of: LIM-1239 agent-activity trace cards branch ready (2026-06-28)
 
 - **LIM-1239 branch:** `agent/LIM-1239-agent-activity-trace-cards` upgrades

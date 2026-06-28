@@ -14,6 +14,7 @@
     "@liminal-engine/integration-audit-sink": "workspace:*",
     "@liminal-engine/integration-action-gate-store": "workspace:*",
     "@liminal-engine/integration-eval-store": "workspace:*",
-    "@liminal-engine/integration-fixture-determinism": "workspace:*"
+    "@liminal-engine/integration-fixture-determinism": "workspace:*",
+    "@liminal-engine/policy": "workspace:*"
   }
 }
