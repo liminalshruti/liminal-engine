@@ -1,6 +1,12 @@
 /**
- * ActionGate — a downstream action blocked until the case is corrected (e.g. a
- * customer-facing status update). (DEMO_CONTRACT step 6 / must-not-cut #5.)
+ * ActionGate — the proxy/gate verdict on a downstream action (e.g. a
+ * customer-facing status update) while an open governance case stands.
+ * (DEMO_CONTRACT step 6 / must-not-cut #5.)
+ *
+ * Per specs/SPEC.md: the verdict carries `reasons[]` (why it's gated) and
+ * `requiredBeforeSend[]` (what must be true to release it). `allowed` is
+ * DERIVED from the verdict — a gate with any `reasons` is not allowed — so we do
+ * NOT persist a contradictory `blocked` boolean. Use `isAllowed(gate)` to read it.
  */
 import { z } from "zod";
 import { defineContract } from "./define-contract.ts";
@@ -61,6 +67,11 @@ export function actionGateDecision(gate: ActionGate): ActionGateDecision {
     reasons: [...gate.reasons],
     requiredBeforeSend: [...gate.requiredBeforeSend],
   };
+}
+
+/** Derived allowance — never persisted. A gate is allowed iff verdict is "allow" and has no reasons. */
+export function isAllowed(gate: ActionGate): boolean {
+  return gate.verdict === "allow" && gate.reasons.length === 0;
 }
 
 export const actionGateContract = defineContract({

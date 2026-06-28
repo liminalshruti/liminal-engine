@@ -124,6 +124,52 @@
       },
       "canonical_string": "{\"criterion\":\"EU data residency requirement honored\",\"deal_id\":\"deal_acme\",\"eval_case_id\":\"ec_acme_eu\",\"id\":\"ev_acme_p2\",\"pass_number\":2,\"result\":\"pass\",\"schema\":\"liminal_engine.eval_result.v1\"}",
       "sha256": "67f27d87995065c618b9e30359b414384d74f970b58ab1f92664a9911f22f265"
+    },
+    "liminal_engine.correction_event.v1::acme-eu-residency-correction": {
+      "schema": "liminal_engine.correction_event.v1",
+      "purpose": "operator corrects the dropped EU data residency requirement",
+      "input": {
+        "id": "ce_acme_eu",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "correction": "EU data residency is a hard requirement; honor it before any on-track claim.",
+        "decidingActor": "VP Ops / Head of AI Transformation",
+        "correctedAt": "2026-06-27T10:03:00.000Z"
+      },
+      "canonical_string": "{\"case_id\":\"gc_acme_eu\",\"corrected_at\":\"2026-06-27T10:03:00.000Z\",\"correction\":\"EU data residency is a hard requirement; honor it before any on-track claim.\",\"deal_id\":\"deal_acme\",\"deciding_actor\":\"VP Ops / Head of AI Transformation\",\"id\":\"ce_acme_eu\",\"schema\":\"liminal_engine.correction_event.v1\"}",
+      "sha256": "60d4a68ec9a83408bc54e598f28df65de595707a17446cd5bab6630ee57ad857"
+    },
+    "liminal_engine.linear_workstream_payload.v1::acme-remediation-workstream": {
+      "schema": "liminal_engine.linear_workstream_payload.v1",
+      "purpose": "remediation workstream requires Product/Security/Engineering owners",
+      "input": {
+        "title": "Acme expansion — EU data residency remediation",
+        "dealId": "deal_acme",
+        "requiredOwners": [
+          "Product",
+          "Security",
+          "Engineering"
+        ],
+        "workstreams": [
+          {
+            "title": "Commercial terms",
+            "status": "green",
+            "owner": "Product"
+          },
+          {
+            "title": "Security review",
+            "status": "green",
+            "owner": "Security"
+          },
+          {
+            "title": "Data residency (EU)",
+            "status": "at-risk",
+            "owner": "Engineering"
+          }
+        ]
+      },
+      "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
+      "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
     }
   }
 }
