@@ -2,90 +2,53 @@
 
 Current state of the build, right now. Keep this short and true.
 
-## As of: LIM-1235 blocked-action card branch ready (2026-06-28)
+> Truth source = GitHub PR merge-state (`gh pr view`), not Linear — multiple
+> sessions write the board concurrently, so Linear status flaps.
 
-- **LIM-1235 branch:** `agent/LIM-1235-blocked-action-card` upgrades the demo
-  enforcement beat with a visible 3-part blocked-action card and replaces the
-  `EnforcementPanel` placeholder with fixture-backed rendering for beats #6-#10.
-  Pending PR/review; not merged.
-- **LIM-1235 verification:** app typecheck, app production build, headless Chrome
-  DOM check for beat #10, `pnpm verify` (80/80 tests + boundary lint), and
-  `./scripts/smoke.sh` automated checks are green.
-- **Demo path impact:** beat #10 / MNC#5 is now explicit on screen: attempted
-  customer-facing on-track update -> `Not allowed` / `Why blocked` / `Required
-  before send` with all `ActionGate.requiredBeforeSend` items visible. Fixtures
-  only; no live calls; no persona names.
+## As of: 5 of 7 demo screens on main (2026-06-28)
 
-## Previous state: backend loop on main, M1 UI next (2026-06-28 early)
-## As of: LIM-1234 preview branch ready for PR (2026-06-28)
+**Phase: the demo spine is closing. 5 of 7 per-beat screens are filled on `main`;
+2 remain (both in flight). After screens, LIM-1245 wires them to real loop output.**
 
-- **LIM-1234 branch:** `agent/LIM-1234-compiled-enforcement-preview` adds
-  `EnforcementPreview` under `apps/desktop-demo/src/components/`, exports it from
-  the component barrel, and renders it on the routed enforcement panel before the
-  enforce transition text. Beat #6 now shows the compiled `EnforcementAction`
-  preview before Approve + Enforce. Verification is green: `pnpm typecheck:app`,
-  desktop-demo build, `git diff --check`, `pnpm verify` (68 tests), and
-  `./scripts/smoke.sh` automated tests.
-- **LIM-1242 branch:** `agent/LIM-1242-audit-reconstruction-test` adds
-  governance-local audit reconstruction support + tests. It verifies
-  hash-chained AuditEvents and rebuilds the Acme GovernanceCase lifecycle from
-  event snapshots only. `pnpm verify` is green with 64/64 tests; smoke automated
-  tests are green. Pending PR/review; not merged.
-- **Phase:** Backend governance loop is **DONE and on `main`**. The demo-spine
-  **shell** is on `main`. Remaining critical path = **M1 per-beat screens** (wire
-  the real loop output into the 14-step UI). 56/56 tests green on trunk.
-- **Merged to `main`** (origin, in order): PR #1 control harness · PR #2 LIM-1165
-  Acme fixtures · #3 LIM-1210 worktree workflow · #4 LIM-1163 demo-spine shell ·
-  #5 LIM-1199 spec consolidation · #6 LIM-1163 apps boundary-lint (review Finding 1) ·
-  **#7 LIM-1168 governance loop (M2) + eval Fail→Pass (M3)**. No open PRs.
-- **M2/M3 (PR #7):** `packages/governance/src/use-cases.ts` — `detectMiss`,
-  `enforceCorrection` (flips on-track→at-risk via engine-core's pure fn, emits
-  EnforcementAction + AuditEvent), `gateDownstreamAction`, `runGovernanceLoop`.
-  `packages/eval-harness` — `runEvals` (Fail p1 → Pass p2). In-memory port adapters
-  in `packages/integrations/*` (governance-case-store, audit-sink, action-gate-store,
-  eval-store, fixture-determinism). Deterministic via injected Clock/IdGen — no
-  Date.now/randomness. Tests assert the loop reproduces the Acme fixtures
-  byte-for-byte (must-not-cut #2/#3/#5/#6/#7). No contract change → goldens stable.
-- **Shell (PR #4):** React 18 + Vite + TS SPA in `apps/desktop-demo/`; 14-step
-  stepper bound to `acmeScenario`. Stack locked: **React-on-prototype-CSS**.
-- **Spine guard (PR #6):** boundary lint now cruises `apps/` too — `apps/desktop-demo`
-  → `packages/integrations/*` is mechanically forbidden (closed review Finding 1).
-- **Open follow-ups:** LIM-1211 (Finding 1 — DONE via PR #6), LIM-1212 (wire app
-  `.tsx` into the verify/CI typecheck gate — still open).
-- **Harness:** pnpm/TS workspace; `packages/contracts` (7 hashed primitives + golden
-  tests + Acme fixtures); boundary lint (incl. apps/); CI + hooks + PR template;
-  worktree helper (`pnpm wt:new`). Commits = allsmog only (hook-enforced).
-- **Scaffold:** All folders + docs + `.claude` dev env + `scripts/smoke.sh` created.
-- **Official repo name:** `liminal-engine`.
-- **Public repo:** ✅ Created and live — `github.com/liminalshruti/liminal-engine`
-  (public, MIT). Clean standalone history beginning with the hackathon.
-- **License:** MIT, copyright **Shruti Rajagopal and contributors**. No
-  `Liminal, Inc.` claim remains anywhere in the repo.
-- **Entity status:** Liminal is **not yet incorporated**. Do not use
-  `Liminal, Inc.` in repo docs, license, package metadata, or submission copy
-  until incorporation is complete.
-- **Collaborator:** `allsmog` (Sean) invited with **push** access (invitation
-  pending acceptance).
-- **Source of truth:** This standalone public `liminal-engine` repo. (It was
-  split out of a private `hackathons/` monorepo at setup time; that copy is
-  historical only and must not be pushed — it is not the active version control.)
-- **Demo path:** Locked in `DEMO_CONTRACT.md`. Backend loop implemented; UI shell
-  up; **per-beat screens are the remaining piece**.
-- **Persona:** Not extracted. Using generic operator language. Do not invent a name.
+### Demo UI — the 14-beat walkthrough (the critical path)
+| Screen | Beat | Status |
+|---|---|---|
+| Initialize | #1–2 | ✅ on main (#22) |
+| ContextTray | #4 | ✅ on main (#28) |
+| EnforcementPanel | #6–10 | ✅ on main (#18/#21/#25 — status flip · Linear · 3-part blocked-action · compiled-action preview) |
+| AuditTrail | #11 | ✅ on main (#31) |
+| SecondPassEval | #12–14 | ✅ on main (#30 — Fail→Pass table) |
+| AgentActivity | #3 | 🔵 in flight (LIM-1217 PR #36; also touched by LIM-1236 PR #29 — collision risk) |
+| GovernanceCase | #5 | 🔵 in flight (LIM-1218) |
 
-## Blocking / waiting
+### Backend (all done, on `main`)
+- Governance loop (observe→detect→correct→enforce→audit→improve), fail-closed
+  ActionGate (v2 verdict), hash-chained audit-ledger + reconstruction, eval
+  Fail→Pass, deterministic spine (two-run identical, LIM-1241).
+- Contracts + goldens; shared components (LIM-1214); fixtures (incl. Linear
+  workstream payload). App `.tsx` is in the verify/CI gate (LIM-1212).
 
-- Persona extraction from `liminal-prototype` pending (LIM-«persona», yellow).
-- LIM-1212 open: app `.tsx` not yet in the `verify`/CI typecheck gate.
+### Open PRs (as of writing)
+- **#36** LIM-1217 AgentActivity fill (allsmog) — fills beat #3 stub.
+- **#34** LIM-1245 wire demo to live governance-loop output (mine) — the last structural item.
+- **#29** LIM-1236 inline dropped-requirement highlight (allsmog) — ⚠️ also edits
+  AgentActivity.tsx + GovernanceCase.tsx → collides with #36 / LIM-1218; needs coordination.
+- **#35** docs: TRACEABILITY_MATRIX (mine) · **#26** PolicyRule docs (mine).
 
-## Next concrete step
+### Merged this run (origin, in order)
+PRs #9–#31: spec/AGENTS reconciliation · components (#11) · app-tsx CI gate (#12)
+· contracts v2 (#13) · fail-closed gate (#14) · spine-shell-v2 (#15) ·
+audit-reconstruction test (#16) · Linear payload fixture (#17) · Approve+Enforce
+handler (#18) · audit-ledger (#19) · PolicyRule/ApprovalGate P0 promotion (#20) ·
+EnforcementPreview (#21) · Initialize screen (#22) · determinism test (#23) ·
+3-part blocked-action card (#25) · gov-scaffold (#27) · ContextTray (#28) ·
+SecondPassEval (#30) · AuditTrail (#31). (Earlier: #1–#7 harness/fixtures/loop.)
 
-**M1 — per-beat screens (LIM-1166 + 1167).** Extend the existing
-`apps/desktop-demo/` shell (do NOT rebuild) to render the real governance/eval
-artifacts for each of the 14 beats: wire the app composition root to
-`runGovernanceLoop` + `runEvals` over the in-memory adapters, render the
-GovernanceCase / status flip / blocked action / AuditEvent / Fail→Pass table.
-Pull verbatim display copy from `acmeScenario.demoBeats` (don't re-hardcode).
-Panel components → `packages/ui-components` (LIM-1171/1172). This flips
-`JUDGING_MAP.md` Technicality + Live Demo from Partial → Covered. Then
-`./scripts/smoke.sh` + a fallback recording (LIM-1192/1197) before submission.
+### Remaining to submission
+1. Fill the last 2 screens: AgentActivity (#3, #36 in review), GovernanceCase (#5).
+2. Resolve the #29↔#36/LIM-1218 file collision (don't double-fill the same screens).
+3. LIM-1245 (#34): wire screens to real `runGovernanceLoop` output instead of raw fixtures.
+4. `./scripts/smoke.sh` full pass + a fallback demo recording before submit.
+5. Persona extraction (real name from `liminal-prototype`) — role-only until then.
+
+All deterministic, fixtures-first, no live calls on the spine. No persona names.
