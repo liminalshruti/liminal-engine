@@ -90,7 +90,8 @@ sentence, anchored to the false-green scenario rather than a generic demo.
 | Under 3 minutes, runs in order | `DEMO_CONTRACT.md` acceptance · `scripts/smoke.sh` |
 
 **Why it scores:** single locked path, deterministic fixtures (no live-call
-flakiness), fallback recording in `demos/fallback/`.
+flakiness), written fallback walkthrough in `demos/fallback/WALKTHROUGH.md` (the
+backup *video* is a pending manual step before submission).
 
 ---
 
@@ -119,27 +120,31 @@ Each criterion against **current demo state**. `Gap` / `Partial` items are where
 the demo does not yet fully serve a criterion — these are the things to watch as
 the spine is built.
 
-| Criterion | Weight | Status | Note / what closes it |
+Status as of the demo-complete milestone (all 7 screens + the full governance
+loop, eval Fail→Pass, audit-ledger, and fail-closed gate are merged to `main`).
+
+| Criterion | Weight | Status | Note / residual |
 |---|---|---|---|
-| Technicality | 40% | **Partial** | Loop is specified + fixture-backed in contract; **gap until** `packages/governance` + `eval-harness` actually emit `EnforcementAction`/`AuditEvent`/`EvalCase` and the spine renders them (LIM-«gov», LIM-«eval»). |
-| Creativity / Originality | 25% | **Covered (narrative)** | Fully expressible from the locked scenario; **risk:** weakens if enforcement (`#7`/`#10`) is not *visible* — looks like alerting, not governance. |
-| Live Demo | 20% | **Partial** | Path locked; **gap until** the 14-step click-through renders in order < 3 min (LIM-«spine») **and** `demos/fallback/` has a recording (`SUBMISSION.md` open item). |
+| Technicality | 40% | **Covered** | The governance loop emits + the spine renders every artifact — `GovernanceCase`, `EnforcementAction`, the On Track→At Risk flip, the blocked action, hash-chained `AuditEvent`, `EvalCase`, Fail→Pass — across all 14 beats (all 7 screens filled). Determinism + fail-closed gate + audit reconstruction are tested on `main`. **Residual:** screens currently read the locked fixtures directly; LIM-1245 (#34, code-ready, in review) re-wires them to the live `runGovernanceLoop`/`runEvals` output so the UI provably *is* the engine. Same values either way — #34 upgrades the *provenance*, not the content. |
+| Creativity / Originality | 25% | **Covered** | The before/after category shift is on screen: enforcement is *visible* (status flip + blocked customer update + Linear workstream with required owners), not alerting. |
+| Live Demo | 20% | **Covered** | All 14 beats render in order across the 7 screens; a written fallback walkthrough is on `main` (`demos/fallback/WALKTHROUGH.md`). **Residual (manual, founder):** record the fallback *video* + walk `scripts/smoke.sh` to confirm < 3 min end to end (SUBMISSION.md open items). |
 | Future Potential / AI Impact | 15% | **Covered (narrative)** | Carried by framing in `README`/`SUBMISSION`; needs no new demo beat. Do not over-build real integrations at the spine's expense. |
 
-### Explicit gaps to flag
+### Residuals to close (the spine is built; these are what's left)
 
-1. **Technicality is the heaviest weight (40%) and the least "done."** It rests
-   on artifacts being *real and visible*, not described. Highest-leverage build
-   work is LIM-«gov» + LIM-«eval» landing with visible artifacts.
-2. **Enforcement must read as enforcement, not alerting.** If `#7` (status flip)
-   and `#10` (blocked action) are not unmistakable on screen, Creativity *and*
-   Technicality both degrade. (Mirrors `DEMO_CONTRACT.md` must-not-cut intent.)
-3. **Continual-learning proof hinges on one beat.** If `#13`→`#14` Fail→Pass is
-   not obviously *improvement*, the secondary theme collapses. Keep the eval
-   table before/after explicit.
-4. **Live Demo score is gated by the fallback recording**, still an open item in
-   `SUBMISSION.md`. A flaky live run with no fallback is a 20% category at risk.
-5. **No criterion rewards real Gemini/LiveKit/Linear.** They sit on the
+1. **Re-wire screens to the live loop (LIM-1245 / #34).** Code-ready + in review.
+   Screens render the right artifacts today, but from the fixtures directly; #34
+   makes them render `runGovernanceLoop`/`runEvals` output so the UI *is* the
+   engine (the strongest answer to "is this real or scripted?"). Content
+   unchanged — provenance upgraded. Land it before the final cut.
+2. **Record the fallback video + walk `scripts/smoke.sh`** (manual, founder).
+   The written `demos/fallback/WALKTHROUGH.md` is on `main`; the *recording* and a
+   timed < 3-min smoke pass are the open SUBMISSION.md items. A flaky live run with
+   no video is still the one way to lose the 20% Live Demo category.
+3. **Persona stays role-only.** No invented name anywhere on screen/narration —
+   `VP Ops / Head of AI Transformation` etc. (DEMO_CONTRACT persona rule). Confirm
+   at the final claim-scan.
+4. **No criterion rewards real Gemini/LiveKit/Linear.** They sit on the
    cut-if-risky list. Building them does not raise any score and endangers the
    Technicality + Live Demo artifacts that do. Keep simulated.
 
