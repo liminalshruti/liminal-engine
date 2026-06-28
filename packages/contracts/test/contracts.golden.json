@@ -170,6 +170,110 @@
       },
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
+    },
+    "liminal_engine.resource_allocation.v1::acme-eu-residency-allocation": {
+      "schema": "liminal_engine.resource_allocation.v1",
+      "purpose": "Resource allocation for the Acme EU data residency governance case",
+      "input": {
+        "id": "ra_acme_eu",
+        "caseId": "gc_acme_eu",
+        "dealId": "deal_acme",
+        "agents": [
+          {
+            "agentId": "agent_detector_v1",
+            "agentRole": "detector",
+            "runCount": 2,
+            "totalTokensUsed": 4500,
+            "totalLatencyMs": 2300,
+            "estimatedCostUsd": 0.32
+          },
+          {
+            "agentId": "agent_compliance_v2",
+            "agentRole": "compliance-checker",
+            "runCount": 1,
+            "totalTokensUsed": 3200,
+            "totalLatencyMs": 1800,
+            "estimatedCostUsd": 0.18
+          }
+        ],
+        "totalAgentTokensUsed": 7700,
+        "totalAgentCostUsd": 0.5,
+        "humans": [
+          {
+            "role": "VP Ops / Head of AI Transformation",
+            "effortHours": 0.75,
+            "estimatedCostUsd": 150,
+            "activities": [
+              "reviewed case",
+              "approved enforcement",
+              "coordinated second pass"
+            ]
+          },
+          {
+            "role": "Security Lead",
+            "effortHours": 0.5,
+            "estimatedCostUsd": 125,
+            "activities": [
+              "validated EU residency requirements",
+              "proposed mitigation"
+            ]
+          }
+        ],
+        "totalHumanHours": 1.25,
+        "totalHumanCostUsd": 275,
+        "timeline": [
+          {
+            "eventType": "case_opened",
+            "occurredAt": "2026-06-27T10:00:00.000Z",
+            "actorType": "agent",
+            "actor": "agent_detector_v1",
+            "durationMs": 2300
+          },
+          {
+            "eventType": "correction_submitted",
+            "occurredAt": "2026-06-27T10:15:00.000Z",
+            "actorType": "human",
+            "actor": "VP Ops / Head of AI Transformation",
+            "durationMs": 900000
+          },
+          {
+            "eventType": "enforcement_approved",
+            "occurredAt": "2026-06-27T10:18:00.000Z",
+            "actorType": "human",
+            "actor": "VP Ops / Head of AI Transformation",
+            "durationMs": 180000
+          },
+          {
+            "eventType": "enforcement_executed",
+            "occurredAt": "2026-06-27T10:20:00.000Z",
+            "actorType": "agent",
+            "actor": "agent_detector_v1",
+            "durationMs": 500
+          },
+          {
+            "eventType": "eval_passed",
+            "occurredAt": "2026-06-27T10:35:00.000Z",
+            "actorType": "agent",
+            "actor": "agent_compliance_v2",
+            "durationMs": 1800
+          },
+          {
+            "eventType": "case_closed",
+            "occurredAt": "2026-06-27T10:40:00.000Z",
+            "actorType": "human",
+            "actor": "VP Ops / Head of AI Transformation",
+            "durationMs": 120000
+          }
+        ],
+        "startTime": "2026-06-27T10:00:00.000Z",
+        "endTime": "2026-06-27T10:40:00.000Z",
+        "totalDurationMs": 2400000,
+        "governanceValue": "Prevented false-green status on $1.2M deal; enforced EU data residency requirement before customer escalation",
+        "roiRatio": "$1,200,000 deal risk / $275.50 cost ≈ 4,355:1",
+        "createdAt": "2026-06-27T10:40:00.000Z"
+      },
+      "canonical_string": "{\"agents\":[{\"agent_id\":\"agent_detector_v1\",\"agent_role\":\"detector\",\"estimated_cost_usd\":0.32,\"run_count\":2,\"total_latency_ms\":2300,\"total_tokens_used\":4500},{\"agent_id\":\"agent_compliance_v2\",\"agent_role\":\"compliance-checker\",\"estimated_cost_usd\":0.18,\"run_count\":1,\"total_latency_ms\":1800,\"total_tokens_used\":3200}],\"case_id\":\"gc_acme_eu\",\"created_at\":\"2026-06-27T10:40:00.000Z\",\"deal_id\":\"deal_acme\",\"end_time\":\"2026-06-27T10:40:00.000Z\",\"governance_value\":\"Prevented false-green status on $1.2M deal; enforced EU data residency requirement before customer escalation\",\"humans\":[{\"activities\":[\"reviewed case\",\"approved enforcement\",\"coordinated second pass\"],\"effort_hours\":0.75,\"estimated_cost_usd\":150,\"role\":\"VP Ops / Head of AI Transformation\"},{\"activities\":[\"validated EU residency requirements\",\"proposed mitigation\"],\"effort_hours\":0.5,\"estimated_cost_usd\":125,\"role\":\"Security Lead\"}],\"id\":\"ra_acme_eu\",\"roi_ratio\":\"$1,200,000 deal risk / $275.50 cost ≈ 4,355:1\",\"schema\":\"liminal_engine.resource_allocation.v1\",\"start_time\":\"2026-06-27T10:00:00.000Z\",\"timeline\":[{\"actor\":\"agent_detector_v1\",\"actor_type\":\"agent\",\"duration_ms\":2300,\"event_type\":\"case_opened\",\"occurred_at\":\"2026-06-27T10:00:00.000Z\"},{\"actor\":\"VP Ops / Head of AI Transformation\",\"actor_type\":\"human\",\"duration_ms\":900000,\"event_type\":\"correction_submitted\",\"occurred_at\":\"2026-06-27T10:15:00.000Z\"},{\"actor\":\"VP Ops / Head of AI Transformation\",\"actor_type\":\"human\",\"duration_ms\":180000,\"event_type\":\"enforcement_approved\",\"occurred_at\":\"2026-06-27T10:18:00.000Z\"},{\"actor\":\"agent_detector_v1\",\"actor_type\":\"agent\",\"duration_ms\":500,\"event_type\":\"enforcement_executed\",\"occurred_at\":\"2026-06-27T10:20:00.000Z\"},{\"actor\":\"agent_compliance_v2\",\"actor_type\":\"agent\",\"duration_ms\":1800,\"event_type\":\"eval_passed\",\"occurred_at\":\"2026-06-27T10:35:00.000Z\"},{\"actor\":\"VP Ops / Head of AI Transformation\",\"actor_type\":\"human\",\"duration_ms\":120000,\"event_type\":\"case_closed\",\"occurred_at\":\"2026-06-27T10:40:00.000Z\"}],\"total_agent_cost_usd\":0.5,\"total_agent_tokens_used\":7700,\"total_duration_ms\":2400000,\"total_human_cost_usd\":275,\"total_human_hours\":1.25}",
+      "sha256": "c5166020e50b6b94321f87687e94572cbcb60a18e701cced5f82bf7d2752de65"
     }
   }
 }

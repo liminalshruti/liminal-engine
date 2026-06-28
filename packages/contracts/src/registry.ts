@@ -11,6 +11,7 @@ import { EVAL_CASE_SCHEMA, evalCaseContract, evalCaseGoldenVectors } from "./eva
 import { EVAL_RESULT_SCHEMA, evalResultContract, evalResultGoldenVectors } from "./eval-result.contract.ts";
 import { CORRECTION_EVENT_SCHEMA, correctionEventContract, correctionEventGoldenVectors } from "./correction-event.contract.ts";
 import { LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, linearWorkstreamPayloadContract, linearWorkstreamPayloadGoldenVectors } from "./linear-workstream-payload.contract.ts";
+import { RESOURCE_ALLOCATION_SCHEMA, resourceAllocationContract, resourceAllocationGoldenVectors } from "./resource-allocation.contract.ts";
 
 export interface ContractEntry {
   schema: string;
@@ -34,4 +35,5 @@ export const CONTRACT_REGISTRY: ContractEntry[] = [
   { schema: EVAL_RESULT_SCHEMA, contract: evalResultContract, vectors: evalResultGoldenVectors },
   { schema: CORRECTION_EVENT_SCHEMA, contract: correctionEventContract, vectors: correctionEventGoldenVectors },
   { schema: LINEAR_WORKSTREAM_PAYLOAD_SCHEMA, contract: linearWorkstreamPayloadContract, vectors: linearWorkstreamPayloadGoldenVectors },
+  { schema: RESOURCE_ALLOCATION_SCHEMA, contract: resourceAllocationContract, vectors: resourceAllocationGoldenVectors },
 ] as unknown as ContractEntry[];
