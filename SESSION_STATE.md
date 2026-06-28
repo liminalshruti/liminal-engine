@@ -21,58 +21,50 @@ write the board concurrently, so it flaps).
 - **No contract drift:** no contract, fixture, or golden changes; no live calls
   on the demo spine; no invented persona name.
 
-## As of: LIM-1238 second-pass causal table branch ready (2026-06-28)
-## As of 2026-06-28 — demo spine 6 of 7 screens on main
+## As of 2026-06-28 (main @ `99f7279`) — demo spine COMPLETE + live-wired
 
 ### Backend / engine — complete on main
 Governance loop (`detect → enforce → gate → audit → eval`), contracts kernel,
 eval-harness Fail→Pass, hash-chained audit-ledger, fail-closed ActionGate,
-fixture-determinism — all merged. `pnpm verify` green (typecheck + `typecheck:app`
-+ tests + boundary lint). Acme fixtures are the single source of truth.
+fixture-determinism — all merged. `pnpm verify` green (124 tests + boundary lint).
+Acme fixtures are the single source of truth.
 
-### Demo screens — 6 of 7 filled on main
+### Demo screens — 7 of 7 filled, all live-wired to `useDemo()`
 | Screen | Beat / MNC | Status |
 |---|---|---|
 | Initialize | #1-2 | ✅ filled |
 | ContextTray | context cards | ✅ filled |
 | AgentActivity | #3 · MNC#1 (false green) | ✅ filled (#36) |
+| GovernanceCase | #4-5 · MNC#2 (detection) | ✅ filled (#43) + evidence fields (#50) |
 | EnforcementPanel | #6-10 · MNC#3/4/5 | ✅ filled |
 | AuditTrail | #11 · MNC#6 | ✅ filled (#31) |
 | SecondPassEval | #12-14 · MNC#7 | ✅ filled (#30) |
-| **GovernanceCase** | **#4-5 · MNC#2 (detection)** | **🔲 last stub — in PR #29** |
 
-Depth UX merged: compiled-enforcement preview, 3-part blocked-action card,
-second-pass causal narration + before/after checks table.
+**Live-wire (#51):** all 7 screens render real `buildGovernanceDemo()` loop output
+(UI == engine, not staged), with `.catch` + `role="alert"` error handling so a loop
+failure surfaces loudly instead of hanging. **E2E guard:** 18/18 beat assertions
+pass, 0 skipped (#45/#49). Depth UX merged: compiled-enforcement preview, 3-part
+blocked-action card, second-pass causal narration + before/after checks table. A11y
+pass merged (#47).
 
-### In-flight quality work
-- **LIM-1244** (`agent/LIM-1244-quality-a11y-pass`) is a PR-only accessibility pass
-  for the desktop demo: keyboard skip/focus behavior, active-step semantics,
-  contrast-safe status/eval colors, 44px interactive targets, responsive wrapping,
-  and a focused `a11y-demo.test.ts` guard. Not merged on main yet.
-
-### Open PRs (as of this write)
-- **#29** (allsmog, LIM-1236) — also fills GovernanceCase. Per founder call, beat
-  #3 stays a clean false-green (#36 won AgentActivity), so #29 reshapes to
-  **GovernanceCase-only** → completes the 7th screen. (#29's GovernanceCase fill is
-  stronger than the original LIM-1218 spec: present-in-call / missing-downstream
-  evidence compare.)
-- **#34** (LIM-1245) — wire demo to live `runGovernanceLoop`/`runEvals` output via
-  `lib/governance-demo.ts` (UI == engine, not staged). CI-green; held for human
-  review (narrows the boundary guard — conscious sign-off needed).
-- **#39** (LIM-1253) — narrow demo-app boundary guard (allow in-memory stores,
-  keep live gemini/linear/livekit blocked).
-- **#40** (LIM-1192) — deterministic fallback demo path (14 beats, no live calls).
-- **#26** — PolicyRule/ApprovalGate covered-by-existing-contracts docs.
+### Open PRs (docs / stretch — derive truth from `gh pr list`, not this list)
+- **#52** (LIM-1195) — README/SUBMISSION judge-facing docs + real-vs-simulated framing.
+- **#48** (LIM-1194) — README run instructions + 14-beat walkthrough table (overlaps #52 on README).
+- **#53** (LIM-1203) — reconcile AGENT_HANDOFFS to current state.
+- **#44 / #26** (LIM-1251) — PolicyRule/ApprovalGate covered-by-existing-contracts (SCOPE_SPEC + SPEC docs).
+- **#54** (LIM-1248) — [STRETCH] data-residency / redaction proof surface (CONFLICTING; stretch, must not destabilize spine).
 
 ### Remaining path to submission
-1. Land GovernanceCase (last screen / MNC#2) → all 7 screens, every MNC visible.
-2. Merge #34 (live-wire) after review → screens swap imports to `lib/governance-demo`.
-3. `pnpm verify` + `./scripts/smoke.sh` full 14-beat walkthrough (<3 min, deterministic).
-4. M4 submission gates: claim-scan, IP receipt, fallback recording (founder lane).
+1. Land docs PRs (#52/#48/#53) so judges don't see TODO placeholders or stub claims.
+2. Record deterministic fallback demo (founder lane — highest-ROI artifact).
+3. Time the full live 14-beat walkthrough < 3 min.
+4. Final claim-scan (no `Liminal, Inc.`, no invented persona, no live-integration overclaim).
+5. Stretch work (#54 etc.): scoped incrementally on isolated surfaces, each PR-only +
+   `pnpm verify` green + boundary lint, never destabilizing the merged spine.
 
 ## Architecture conformance
 | Requirement | Source | Implemented in | Test / evidence |
 |---|---|---|---|
-| Docs-only change, no code/contracts touched | CLAUDE.md (docs vs code) | `SESSION_STATE.md` only | `git diff --stat` = 1 file; `pnpm verify` unaffected |
-| State reflects real merge-state, not Linear | linear-status-flaps working rule | screen table + open-PR list | verified via `gh pr list --state merged` / `gh pr view` against main |
-| Keeps SESSION_STATE short and true (house rule) | `SESSION_STATE.md` header | refreshed body | replaced stale 5/7 snapshot with current 6/7; no invented status |
+| Docs-only change, no code/contracts touched | CLAUDE.md (docs vs code) | `SESSION_STATE.md` + `TRACEABILITY_MATRIX.md` | `git diff --stat` = 2 docs; `pnpm verify` unaffected (124 green) |
+| State reflects real merge-state, not Linear | linear-status-flaps working rule | screen table + open-PR list | verified via `gh pr list` / `git merge-base --is-ancestor` against main @ `99f7279` |
+| Keeps SESSION_STATE short and true (house rule) | `SESSION_STATE.md` header | refreshed body | replaced stale 6/7 + GovernanceCase-stub snapshot with current 7/7 live-wired; no invented status |
