@@ -22,4 +22,5 @@ export * from "./eval-result.contract.ts";
 export * from "./correction-event.contract.ts";
 export * from "./linear-workstream-payload.contract.ts";
 export * from "./intercepted-action.contract.ts";
+export * from "./evidence-bundle.contract.ts";
 export { CONTRACT_REGISTRY, type ContractEntry } from "./registry.ts";
