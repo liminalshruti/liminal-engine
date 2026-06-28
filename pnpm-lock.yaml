@@ -117,6 +117,16 @@ importers:
         specifier: workspace:*
         version: link:../integrations/eval-store
 
+  packages/eval-library:
+    dependencies:
+      '@liminal-engine/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+    devDependencies:
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+
   packages/governance:
     dependencies:
       '@liminal-engine/contracts':
