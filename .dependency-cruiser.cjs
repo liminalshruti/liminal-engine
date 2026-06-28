@@ -28,6 +28,16 @@ module.exports = {
       to: { path: "^packages/integrations/" },
     },
     {
+      name: "demo-app-no-live-integrations",
+      comment:
+        "The demo-spine app (apps/desktop-demo) must run on fixtures only — no live " +
+        "integrations (gemini/linear/livekit). It is the demo spine, not the future " +
+        "Tauri composition root. (LIM-1163 review Finding 1 / DEMO_CONTRACT 'no live calls on the spine'.)",
+      severity: "error",
+      from: { path: "^apps/desktop-demo/", pathNot: NOT_TEST },
+      to: { path: "^packages/integrations/" },
+    },
+    {
       name: "engine-core-is-domain",
       comment: "engine-core is the innermost domain: it may import @liminal-engine/contracts only — not governance/eval/ui/integrations.",
       severity: "error",
@@ -61,7 +71,7 @@ module.exports = {
     tsConfig: { fileName: "tsconfig.json" },
     tsPreCompilationDeps: true,
     enhancedResolveOptions: {
-      extensions: [".ts", ".js", ".json"],
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
       exportsFields: ["exports"],
       conditionNames: ["import", "node", "default"],
     },
