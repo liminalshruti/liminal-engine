@@ -24,9 +24,32 @@ import { caseHeadline } from "@liminal-engine/ui-components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
-export function GovernanceCase() {
-  const { governanceCase: c } = useDemo();
+/**
+ * GovernanceCase screen content — renders the detected governance case with null checks.
+ * Throws if required fields are missing (caught by parent ErrorBoundary).
+ */
+function GovernanceCaseContent() {
+  const demo = useDemo();
+  const { governanceCase: c } = demo;
   const copy = SCREEN_COPY.governanceCase;
+
+  // Null checks for required fields
+  if (!c) {
+    throw new Error("GovernanceCase requires governanceCase data but it is missing");
+  }
+
+  if (!c.id || !c.category || !c.status || !c.detectedAt) {
+    throw new Error(
+      `GovernanceCase requires id, category, status, detectedAt; got ${[
+        !c.id ? "missing id" : "",
+        !c.category ? "missing category" : "",
+        !c.status ? "missing status" : "",
+        !c.detectedAt ? "missing detectedAt" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
 
   return (
     <section className="screen screen--governance-case" aria-label={copy.title}>
@@ -86,6 +109,10 @@ export function GovernanceCase() {
       </Card>
     </section>
   );
+}
+
+export function GovernanceCase() {
+  return <GovernanceCaseContent />;
 }
 
 export default GovernanceCase;

@@ -29,7 +29,12 @@ function EvalResultBadge({ result }: { result: EvalRow["result"] }) {
   );
 }
 
-export function SecondPassEval() {
+/**
+ * SecondPassEval screen content — renders eval case and Fail→Pass proof with null checks.
+ * Throws if required fields are missing (caught by parent ErrorBoundary).
+ */
+function SecondPassEvalContent() {
+  const demo = useDemo();
   const {
     agentOutputPass1,
     agentOutputPass2,
@@ -39,7 +44,47 @@ export function SecondPassEval() {
     evalResults,
     evalRows,
     governanceCase,
-  } = useDemo();
+  } = demo;
+
+  // Null checks for required fields
+  if (!agentOutputPass1 || !agentOutputPass2 || !gate || !enforcementAction || !evalCase) {
+    throw new Error(
+      `SecondPassEval requires agentOutputPass1, agentOutputPass2, gate, enforcementAction, evalCase; got ${[
+        !agentOutputPass1 ? "missing agentOutputPass1" : "",
+        !agentOutputPass2 ? "missing agentOutputPass2" : "",
+        !gate ? "missing gate" : "",
+        !enforcementAction ? "missing enforcementAction" : "",
+        !evalCase ? "missing evalCase" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!evalCase.id || !evalCase.governanceCaseId || !evalCase.criterion) {
+    throw new Error(
+      `SecondPassEval requires evalCase with id, governanceCaseId, criterion; got ${[
+        !evalCase.id ? "missing id" : "",
+        !evalCase.governanceCaseId ? "missing governanceCaseId" : "",
+        !evalCase.criterion ? "missing criterion" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!governanceCase || !governanceCase.missedRequirement) {
+    throw new Error(
+      "SecondPassEval requires governanceCase with missedRequirement but data is missing",
+    );
+  }
+
+  if (!evalResults || evalResults.length < 2) {
+    throw new Error(
+      `SecondPassEval requires two eval results (Fail→Pass); the loop returned ${evalResults?.length || 0}`,
+    );
+  }
+
   const copy = SCREEN_COPY.secondPassEval;
   // evalResults is [pass 1 (fail), pass 2 (pass)] from the live loop — same order as the fixtures.
   const [evalPass1, evalPass2] = evalResults;
@@ -145,6 +190,10 @@ export function SecondPassEval() {
       </Card>
     </section>
   );
+}
+
+export function SecondPassEval() {
+  return <SecondPassEvalContent />;
 }
 
 export default SecondPassEval;
