@@ -56,9 +56,9 @@ function GovernanceCaseContent() {
       <p className="screen__intro">{copy.intro}</p>
 
       <Card title="Governance case">
-        <p className="case__headline">
-          <strong>{caseHeadline(c)}</strong>
-        </p>
+        <h2 className="case__headline">
+          {caseHeadline(c)}
+        </h2>
 
         <dl className="case__facts">
           <div className="case__fact">
