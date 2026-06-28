@@ -9,6 +9,7 @@
  *
  * Persona rule: `decidingActor` is a ROLE, never an invented name.
  */
+import { redact, type RedactedRef } from "../redact.ts";
 import { agentOutputContract, type AgentOutput } from "../agent-output.contract.ts";
 import { governanceCaseContract, type GovernanceCase } from "../governance-case.contract.ts";
 import { enforcementActionContract, type EnforcementAction } from "../enforcement-action.contract.ts";
@@ -121,6 +122,36 @@ export const acmeAuditEvent: AuditEvent = auditEventContract.parse({
   recordedAt: "2026-06-27T10:05:00.000Z",
 });
 
+/**
+ * Data-residency / redaction proof (LIM-1248 — STRETCH).
+ *
+ * The sensitive customer-facing datum in the Acme scenario is the false-green claim
+ * the agents reported: it names the customer and the commercial value. When that
+ * datum is captured in the DURABLE audit ledger it is stored by REFERENCE
+ * (a `canonical-hash` digest), never raw — so the audit trail can be replicated /
+ * ported across regions without moving EU-personal / customer data. Built from the
+ * SINGLE-SOURCE raw value via the real `redact` helper (no canned hash), so the
+ * reference is reproducible and `verifyRedaction`-able.
+ */
+export const acmeSensitiveCustomerClaim: string = acmeAgentOutputPass1.summary;
+
+/** The redacted reference to the sensitive customer claim (a hash, never the raw text). */
+export const acmeDataResidencyRef: RedactedRef = redact(acmeSensitiveCustomerClaim, "customer-claim");
+
+/**
+ * The enforcement correction's audit record ENRICHED with a redacted before-state
+ * snapshot — the data-residency proof. The lean `acmeAuditEvent` above stays the
+ * canonical pinned record (the loop reproduces it byte-for-byte); this richer
+ * projection demonstrates that when the audit ledger captures a state snapshot,
+ * sensitive customer data is stored by reference, never raw. Its payload contains
+ * NO raw sensitive value (proven in audit-redaction.test.ts).
+ */
+export const acmeDataResidencyAuditEvent: AuditEvent = auditEventContract.parse({
+  ...acmeAuditEvent,
+  beforeState: { customerClaim: acmeDataResidencyRef },
+  afterState: { dealStatus: "at-risk" },
+});
+
 export const acmeBlockedAction: ActionGate = actionGateContract.parse({
   id: "ag_acme_update",
   caseId: "gc_acme_eu",
@@ -187,6 +218,10 @@ export const acmeScenario = {
   linearWorkstreamPayload: acmeLinearWorkstreamPayload,
   blockedAction: acmeBlockedAction,
   auditEvent: acmeAuditEvent,
+  // data-residency / redaction proof (LIM-1248)
+  sensitiveCustomerClaim: acmeSensitiveCustomerClaim,
+  dataResidencyRef: acmeDataResidencyRef,
+  dataResidencyAuditEvent: acmeDataResidencyAuditEvent,
   evalCase: acmeEvalCase,
   agentOutputPass2: acmeAgentOutputPass2,
   evalPass1: acmeEvalPass1,

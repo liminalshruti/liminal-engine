@@ -32,6 +32,7 @@ import {
   canonicalHash,
   type AuditEvent,
 } from "@liminal-engine/contracts";
+import { redactAuditEventSnapshots } from "./redact.ts";
 
 /**
  * A sealed ledger entry: the validated AuditEvent (with its `prevHash` chain
@@ -100,10 +101,17 @@ export class AuditLedger {
     const tail = this.#chain[this.#chain.length - 1];
     const prevHash = tail ? tail.eventHash : AuditLedger.GENESIS;
 
+    // Data-residency redaction (LIM-1248): redact sensitive snapshot fields BEFORE
+    // sealing, so the single append-only writer can never commit raw sensitive
+    // customer / EU-personal data to the chain. Idempotent and scoped to
+    // SENSITIVE_AUDIT_KEYS (disjoint from the structural snapshot keys), so an event
+    // carrying only governance metadata is unchanged and its hash stays stable.
+    const redacted = redactAuditEventSnapshots({ ...input, prevHash });
+
     // parse through the contract: validates the payload AND normalizes it to the
     // exact AuditEvent shape that will be hashed (untrusted input never bypasses
     // validation at the append boundary).
-    const event = auditEventContract.parse({ ...input, prevHash }) as AuditEvent;
+    const event = auditEventContract.parse(redacted) as AuditEvent;
     const eventHash = hashEvent(event);
 
     const sealed = Object.freeze({ ...event, eventHash }) as SealedAuditEvent;
