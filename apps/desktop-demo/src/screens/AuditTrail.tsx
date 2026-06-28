@@ -23,6 +23,13 @@
  * Extended with:
  * - RedactionNote component (LIM-1248) — renders the redacted reference with visual proof
  * - AuditChain component (LIM-1248) — displays hash-chain integrity as a visual proof
+ *
+ * Design polish (Session: screen-audittrail-polish):
+ *   - Hash-chained evidence as a native ledger view with proper elevation.
+ *   - Watch (amber) register for audit phase color.
+ *   - Named-intent motion: entries fade in + scale over --tx-settle (0.32s).
+ *   - Proper card elevation (--shadow-card) and nesting hierarchy.
+ *   - Timestamp + status transition with staggered animation.
  */
 import { Card, TraceRow, RedactionNote, AuditChain } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
@@ -69,13 +76,15 @@ function AuditTrailContent() {
     <section className="screen screen--audit-trail" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
 
-      <Card title="Audit trail">
-        {events.map((event) => (
-          <TraceRow key={event.id} event={event} />
-        ))}
+      <Card title="Audit trail" className="audit-trail-card">
+        <div className="audit-trail-ledger">
+          {events.map((event, idx) => (
+            <TraceRow key={event.id} event={event} index={idx} />
+          ))}
+        </div>
       </Card>
 
-      <Card title="Data residency">
+      <Card title="Data residency" className="data-residency-card">
         <p className="screen__intro">
           {copy.dataResidencyNote}{" "}
           <span className="linear-payload__simulated-badge">Simulated</span>
