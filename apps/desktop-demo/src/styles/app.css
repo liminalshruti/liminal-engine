@@ -495,16 +495,41 @@ button { touch-action: manipulation; }
   box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.35));
   animation: fade-in-up var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
   transition: box-shadow var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1));
+  animation: card-enter var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) both;
 }
 .card:hover {
   box-shadow: var(--shadow-card-lifted, 0 16px 40px rgba(0,0,0,0.5), 0 0 24px rgba(0,0,0,0.3));
 }
+
+.card:nth-child(1) { animation-delay: 0ms; }
+.card:nth-child(2) { animation-delay: 20ms; }
+.card:nth-child(3) { animation-delay: 40ms; }
+.card:nth-child(4) { animation-delay: 60ms; }
+.card:nth-child(5) { animation-delay: 80ms; }
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .card__title {
   font-family: var(--display, var(--serif, serif)); font-size: 1.4rem;
   line-height: 1.2; margin: 0 0 var(--space-4, 16px); color: var(--text, #E8E6E1);
   font-weight: 700;
 }
 .card__content { color: var(--text-soft, #B8B5AE); line-height: var(--lh-normal, 1.45); }
+
+/* SecondPassEval: emphasis on the "Eval result" card as MNC#7. */
+.screen--second-pass-eval .card:nth-child(4) .card__title {
+  color: var(--signal, #70F32F);
+  font-weight: 700;
+}
 
 /* ── components: StatusBadge ── */
 .status-badge {
@@ -615,6 +640,71 @@ button { touch-action: manipulation; }
 @keyframes textFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* ── SecondPassEval: Fail→Pass discovery moment (MNC#7 · beats #12–14) ── */
+/* The "Per-check before/after" table is the visual climax: viewers see Fail first,
+   then Pass animates in, creating the "discovery" moment that proves the governance
+   loop worked. CSS-only motion, deterministic, screenshot-testable at t=0.32s. */
+
+.eval-table__row--before-after { transition: opacity var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)); }
+
+.eval-table__row--pass-animated .eval-table__result-cell--discovery {
+  /* Pass result (after) cell animates in with fade + subtle float-up.
+     Stagger via CSS variable --animation-delay from TSX (20ms per row). */
+  animation: discovery-pop var(--tx-settle, 0.32s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+  animation-delay: var(--animation-delay, 0ms);
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@keyframes discovery-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pass-result dot gets a subtle "pop" scale animation as the badge fades in. */
+.eval-table__row--pass-animated .eval-table__result-badge--discovery .eval-table__result-dot {
+  animation: dot-pop var(--tx-emphasize, 0.25s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+  animation-delay: calc(var(--animation-delay, 0ms) + 80ms);
+  transform-origin: center;
+  transform: scale(0.95);
+}
+
+@keyframes dot-pop {
+  from {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+/* Arrow between Fail and Pass brightens to signal causality. */
+.eval-table__arrow {
+  display: inline-block;
+  margin: 0 var(--space-2, 8px);
+  opacity: 0.3;
+  animation: arrow-brighten var(--tx-base, 0.20s) var(--ease, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
+  animation-delay: var(--animation-delay, 0ms);
+  transition: color var(--tx-fast, 0.15s);
+}
+
+@keyframes arrow-brighten {
+  from { opacity: 0.3; }
+  to { opacity: 0.7; }
+}
+
+.eval-table__row--pass-animated .eval-table__arrow {
+  color: var(--demo-pass-text, #A8DDB9);
 }
 
 /* ── components: LinearPayloadView ── */
