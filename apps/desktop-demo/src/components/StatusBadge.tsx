@@ -3,7 +3,7 @@
  * Used across multiple screens to show the visible deal-status state.
  * (DEMO_CONTRACT must-not-cut #3: status flip On Track → At Risk.)
  */
-import { AgentOutput } from "@liminal-engine/contracts";
+import type { AgentOutput } from "@liminal-engine/contracts";
 
 export interface StatusBadgeProps {
   /** The agent output or deal status to display. */

@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@liminal-engine/contracts": "workspace:*",
+    "@liminal-engine/eval-harness": "workspace:*",
+    "@liminal-engine/governance": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
