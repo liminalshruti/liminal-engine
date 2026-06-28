@@ -19,7 +19,7 @@ decision first) or **HUMAN** (not an agent task).
 
 | Slug | Owns (disjoint) | Deliverable | Beats / MNC | Blocks | Label |
 |---|---|---|---|---|---|
-| **«contracts»** | `packages/contracts/src/*` (+`registry.ts`,`index.ts`,goldens,`test/*`) | Extend `GovernanceCase`/`EnforcementAction`/`AuditEvent`; add `CorrectionEvent` + `LinearWorkstreamPayload` contracts (+ optional `PolicyRule`/`ApprovalGate`); `pnpm regen:goldens` | underpins #5–#14, MNC#2–#7 | all engine tasks | green |
+| **«contracts»** | `packages/contracts/src/*` (+`registry.ts`,`index.ts`,goldens,`test/*`) | Add `DriftSignal`, `CorrectionEvent`, `LinearWorkstreamPayload` contracts; extend `GovernanceCase` (businessImpact/missingFrom/evidenceIds/dominantSignal/recommendedActions), `EnforcementAction` (actionType enum + matcher/effect + scope + versioning), `AuditEvent` (before/after + ids + prevHash). See `specs/IDEAS.md`. `pnpm regen:goldens` | underpins #5–#14, MNC#2–#7 | all engine tasks | green |
 | **«spine-shell»** | `apps/desktop-demo/{package.json,index.html,src/App.*,src/main.*,src/lib/*}` | App shell + routing (7 screens, no extra nav) + fixture loader + view-model layer reading `@liminal-engine/contracts/fixtures` | #1 scaffold | all screen tasks | **YELLOW** (UI stack: Solid / React / Vite-vanilla) |
 
 ## Wave 2 — Engine fan-out (6 tasks, parallel; depend on «contracts»)
@@ -28,12 +28,14 @@ is read-only/stable; `index.ts` gets one `export *` line per task (trivial coord
 
 | Slug | Owns | Deliverable | Beats / MNC |
 |---|---|---|---|
-| **«gov-detect»** | `packages/governance/src/detect-miss.ts` (+test) | first-pass false green + lost-context detection → emit `GovernanceCase` w/ evidence + `missingFrom[]` | #3,#4,#5 · MNC#1,#2 |
+| **«gov-detect»** | `packages/governance/src/detect-miss.ts` (+test) | deterministic-first detectors (taxonomy incl. `conflict_with_prior_correction`) → `DriftSignal[]` → `GovernanceCase` w/ evidence + `missingFrom[]`; explicit case-open threshold | #3,#4,#5 · MNC#1,#2 |
+| **«gov-correct»** | `packages/governance/src/compile-correction.ts` (+test) | pure-function correction compiler: constrained templates + phrase→action table → `EnforcementAction[]`; reject vague corrections; preview-before-activate (see `specs/IDEAS.md`) | #5→#6 |
 | **«gov-enforce»** | `packages/governance/src/enforce.ts` (+test) | atomic Approve+Enforce: status flip, owner reqs, Linear payload, proxy register, AuditEvent, EvalCase trigger | #6,#7,#8,#9,#11 · MNC#3,#4,#6 |
 | **«gov-proxy»** | `packages/governance/src/proxy-gate.ts` (+test) | block "mark on track"/"send on-track update" → `ActionGate` w/ reasons + requiredBeforeSend | #10 · MNC#5 |
 | **«gov-secondpass»** | `packages/governance/src/second-pass.ts` (+test) | re-run under active gate → improved at-risk output | #13 |
 | **«eval»** | `packages/eval-harness/src/*` (+test) | generate `EvalCase` from correction; `runEvals` → `EvalResult` Fail→Pass on checks | #12,#14 · MNC#7 |
 | **«linear»** | `packages/integrations/linear/src/*` (+test) | deterministic `LinearWorkstreamPayload` (project + 6 issues + owners) behind `LinearWorkstreamPanel` | #8,#9 · MNC#4 |
+| **«audit-ledger»** | `packages/governance/src/audit-ledger.ts` (+test) | hash-chained append-only `AuditEvent` writer (`prevHash`+`eventHash`) emitted in-tx; reconstruct-case-from-events verifier (see `specs/IDEAS.md`) | #11 · MNC#6 |
 
 ## Wave 2 — Screen fan-out (7 + 1, parallel; depend on «spine-shell»)
 One screen file each → fully disjoint. Shared widgets land in «components» (land it
@@ -66,14 +68,15 @@ first in this wave, or screens own their own widgets).
 Wave 1:  «contracts» ┐        «spine-shell» ┐         (2 agents, parallel)
                      │                       │
 Wave 2:  ┌───────────┴──────────┐   ┌────────┴───────────────┐
-         gov-detect  gov-enforce │   components → screen-*×7  │   (up to ~13 agents parallel)
-         gov-proxy   gov-secondpass
-         eval        linear
+         gov-detect  gov-enforce │   components → screen-*×7  │   (up to ~16 agents parallel)
+         gov-correct gov-proxy
+         gov-secondpass  eval
+         linear      audit-ledger
                      │                       │
 Wave 3:              └─────── e2e ───────────┘   persona(YELLOW)   publish(HUMAN)
 ```
 
-- **Peak parallelism:** ~13 agents in Wave 2 (6 engine + components + 7 screens, once
+- **Peak parallelism:** ~16 agents in Wave 2 (8 engine + components + 7 screens, once
   the 2 foundation tasks merge).
 - **Mutex:** one agent per task, one git worktree per task (`pnpm wt:new`), disjoint
   owned files. The night-captain only releases a task whose dependencies have merged.
