@@ -21,6 +21,7 @@ export * from "./eval-case.contract.ts";
 export * from "./eval-result.contract.ts";
 export * from "./correction-event.contract.ts";
 export * from "./linear-workstream-payload.contract.ts";
+export * from "./linear-remediation-issue.contract.ts";
 export * from "./intercepted-action.contract.ts";
 export * from "./evidence-bundle.contract.ts";
 export * from "./requirement.contract.ts";

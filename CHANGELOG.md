@@ -6,6 +6,26 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1335 live Linear remediation adapter (2026-06-28)
+- Added the `liminal_engine.linear_remediation_issue.v1` contract
+  (`LinearRemediationIssuePayload`) to `@liminal-engine/contracts`, registered in
+  the golden registry (additive — existing goldens unchanged). It carries the
+  load-bearing trace a remediation issue must include: `requirementId`,
+  `governanceCaseId`, `ownerRole`, `evidenceRefs`, severity, and a deterministic
+  body/labels.
+- Added the governance `RemediationIssueClient` port + the `buildRemediationIssues`
+  / `fileRemediationIssues` use case (`packages/governance/src/remediation.ts`):
+  maps an approved hard ACTIVE requirement violation to remediation issue(s), one
+  per required workstream owner (preserving Product/Security/Engineering
+  owner-requirement semantics), failing closed on non-active/non-hard input.
+- Added a real Linear adapter (`packages/integrations/linear`):
+  `LinearRemediationAdapter` (dry-run prints the exact payload with no network;
+  live creates one real issue per call), `LinearHttpClient` (real Linear GraphQL
+  `issueCreate`), and `createLinearRemediationAdapterFromEnv` (env-gated live
+  opt-in via `LINEAR_LIVE` + `LINEAR_API_KEY`/`LINEAR_TEAM_ID`/`LINEAR_PROJECT_ID`).
+  Plus a composition-root `remediation-cli`. The adapter is quarantined at the
+  composition root; the spine depends only on the port (boundary lint green).
+
 ### Added — LIM-1339 govern-slate design foundation (2026-06-28)
 - `packages/ui-components/src/styles/govern-slate.css` is now the shared
   govern-slate token source, exported as
