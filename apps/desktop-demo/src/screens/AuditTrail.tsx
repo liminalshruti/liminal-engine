@@ -7,18 +7,25 @@
  * deciding actor is rendered straight from the fixture, which holds a ROLE, never an
  * invented persona name (apps/desktop-demo/AGENTS.md Locked Rules).
  *
- * All demo facts come ONLY from the validated Acme fixtures
- * (`@liminal-engine/contracts/fixtures`) — no live calls, no invented data
- * (fixtures-only per Decision D1-a; LIM-1245 re-points to the live audit-ledger
- * output later). Each AuditEvent renders through the shared `TraceRow` widget inside a
- * `Card`; framing copy comes from `../lib/copy.ts`.
+ * Demo facts source (LIM-1255): the audit event comes from the live governance loop
+ * (`useDemo().auditEvent` — the real engine driving the UI). The data-residency proof
+ * (LIM-1248) displays the fixture-driven redacted reference showing sensitive data
+ * storage by hash — the `dataResidencyRef` from `acmeScenario` supplements the
+ * live-wire audit event with fixture-driven governance proof.
+ *
+ * Data-residency note (LIM-1248): a small additive panel proving sensitive customer
+ * data is recorded by reference/hash, never raw. The reference is the redacted
+ * `RedactedRef` the audit ledger stores (`acmeScenario.dataResidencyRef`), built from
+ * the single-source fixture via the real `redact` helper — fixture-driven, simulated.
  */
 import { Card, TraceRow } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
+import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function AuditTrail() {
   const { auditEvent } = useDemo();
+  const { dataResidencyRef } = acmeScenario;
   const copy = SCREEN_COPY.auditTrail;
   // The demo records one correction event; the trail is append-only, so render as a list.
   const events = [auditEvent];
@@ -31,6 +38,27 @@ export function AuditTrail() {
         {events.map((event) => (
           <TraceRow key={event.id} event={event} />
         ))}
+      </Card>
+
+      <Card title="Data residency">
+        <p className="screen__intro">
+          {copy.dataResidencyNote}{" "}
+          <span className="linear-payload__simulated-badge">Simulated</span>
+        </p>
+        <dl className="redaction-ref">
+          <div className="redaction-ref__row">
+            <dt className="redaction-ref__label">Field</dt>
+            <dd className="redaction-ref__value">{dataResidencyRef.label}</dd>
+          </div>
+          <div className="redaction-ref__row">
+            <dt className="redaction-ref__label">Stored as</dt>
+            <dd className="redaction-ref__value">{dataResidencyRef.scheme} reference (redacted)</dd>
+          </div>
+          <div className="redaction-ref__row">
+            <dt className="redaction-ref__label">Reference</dt>
+            <dd className="redaction-ref__value redaction-ref__hash">{dataResidencyRef.hash}</dd>
+          </div>
+        </dl>
       </Card>
     </section>
   );

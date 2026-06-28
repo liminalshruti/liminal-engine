@@ -2,6 +2,14 @@
 // through these contracts only (enforced by .dependency-cruiser.cjs).
 
 export { stableStringify, sha256Hex, canonicalHash } from "./canonical-hash.ts";
+export {
+  redact,
+  isRedactedRef,
+  verifyRedaction,
+  REDACTION_SCHEME,
+  REDACTION_PLACEHOLDER,
+  type RedactedRef,
+} from "./redact.ts";
 export { defineContract, type Contract } from "./define-contract.ts";
 
 export * from "./agent-output.contract.ts";

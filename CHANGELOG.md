@@ -6,6 +6,30 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — LIM-1248 data-residency / redaction proof surface (STRETCH) (2026-06-27)
+- `packages/contracts/src/redact.ts` — a pure `redact(value) → RedactedRef` helper
+  (marker + scheme + `canonical-hash` digest, no new hash invented), plus
+  `isRedactedRef` / `verifyRedaction`. Lives in the kernel alongside `canonical-hash`
+  so the audit path, the UI, and the demo fixtures share one helper without a
+  boundary break. Golden/unit-tested in `packages/contracts/test/redact.test.ts`.
+- `packages/governance/src/redact.ts` — the audit-path application: the
+  `SENSITIVE_AUDIT_KEYS` policy + `redactAuditSnapshot` / `redactAuditEventSnapshots`.
+  Applied at the audit-ledger WRITE boundary (`audit-ledger.ts` `append`), so the
+  single append-only writer can never seal raw sensitive customer / EU-personal data
+  into the hash chain. Idempotent + scoped, so events carrying only structural
+  governance state are unchanged (hashes stable; chain, determinism, reconstruction,
+  and goldens all still pass).
+- `packages/contracts/src/fixtures/acme.ts` — additive `sensitiveCustomerClaim`,
+  `dataResidencyRef`, and `dataResidencyAuditEvent` (an `AuditEvent` payload carrying
+  the redacted reference). The pinned `acmeAuditEvent` is unchanged.
+- `apps/desktop-demo/src/screens/AuditTrail.tsx` — a minimal, fixture-driven
+  "Data residency" note (labeled Simulated) showing sensitive data is stored by
+  reference/hash, never raw. Composes with live-wire audit event from `useDemo()` loop
+  while displaying redacted reference from fixtures (LIM-1255).
+- `packages/governance/src/audit-redaction.test.ts` — proves the audit path stores no
+  raw sensitive value (only the hash/redacted ref) and that the chain + both
+  reconstructors still verify. No contract shape/golden change (no `regen:goldens`).
+
 ### Fixed — SCOPE_SPEC.md: PolicyRule/ApprovalGate COVERED, not P0-build (LIM-1251, 2026-06-28)
 - Last spec contradiction reconciled. `SCOPE_SPEC.md` still listed `PolicyRule` +
   `ApprovalGate` as "P0 entities to extend in contracts," but LIM-1251 / PR #26
