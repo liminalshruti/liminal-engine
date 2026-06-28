@@ -51,6 +51,9 @@ importers:
       '@liminal-engine/eval-harness':
         specifier: workspace:*
         version: link:../../packages/eval-harness
+      '@liminal-engine/goal-alignment':
+        specifier: workspace:*
+        version: link:../../packages/goal-alignment
       '@liminal-engine/governance':
         specifier: workspace:*
         version: link:../../packages/governance
@@ -69,6 +72,9 @@ importers:
       '@liminal-engine/integration-governance-case-store':
         specifier: workspace:*
         version: link:../../packages/integrations/governance-case-store
+      '@liminal-engine/substrate':
+        specifier: workspace:*
+        version: link:../../packages/substrate
       '@liminal-engine/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components

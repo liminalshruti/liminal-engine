@@ -1,0 +1,151 @@
+/*
+ * workspace.css — the operating surface (Gap 3). Consumes the canonical Liminal
+ * design tokens (design-tokens.css); never redefines them (brand lock). The
+ * goal-alignment RISK card is the signature element — the one place we spend
+ * boldness (the --alarm chrome register); everything else stays quiet.
+ */
+
+.workspace {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.workspace__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.workspace__eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint, #888);
+}
+
+.workspace__goal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.workspace__goal-label {
+  font-size: 0.8rem;
+  color: var(--text-soft, #aaa);
+}
+
+.workspace__goal-input {
+  font-size: clamp(1.25rem, 2.5vw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.2;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--accent-edge, #444);
+  color: var(--text, #111);
+  padding: 0.25rem 0;
+}
+.workspace__goal-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent, #555);
+}
+
+.workspace__spend {
+  font-size: 0.95rem;
+  color: var(--text-soft, #888);
+}
+.workspace__spend strong {
+  color: var(--text, #111);
+}
+
+.workspace__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 760px) {
+  .workspace__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+}
+
+/* Substrate streams */
+.workspace__streams {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.workspace__stream {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.workspace__stream-type {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, #666);
+  background: var(--accent-faint, rgba(0, 0, 0, 0.04));
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.workspace__stream-title {
+  color: var(--text, #222);
+}
+
+/* The signature: the goal-alignment RISK card (the --alarm register) */
+.workspace__risk {
+  border: 1px solid var(--alarm-edge, #c0392b);
+  background: var(--alarm-faint, rgba(192, 57, 43, 0.04));
+}
+.workspace__risk-summary {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--alarm-strong, #a93226);
+}
+.workspace__risk-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint, #999);
+}
+.workspace__lost {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.workspace__lost-item {
+  font-weight: 600;
+  color: var(--alarm-strong, #a93226);
+  background: var(--alarm-tint, rgba(192, 57, 43, 0.1));
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.workspace__aligned {
+  border: 1px solid var(--accent-edge, #2e7d32);
+}
+.workspace__aligned-summary {
+  margin: 0;
+  color: var(--text, #222);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
