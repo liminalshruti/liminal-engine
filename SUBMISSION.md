@@ -11,6 +11,10 @@ false greens in agentic work and forces provable correction, demonstrated on the
 Acme $1.2M false-green scenario. Loop: `observe → detect → correct → enforce →
 audit → improve`.
 
+Submitted under **The Self-Improvement Stack** (secondary: **Continual
+Learning**). How each rubric criterion maps to a demo beat — and where coverage
+gaps remain — is in **`JUDGING_MAP.md`**.
+
 ## Net-new claim (read this, judges)
 
 - The submission scope is **this standalone public repo** — `liminal-engine`

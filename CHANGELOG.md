@@ -6,6 +6,14 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Added — judging-map session (2026-06-27)
+- **`JUDGING_MAP.md`** (LIM-1157) — maps every rubric criterion (Technicality 40%
+  / Creativity 25% / Live Demo 20% / Future Potential 15%) and the required theme
+  (primary **Self-Improvement Stack**, secondary **Continual Learning**) to a
+  specific demo beat or artifact from `DEMO_CONTRACT.md`, plus an explicit
+  coverage table flagging where the demo does not yet serve a criterion. No
+  contract change — reads the locked path. Cross-linked from `SUBMISSION.md`.
+
 ### Added — control-harness session (2026-06-27)
 - **Development control harness** layered onto the scaffold (additive; product
   locks untouched). Materialized the pnpm/TypeScript workspace.
