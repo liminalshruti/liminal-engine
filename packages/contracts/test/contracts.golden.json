@@ -64,24 +64,25 @@
       "canonical_string": "{\"action\":\"correction-enforced\",\"case_id\":\"gc_acme_eu\",\"deal_id\":\"deal_acme\",\"deciding_actor\":\"VP Ops / Head of AI Transformation\",\"id\":\"ae_acme_1\",\"new_status\":\"at-risk\",\"previous_status\":\"on-track\",\"recorded_at\":\"2026-06-27T10:05:00.000Z\",\"schema\":\"liminal_engine.audit_event.v1\"}",
       "sha256": "e12174d56c558658d5de04a6df0709fd6fea65096ffe96f4f22ca783d1de0f2e"
     },
-    "liminal_engine.action_gate.v1::acme-customer-update-blocked": {
-      "schema": "liminal_engine.action_gate.v1",
-      "purpose": "customer-facing update gated until EU residency corrected",
+    "liminal_engine.action_gate.v2::acme-customer-update-blocked": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "customer-facing update blocked until EU residency corrected",
       "input": {
         "id": "ag_acme_update",
         "caseId": "gc_acme_eu",
         "action": "Send customer-facing status update to Acme",
+        "verdict": "deny",
         "reasons": [
-          "Open governance case (EU data residency) must be corrected first."
+          "Open governance case gc_acme_eu requires EU data residency correction before a customer-facing on-track update."
         ],
         "requiredBeforeSend": [
-          "EU data residency requirement propagated",
-          "Product / Security / Engineering owners assigned",
-          "Eval passes"
+          "Propagate the EU data residency requirement into the Acme workstream.",
+          "Assign Product, Security, and Engineering owners.",
+          "Pass the EU data residency EvalCase."
         ]
       },
-      "canonical_string": "{\"action\":\"Send customer-facing status update to Acme\",\"case_id\":\"gc_acme_eu\",\"id\":\"ag_acme_update\",\"reasons\":[\"Open governance case (EU data residency) must be corrected first.\"],\"required_before_send\":[\"EU data residency requirement propagated\",\"Product / Security / Engineering owners assigned\",\"Eval passes\"],\"schema\":\"liminal_engine.action_gate.v1\"}",
-      "sha256": "42370f92f2a266ce101cff0c47125ef86cbc3bd27fe754fe71a04f2e435837d0"
+      "canonical_string": "{\"action\":\"Send customer-facing status update to Acme\",\"case_id\":\"gc_acme_eu\",\"id\":\"ag_acme_update\",\"reasons\":[\"Open governance case gc_acme_eu requires EU data residency correction before a customer-facing on-track update.\"],\"required_before_send\":[\"Propagate the EU data residency requirement into the Acme workstream.\",\"Assign Product, Security, and Engineering owners.\",\"Pass the EU data residency EvalCase.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"verdict\":\"deny\"}",
+      "sha256": "feec16b31ac1258b827d93547c85226424a5899be10604fa8100a10aaca072a8"
     },
     "liminal_engine.eval_case.v1::acme-eu-residency-case": {
       "schema": "liminal_engine.eval_case.v1",
