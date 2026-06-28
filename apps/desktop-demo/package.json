@@ -13,6 +13,8 @@
     "@liminal-engine/contracts": "workspace:*",
     "@liminal-engine/eval-harness": "workspace:*",
     "@liminal-engine/governance": "workspace:*",
+    "@liminal-engine/substrate": "workspace:*",
+    "@liminal-engine/goal-alignment": "workspace:*",
     "@liminal-engine/ui-components": "workspace:*",
     "@liminal-engine/integration-governance-case-store": "workspace:*",
     "@liminal-engine/integration-audit-sink": "workspace:*",
