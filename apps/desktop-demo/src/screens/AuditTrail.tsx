@@ -7,16 +7,15 @@
  * deciding actor is rendered straight from the fixture, which holds a ROLE, never an
  * invented persona name (apps/desktop-demo/AGENTS.md Locked Rules).
  *
- * Demo facts source (LIM-1255): the audit event comes from the live governance loop
- * (`useDemo().auditEvent` — the real engine driving the UI). The data-residency proof
- * (LIM-1248) displays the fixture-driven redacted reference showing sensitive data
- * storage by hash — the `dataResidencyRef` from `acmeScenario` supplements the
- * live-wire audit event with fixture-driven governance proof.
+ * Demo facts source (LIM-1255 / LIM-1201): every value on this screen comes from the
+ * live governance demo (`useDemo()` — the real engine driving the UI), no raw fixture
+ * read. The audit event is the loop's recorded evidence; the data-residency reference
+ * is produced live by the real `redact()` helper in `buildGovernanceDemo()`.
  *
  * Data-residency note (LIM-1248): a small additive panel proving sensitive customer
- * data is recorded by reference/hash, never raw. The reference is the redacted
- * `RedactedRef` the audit ledger stores (`acmeScenario.dataResidencyRef`), built from
- * the single-source fixture via the real `redact` helper — fixture-driven, simulated.
+ * data is recorded by reference/hash, never raw. The `RedactedRef` is the same shape
+ * the audit ledger seals snapshots with, computed via the real `redact` helper over
+ * the loop's pass-1 agent output — live-produced, deterministic. Labeled simulated.
  */
 import { Card, TraceRow } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
