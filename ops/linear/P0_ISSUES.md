@@ -1,6 +1,10 @@
 # Linear — P0 Issues
 
-> Placeholder. The minimum issues to land the demo. Order matters.
+> **Canonical task list: [`specs/TASKS.md`](../../specs/TASKS.md)** (file-disjoint,
+> dependency-layered Wave tasks). The P0 set below maps onto it: P0 #1/#2 →
+> Wave-1 `«spine-shell»` + Wave-2 `«screen-*»`; #3 → fixtures (landed, LIM-1165);
+> #4 → `«gov-enforce»`; #5 → `«eval»`; #6 → `«linear»`; #7 → `«persona»`;
+> #8 → `«publish»`. Treat TASKS.md as the source of truth; this is a priority lens.
 
 1. **P0** — Stand up `apps/desktop-demo/` runnable shell.
 2. **P0** — Static click-through for the full required demo path.
