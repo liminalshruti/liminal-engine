@@ -28,23 +28,17 @@
  * (`@liminal-engine/ui-components`). Screen-scoped styling lives in the co-located
  * `ContextTray.css` (the shared `app.css` is owned elsewhere; tokens are referenced,
  * never redefined).
+ *
+ * LIM-9999: Extracted ContextCard component into `../components/ContextCard.tsx` —
+ * the affordances (source type, provenance, evidence badge, cited-in indicators) are
+ * now in a reusable, tested component while ContextTray focuses on screen layout and
+ * fixture wiring.
  */
-import type { ReactNode } from "react";
-import { Card, StatusBadge } from "../components";
+import { StatusBadge, ContextCard, type SourceType, type Capture } from "../components";
 import { useDemo } from "../lib/demo-context.tsx";
 import { falseGreenBanner } from "@liminal-engine/ui-components";
 import { SCREEN_COPY } from "../lib/copy.ts";
 import "./ContextTray.css";
-
-/** The provenance kind of a context source — IDEAS.md "live-stream vs pinned" affordance. */
-type SourceType = "sales-call" | "proposal" | "launch-plan" | "product-scope" | "agent-trace";
-type Capture = "pinned" | "live-transcript" | "agent-run";
-
-const CAPTURE_LABEL: Record<Capture, string> = {
-  pinned: "Pinned doc",
-  "live-transcript": "Live transcript",
-  "agent-run": "Agent run (fixture)",
-};
 
 interface SourceDocument {
   id: string;
@@ -204,77 +198,5 @@ export function ContextTray() {
   );
 }
 
-interface ContextCardProps {
-  sourceType: SourceType;
-  title: string;
-  capture: Capture;
-  simulated: boolean;
-  evidence: string;
-  /** Is the load-bearing dropped requirement present in / dropped from this source? */
-  requirementRelevant: boolean;
-  citedInCase: boolean;
-  citedInAudit: boolean;
-  caseId: string;
-  auditId: string;
-  children?: ReactNode;
-}
-
-/** A single context card: source type + provenance + evidence badge + cited indicators. */
-function ContextCard({
-  sourceType,
-  title,
-  capture,
-  simulated,
-  evidence,
-  requirementRelevant,
-  citedInCase,
-  citedInAudit,
-  caseId,
-  auditId,
-  children,
-}: ContextCardProps) {
-  return (
-    <Card className="context-card">
-      <header className="context-card__head">
-        <h3 className="context-card__title">{title}</h3>
-        <div className="context-card__tags">
-          <span className="context-card__type" title="Source type">
-            {sourceType}
-          </span>
-          <span className="context-card__capture">{CAPTURE_LABEL[capture]}</span>
-          {simulated && <span className="context-card__simulated">Simulated</span>}
-        </div>
-      </header>
-
-      <div
-        className={`context-card__evidence${requirementRelevant ? " context-card__evidence--requirement" : ""}`}
-      >
-        <span className="context-card__evidence-label">Evidence</span>
-        <span className="context-card__evidence-text">{evidence}</span>
-      </div>
-
-      {children ? <div className="context-card__body">{children}</div> : null}
-
-      <div className="context-card__citations">
-        <Citation label="Cited in GovernanceCase" refId={caseId} cited={citedInCase} />
-        <Citation label="Cited in AuditEvent" refId={auditId} cited={citedInAudit} />
-      </div>
-    </Card>
-  );
-}
-
-/** One "cited in X?" indicator — answers whether this card's evidence is cited in X. */
-function Citation({ label, refId, cited }: { label: string; refId: string; cited: boolean }) {
-  return (
-    <div className={`context-card__cite context-card__cite--${cited ? "yes" : "no"}`}>
-      <span className="context-card__cite-mark" role="img" aria-label={cited ? "cited" : "not cited"}>
-        {cited ? "✓" : "✗"}
-      </span>
-      <span className="context-card__cite-label">{label}</span>
-      <span className="context-card__cite-verdict">{cited ? "Yes" : "No"}</span>
-      <span className="context-card__cite-ref">{refId}</span>
-    </div>
-  );
-}
 
 export default ContextTray;

@@ -14,3 +14,4 @@ export { BlockedActionBanner, type BlockedActionBannerProps } from "./BlockedAct
 export { EnforcementPreview, type EnforcementPreviewProps } from "./EnforcementPreview.tsx";
 export { TraceRow, type TraceRowProps } from "./TraceRow.tsx";
 export { Card, type CardProps } from "./Card.tsx";
+export { ContextCard, type SourceType, type Capture } from "./ContextCard.tsx";
