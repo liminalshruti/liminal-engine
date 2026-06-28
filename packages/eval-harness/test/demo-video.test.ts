@@ -50,10 +50,10 @@ test("demo video (LIM-1197): video file is present or noted as not-yet-recorded"
 
   if (videoFiles.length === 0) {
     t.diagnostic(
-      "  ⓘ  No demo video found in demos/recordings/ (LIM-1197). " +
-        "This is a manual recording task — record before final submission."
+      "  [i] No demo video found in demos/recordings/ (LIM-1197). " +
+        "This is a manual recording task - record before final submission."
     );
-    return; // optional artifact, not a build gate — but NOT skipped
+    return; // optional artifact, not a build gate - but NOT skipped
   }
 
   // When a video IS present, it must be a real, readable, non-zero file.
