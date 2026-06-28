@@ -1,24 +1,61 @@
 /**
- * AgentActivity screen — beat #3 · MNC#1 (the false green).
- * STUB created by LIM-1226 «spine-shell-v2». Filled by LIM-1217 «screen-agent-activity».
+ * AgentActivity screen — demo beat #3 of the locked required path (DEMO_CONTRACT.md):
+ *   #3  Show the agent output — "Acme expansion appears on track" — the FALSE GREEN
+ *       (must-not-cut #1).
  *
- * Renders the first-pass agent output: "appears on track" while the EU data-residency
- * requirement is silently absent. Read from `acmeScenario.agentOutputPass1`.
+ * Fills the LIM-1226 «spine-shell-v2» stub (task LIM-1217 «screen-agent-activity»).
+ *
+ * This is the CLEAN base for beat #3 — the OBSERVE phase. It shows the first-pass
+ * agent output exactly as the operator first sees it: a confident on-track report
+ * whose claim and summary never mention the load-bearing EU data-residency
+ * requirement. That requirement is SILENTLY ABSENT here by design — surfacing it now
+ * would steal the later beats. The reveal that a requirement was dropped is the next
+ * screen (beat #4, ContextTray — the DETECT phase, which already derives that insight
+ * from `falseGreenBanner` + lists the dropped requirement), and the formal detection
+ * is beat #5 (GovernanceCase). So this screen deliberately does NOT use
+ * `falseGreenBanner`, flag the drop, or otherwise pre-empt those beats.
+ *
+ * The inline-highlighted "dropped requirement" affordance is a separate UX-depth
+ * layer (LIM-1236) that augments this beat; the structure below (status + verbatim
+ * claim + summary, each a `screen__fact` inside a `Card`) is intentionally shaped so
+ * that layer can be added later without a rewrite. Do not add it here.
+ *
+ * All demo facts come ONLY from the validated Acme fixtures
+ * (`@liminal-engine/contracts/fixtures`) — no live calls, no hardcoded or invented
+ * data (apps/desktop-demo/AGENTS.md Locked Rules #2/#4; the fixtures are the LIM-1165
+ * single source). Framing copy comes from the central demo-copy module
+ * (`../lib/copy.ts`); the false green is composed inside the shared `Card` widget and
+ * the reported status renders through the shared `StatusBadge` (`../components`). This
+ * screen has no simulated or stubbed panel, so nothing carries a "Simulated" badge —
+ * that label is reserved for the simulated Linear workstream (MNC#4, EnforcementPanel).
  */
+import { Card, StatusBadge } from "../components";
 import { acmeScenario } from "@liminal-engine/contracts/fixtures";
 import { SCREEN_COPY } from "../lib/copy.ts";
 
 export function AgentActivity() {
-  const { agentOutputPass1 } = acmeScenario;
+  // First-pass agent output (the false green) + the verbatim beat-#3 claim. Neutral,
+  // on-track facts only: the drop is NOT read here (`droppedRequirements` is left for
+  // the beat-#4 reveal), keeping the requirement silently absent on this screen.
+  const { agentOutputPass1, demoBeats } = acmeScenario;
   const copy = SCREEN_COPY.agentActivity;
 
   return (
     <section className="screen screen--agent-activity" aria-label={copy.title}>
       <p className="screen__intro">{copy.intro}</p>
-      <p className="screen__fact">
-        Reported status: <strong>{agentOutputPass1.reportedStatus}</strong> — {agentOutputPass1.summary}
-      </p>
-      <p className="screen__stub-note">Stub — to be filled by LIM-1217 (MNC#1: the false green).</p>
+
+      <Card title={copy.title}>
+        <p className="screen__fact">
+          Deal under governance: {agentOutputPass1.dealName} (first-pass agent output)
+        </p>
+        <p className="screen__fact">
+          Agent claim: <strong>{demoBeats.agentClaim}</strong>
+        </p>
+        <p className="screen__fact">
+          Reported status: <StatusBadge status={agentOutputPass1.reportedStatus} />
+        </p>
+        <p className="screen__fact">{agentOutputPass1.summary}</p>
+      </Card>
     </section>
   );
 }
