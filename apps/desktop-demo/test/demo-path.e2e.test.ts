@@ -38,12 +38,14 @@
  * can never silently drift from the demo fixtures, and they throw if drained — which
  * also pins the loop's id/timestamp call order.
  *
- * SCOPE NOTE (beats #4–#5). Beat #4's screen (ContextTray) is merged on main and is
- * covered. The GovernanceCase SCREEN (beat #5 / MNC#2; LIM-1218) is still an
- * unmerged STUB on main: the ENGINE side of beat #5 — the GovernanceCase the loop
- * opens — is fully asserted here (it is verifiable now), but the screen's own UI
- * rendering is left as a clearly-marked SKIPPED hook rather than asserted against
- * the stub. That is honest pending coverage, not a silent omission.
+ * SCOPE NOTE (beats #4–#5). Beat #4's screen (ContextTray) and beat #5's screen
+ * (GovernanceCase / MNC#2; LIM-1218, merged in #43) are both on main and covered.
+ * Beat #5 is asserted at two layers: the ENGINE side (the GovernanceCase the loop
+ * opens) AND the SCREEN's JSX-free render data — the `caseHeadline()` view-model
+ * helper and `SCREEN_COPY.governanceCase` the merged screen renders (AGENTS.md
+ * "two barrels"). The screen's actual JSX/DOM is not walked here only because
+ * `node --test` cannot import `.tsx` (see WHY THIS LAYER above), the same constraint
+ * that applies to every other beat in this file.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -306,19 +308,24 @@ test("beat #5 — Surface GovernanceCase (detect · MNC#2): the loop opens exact
   assert.deepEqual(gc, acmeScenario.governanceCase);
 });
 
-// The GovernanceCase SCREEN (LIM-1218; apps/desktop-demo/AGENTS.md maps it to beats #4–#5,
-// steps.tsx to beat #5) is still a STUB on main — its PR is unmerged. The ENGINE side of
-// beat #5 (the case the loop opens) is asserted above and verifiable now; the screen's own
-// UI rendering is NOT asserted against the stub (the task forbids asserting against it). This
-// is honest pending coverage, not a silent omission. Activate when LIM-1218 merges and the
-// screen renders the case via the caseHeadline() view-model helper (AGENTS.md "two barrels").
+// The GovernanceCase SCREEN (LIM-1218, merged in #43; apps/desktop-demo/AGENTS.md maps it to
+// beats #4–#5, steps.tsx to beat #5) is on main. It renders the case via the caseHeadline()
+// view-model helper + SCREEN_COPY.governanceCase (AGENTS.md "two barrels"). We assert against
+// the same JSX-free render data here — the engine's computed case feeds the headline the
+// screen shows, and the framing copy is non-empty single-source copy (no hardcoded strings).
 test(
-  "beat #5 (UI) — GovernanceCase screen surfaces the detected case [pending LIM-1218]",
-  { skip: "activate when LIM-1218 merges — GovernanceCase screen is a stub on main" },
+  "beat #5 (UI) — GovernanceCase screen surfaces the detected case via caseHeadline()",
   async () => {
     const engine = await demoEngine();
     const gc = engine.governanceCases[0]!;
+    // the headline the screen renders is derived from the live, computed case
     assert.equal(caseHeadline(gc), "Dropped requirement: EU data residency (blocking)");
+    // the screen frames the case with single-source copy, not hardcoded strings
+    assert.equal(SCREEN_COPY.governanceCase.title, "Governance case");
+    assert.ok(
+      SCREEN_COPY.governanceCase.intro.length > 0,
+      "the GovernanceCase screen has intro copy",
+    );
   },
 );
 
