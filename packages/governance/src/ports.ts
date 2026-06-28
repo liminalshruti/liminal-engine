@@ -8,6 +8,7 @@ import type {
   GovernanceCase,
   AuditEvent,
   ActionGate,
+  ActionGateDecision,
   EvalResult,
 } from "@liminal-engine/contracts";
 
@@ -30,7 +31,7 @@ export interface AuditSink {
 
 export interface ActionGateStore {
   gate(gate: ActionGate): Promise<void>;
-  isBlocked(action: string): Promise<boolean>;
+  decisionFor(action: string): Promise<ActionGateDecision>;
 }
 
 export interface EvalStore {
