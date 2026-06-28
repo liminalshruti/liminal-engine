@@ -13,10 +13,19 @@
         "summary": "Acme $1.2M expansion on track; all workstreams green.",
         "droppedRequirements": [
           "EU data residency"
-        ]
+        ],
+        "agentMetadata": {
+          "agent": "Gemini",
+          "model": "gemini-2.0-flash",
+          "artifacts": [
+            "customer-call-transcript",
+            "proposal-document",
+            "launch-plan"
+          ]
+        }
       },
-      "canonical_string": "{\"deal_id\":\"deal_acme\",\"deal_name\":\"Acme expansion\",\"dropped_requirements\":[\"EU data residency\"],\"id\":\"ao_acme_p1\",\"pass_number\":1,\"reported_status\":\"on-track\",\"schema\":\"liminal_engine.agent_output.v1\",\"summary\":\"Acme $1.2M expansion on track; all workstreams green.\"}",
-      "sha256": "ed51039927c7b825093706f8c5acad5ff7468b6aa0367d953b691ac81b0bb5ac"
+      "canonical_string": "{\"agent_metadata\":{\"agent\":\"Gemini\",\"artifacts\":[\"customer-call-transcript\",\"launch-plan\",\"proposal-document\"],\"model\":\"gemini-2.0-flash\"},\"deal_id\":\"deal_acme\",\"deal_name\":\"Acme expansion\",\"dropped_requirements\":[\"EU data residency\"],\"id\":\"ao_acme_p1\",\"pass_number\":1,\"reported_status\":\"on-track\",\"schema\":\"liminal_engine.agent_output.v1\",\"summary\":\"Acme $1.2M expansion on track; all workstreams green.\"}",
+      "sha256": "52d67166cbd4af529d2dc2d6b4d2babd37eead590a47567f8dce15eb3516e151"
     },
     "liminal_engine.governance_case.v1::acme-eu-residency-open": {
       "schema": "liminal_engine.governance_case.v1",
@@ -83,6 +92,60 @@
       },
       "canonical_string": "{\"action\":\"Send customer-facing status update to Acme\",\"case_id\":\"gc_acme_eu\",\"id\":\"ag_acme_update\",\"reasons\":[\"Open governance case gc_acme_eu requires EU data residency correction before a customer-facing on-track update.\"],\"required_before_send\":[\"Propagate the EU data residency requirement into the Acme workstream.\",\"Assign Product, Security, and Engineering owners.\",\"Pass the EU data residency EvalCase.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"verdict\":\"deny\"}",
       "sha256": "feec16b31ac1258b827d93547c85226424a5899be10604fa8100a10aaca072a8"
+    },
+    "liminal_engine.action_gate.v2::policy-auto-deny-from-learned-rule": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "auto-verdict from a learned policy rule — carries source:policy + sourceRuleId (the PR-#20 replay decay step)",
+      "input": {
+        "id": "ag_pr20_replay",
+        "caseId": "gc_pr20_dual_review",
+        "action": "Merge PR#35 without dual reviewer approval",
+        "verdict": "deny",
+        "reasons": [
+          "Learned policy rule denies merging a pull request without both required reviewers approving."
+        ],
+        "requiredBeforeSend": [
+          "Obtain approval from both required reviewers before merging."
+        ],
+        "source": "policy",
+        "sourceRuleId": "pr_rule_dual_review_v1"
+      },
+      "canonical_string": "{\"action\":\"Merge PR#35 without dual reviewer approval\",\"case_id\":\"gc_pr20_dual_review\",\"id\":\"ag_pr20_replay\",\"reasons\":[\"Learned policy rule denies merging a pull request without both required reviewers approving.\"],\"required_before_send\":[\"Obtain approval from both required reviewers before merging.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"policy\",\"source_rule_id\":\"pr_rule_dual_review_v1\",\"verdict\":\"deny\"}",
+      "sha256": "2e3c9c8b331277f51abcaf737fb6312877b42b3010d042cca689a2d4171b6d74"
+    },
+    "liminal_engine.action_gate.v2::default-deny-fail-closed": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "fail-closed verdict — policy store/gateway unreachable, so a consequential action defaults to deny with source:default-deny",
+      "input": {
+        "id": "ag_fail_closed",
+        "caseId": "gc_store_unreachable",
+        "action": "Force-push to a protected branch",
+        "verdict": "deny",
+        "reasons": [
+          "Policy store unreachable — failing closed on a consequential action."
+        ],
+        "requiredBeforeSend": [
+          "Restore policy store connectivity, then re-evaluate the action."
+        ],
+        "source": "default-deny"
+      },
+      "canonical_string": "{\"action\":\"Force-push to a protected branch\",\"case_id\":\"gc_store_unreachable\",\"id\":\"ag_fail_closed\",\"reasons\":[\"Policy store unreachable — failing closed on a consequential action.\"],\"required_before_send\":[\"Restore policy store connectivity, then re-evaluate the action.\"],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"default-deny\",\"verdict\":\"deny\"}",
+      "sha256": "889acb8d66d19c0b6c1af8947c177f153051e9910e50ea38c3e220bd3f3ac663"
+    },
+    "liminal_engine.action_gate.v2::operator-ratified-allow": {
+      "schema": "liminal_engine.action_gate.v2",
+      "purpose": "operator-ratified allow — verdict allow with source:operator; proves source provenance does not alter derived allowance",
+      "input": {
+        "id": "ag_operator_allow",
+        "caseId": "gc_pr20_dual_review",
+        "action": "Merge PR#41 with both required reviewers approving",
+        "verdict": "allow",
+        "reasons": [],
+        "requiredBeforeSend": [],
+        "source": "operator"
+      },
+      "canonical_string": "{\"action\":\"Merge PR#41 with both required reviewers approving\",\"case_id\":\"gc_pr20_dual_review\",\"id\":\"ag_operator_allow\",\"reasons\":[],\"required_before_send\":[],\"schema\":\"liminal_engine.action_gate.v2\",\"source\":\"operator\",\"verdict\":\"allow\"}",
+      "sha256": "0f33af162df6ec43eeb951602e9fa84ca3031e366858be13749fb999097c957b"
     },
     "liminal_engine.eval_case.v1::acme-eu-residency-case": {
       "schema": "liminal_engine.eval_case.v1",
@@ -170,6 +233,289 @@
       },
       "canonical_string": "{\"deal_id\":\"deal_acme\",\"required_owners\":[\"Product\",\"Security\",\"Engineering\"],\"schema\":\"liminal_engine.linear_workstream_payload.v1\",\"title\":\"Acme expansion — EU data residency remediation\",\"workstreams\":[{\"owner\":\"Product\",\"status\":\"green\",\"title\":\"Commercial terms\"},{\"owner\":\"Security\",\"status\":\"green\",\"title\":\"Security review\"},{\"owner\":\"Engineering\",\"status\":\"at-risk\",\"title\":\"Data residency (EU)\"}]}",
       "sha256": "926b0ddaf7e27b57bca2e742af9842c085077158ae606006fab9165c6dcd9e3f"
+    },
+    "liminal_engine.intercepted_action.v1::pr20-merge-intercepted": {
+      "schema": "liminal_engine.intercepted_action.v1",
+      "purpose": "the PR-#20 replay action — gh pr-merge with split reviews, full provenance",
+      "input": {
+        "id": "ia_pr20_merge",
+        "tool": "gh",
+        "action": "pr-merge",
+        "target": "PR#20",
+        "args": {
+          "reviews": {
+            "approved": 1,
+            "rejected": 1
+          }
+        },
+        "agentId": "claude-implementer",
+        "sessionId": "sess_pr20_replay",
+        "goalId": "LIM-1266",
+        "lane": "shayaun-main",
+        "requestedAt": "2026-06-27T10:00:00.000Z"
+      },
+      "canonical_string": "{\"action\":\"pr-merge\",\"agent_id\":\"claude-implementer\",\"args\":{\"reviews\":{\"approved\":1,\"rejected\":1}},\"goal_id\":\"LIM-1266\",\"id\":\"ia_pr20_merge\",\"lane\":\"shayaun-main\",\"requested_at\":\"2026-06-27T10:00:00.000Z\",\"schema\":\"liminal_engine.intercepted_action.v1\",\"session_id\":\"sess_pr20_replay\",\"target\":\"PR#20\",\"tool\":\"gh\"}",
+      "sha256": "492182b60adec542f651a34e6060035bf856b8d5af1bfd80a0a98b0e3f7fac12"
+    },
+    "liminal_engine.intercepted_action.v1::git-force-push-minimal": {
+      "schema": "liminal_engine.intercepted_action.v1",
+      "purpose": "minimal action — required fields only; optional target/provenance omitted",
+      "input": {
+        "id": "ia_git_force_push",
+        "tool": "git",
+        "action": "push",
+        "args": {
+          "force": true,
+          "ref": "main"
+        },
+        "requestedAt": "2026-06-27T10:01:00.000Z"
+      },
+      "canonical_string": "{\"action\":\"push\",\"args\":{\"force\":true,\"ref\":\"main\"},\"id\":\"ia_git_force_push\",\"requested_at\":\"2026-06-27T10:01:00.000Z\",\"schema\":\"liminal_engine.intercepted_action.v1\",\"tool\":\"git\"}",
+      "sha256": "6d8545bf10a191c5e5bb2df7707a6fda21ebc1dcc2e3afdd04894eebf2d83863"
+    },
+    "liminal_engine.evidence_bundle.v1::acme-eu-residency-evidence": {
+      "schema": "liminal_engine.evidence_bundle.v1",
+      "purpose": "Acme bundle — call/proposal/sow/email + agent_output sources, cited spans by sha256 ref",
+      "input": {
+        "id": "eb_acme_eu_residency",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "sources": [
+          {
+            "sourceId": "src_acme_kickoff_call",
+            "sourceType": "customer_call",
+            "title": "Acme expansion kickoff call",
+            "hash": "e5b72397c57e4314eac2b3ebf436c188d40466c1bfa07073fd63bf4b325efd19",
+            "capturedAt": "2026-06-27T09:30:00.000Z"
+          },
+          {
+            "sourceId": "src_acme_proposal_v3",
+            "sourceType": "proposal",
+            "title": "Acme expansion proposal v3",
+            "hash": "de7b0b08947da982ada52d7763a1d94f8491c1e2bc6f589f168d30e6983e27b8",
+            "capturedAt": "2026-06-27T09:35:00.000Z"
+          },
+          {
+            "sourceId": "src_acme_sow",
+            "sourceType": "sow",
+            "title": "Acme statement of work",
+            "hash": "dadb99e7f64a45e727a4a80299a14cf648fe571ff134985e0db950b13e879deb",
+            "capturedAt": "2026-06-27T09:40:00.000Z"
+          },
+          {
+            "sourceId": "src_acme_procurement_email",
+            "sourceType": "email",
+            "title": "Acme procurement thread",
+            "hash": "ed5d2ccd39e67da9eaf8faa6c8f876ad7e4430d6f167f062f1b1c2c0832e7003",
+            "capturedAt": "2026-06-27T09:42:00.000Z"
+          },
+          {
+            "sourceId": "src_acme_agent_pass1",
+            "sourceType": "agent_output",
+            "title": "Deal-desk agent pass 1 report",
+            "hash": "238473234150d65b87b19f3cf0b1603336c4659e02533330a83b858f9d7ca6a1",
+            "capturedAt": "2026-06-27T09:45:00.000Z"
+          }
+        ],
+        "chunks": [
+          {
+            "chunkId": "ch_eu_residency_call",
+            "sourceId": "src_acme_kickoff_call",
+            "span": {
+              "unit": "timecode",
+              "start": "00:12:30",
+              "end": "00:12:58"
+            },
+            "hash": "0dbc232f9af909068cd7c275eb4d7e52f3a96de25a5634b1362170dc0a03297e",
+            "label": "eu-data-residency-requirement"
+          },
+          {
+            "chunkId": "ch_commercial_terms",
+            "sourceId": "src_acme_proposal_v3",
+            "span": {
+              "unit": "page",
+              "start": "3",
+              "end": "3"
+            },
+            "hash": "3c2c22ec4aa2910d057382dfc4e8dcb2435c9233bc64068346fe9e167dc0ef26",
+            "label": "commercial-terms"
+          },
+          {
+            "chunkId": "ch_missing_residency_sow",
+            "sourceId": "src_acme_sow",
+            "span": {
+              "unit": "section",
+              "start": "7",
+              "end": "7.3"
+            },
+            "hash": "565c7a8532d7780453684f01ffbfc26a32b026b4a1f91a361e30ea3f7dcbcf12",
+            "label": "missing-eu-residency-clause"
+          },
+          {
+            "chunkId": "ch_email_residency_confirm",
+            "sourceId": "src_acme_procurement_email",
+            "span": {
+              "unit": "char",
+              "start": "118",
+              "end": "188"
+            },
+            "hash": "aa4ecf94aae3009e7a7cc32db0ae2304ea93ea42e74f8f3888d96ab42c215ad6",
+            "label": "procurement-residency-confirmation"
+          },
+          {
+            "chunkId": "ch_agent_false_green",
+            "sourceId": "src_acme_agent_pass1",
+            "span": {
+              "unit": "line",
+              "start": "1",
+              "end": "1"
+            },
+            "hash": "d70b31476e2b774a5a59fdc786cdcbd0bfe05d179b33867491fa419c62b67b24",
+            "label": "reported-status-on-track"
+          }
+        ],
+        "agentOutputs": [
+          {
+            "agentOutputId": "ao_acme_p1",
+            "sourceId": "src_acme_agent_pass1"
+          }
+        ]
+      },
+      "canonical_string": "{\"agent_outputs\":[{\"agent_output_id\":\"ao_acme_p1\",\"source_id\":\"src_acme_agent_pass1\"}],\"chunks\":[{\"chunk_id\":\"ch_agent_false_green\",\"hash\":\"d70b31476e2b774a5a59fdc786cdcbd0bfe05d179b33867491fa419c62b67b24\",\"label\":\"reported-status-on-track\",\"source_id\":\"src_acme_agent_pass1\",\"span\":{\"end\":\"1\",\"start\":\"1\",\"unit\":\"line\"}},{\"chunk_id\":\"ch_commercial_terms\",\"hash\":\"3c2c22ec4aa2910d057382dfc4e8dcb2435c9233bc64068346fe9e167dc0ef26\",\"label\":\"commercial-terms\",\"source_id\":\"src_acme_proposal_v3\",\"span\":{\"end\":\"3\",\"start\":\"3\",\"unit\":\"page\"}},{\"chunk_id\":\"ch_email_residency_confirm\",\"hash\":\"aa4ecf94aae3009e7a7cc32db0ae2304ea93ea42e74f8f3888d96ab42c215ad6\",\"label\":\"procurement-residency-confirmation\",\"source_id\":\"src_acme_procurement_email\",\"span\":{\"end\":\"188\",\"start\":\"118\",\"unit\":\"char\"}},{\"chunk_id\":\"ch_eu_residency_call\",\"hash\":\"0dbc232f9af909068cd7c275eb4d7e52f3a96de25a5634b1362170dc0a03297e\",\"label\":\"eu-data-residency-requirement\",\"source_id\":\"src_acme_kickoff_call\",\"span\":{\"end\":\"00:12:58\",\"start\":\"00:12:30\",\"unit\":\"timecode\"}},{\"chunk_id\":\"ch_missing_residency_sow\",\"hash\":\"565c7a8532d7780453684f01ffbfc26a32b026b4a1f91a361e30ea3f7dcbcf12\",\"label\":\"missing-eu-residency-clause\",\"source_id\":\"src_acme_sow\",\"span\":{\"end\":\"7.3\",\"start\":\"7\",\"unit\":\"section\"}}],\"deal_id\":\"deal_acme\",\"goal_id\":\"goal_acme_expansion\",\"id\":\"eb_acme_eu_residency\",\"schema\":\"liminal_engine.evidence_bundle.v1\",\"sources\":[{\"captured_at\":\"2026-06-27T09:45:00.000Z\",\"hash\":\"238473234150d65b87b19f3cf0b1603336c4659e02533330a83b858f9d7ca6a1\",\"source_id\":\"src_acme_agent_pass1\",\"source_type\":\"agent_output\",\"title\":\"Deal-desk agent pass 1 report\"},{\"captured_at\":\"2026-06-27T09:30:00.000Z\",\"hash\":\"e5b72397c57e4314eac2b3ebf436c188d40466c1bfa07073fd63bf4b325efd19\",\"source_id\":\"src_acme_kickoff_call\",\"source_type\":\"customer_call\",\"title\":\"Acme expansion kickoff call\"},{\"captured_at\":\"2026-06-27T09:42:00.000Z\",\"hash\":\"ed5d2ccd39e67da9eaf8faa6c8f876ad7e4430d6f167f062f1b1c2c0832e7003\",\"source_id\":\"src_acme_procurement_email\",\"source_type\":\"email\",\"title\":\"Acme procurement thread\"},{\"captured_at\":\"2026-06-27T09:35:00.000Z\",\"hash\":\"de7b0b08947da982ada52d7763a1d94f8491c1e2bc6f589f168d30e6983e27b8\",\"source_id\":\"src_acme_proposal_v3\",\"source_type\":\"proposal\",\"title\":\"Acme expansion proposal v3\"},{\"captured_at\":\"2026-06-27T09:40:00.000Z\",\"hash\":\"dadb99e7f64a45e727a4a80299a14cf648fe571ff134985e0db950b13e879deb\",\"source_id\":\"src_acme_sow\",\"source_type\":\"sow\",\"title\":\"Acme statement of work\"}]}",
+      "sha256": "42e7f64cbdfb9ac88276bb719a4ec974a209387f3503d9da1d8f6a9496e8547f"
+    },
+    "liminal_engine.evidence_bundle.v1::minimal-single-source": {
+      "schema": "liminal_engine.evidence_bundle.v1",
+      "purpose": "minimal bundle — one source + one chunk, dealId only, no agent outputs/label",
+      "input": {
+        "id": "eb_acme_min",
+        "dealId": "deal_acme",
+        "sources": [
+          {
+            "sourceId": "src_acme_kickoff_call",
+            "sourceType": "customer_call",
+            "title": "Acme expansion kickoff call",
+            "hash": "e5b72397c57e4314eac2b3ebf436c188d40466c1bfa07073fd63bf4b325efd19",
+            "capturedAt": "2026-06-27T09:30:00.000Z"
+          }
+        ],
+        "chunks": [
+          {
+            "chunkId": "ch_eu_residency_call",
+            "sourceId": "src_acme_kickoff_call",
+            "span": {
+              "unit": "timecode",
+              "start": "00:12:30",
+              "end": "00:12:58"
+            },
+            "hash": "0dbc232f9af909068cd7c275eb4d7e52f3a96de25a5634b1362170dc0a03297e"
+          }
+        ]
+      },
+      "canonical_string": "{\"chunks\":[{\"chunk_id\":\"ch_eu_residency_call\",\"hash\":\"0dbc232f9af909068cd7c275eb4d7e52f3a96de25a5634b1362170dc0a03297e\",\"source_id\":\"src_acme_kickoff_call\",\"span\":{\"end\":\"00:12:58\",\"start\":\"00:12:30\",\"unit\":\"timecode\"}}],\"deal_id\":\"deal_acme\",\"id\":\"eb_acme_min\",\"schema\":\"liminal_engine.evidence_bundle.v1\",\"sources\":[{\"captured_at\":\"2026-06-27T09:30:00.000Z\",\"hash\":\"e5b72397c57e4314eac2b3ebf436c188d40466c1bfa07073fd63bf4b325efd19\",\"source_id\":\"src_acme_kickoff_call\",\"source_type\":\"customer_call\",\"title\":\"Acme expansion kickoff call\"}]}",
+      "sha256": "2547f8f69b6ccd2d74c8779176e063d1004256268bc6eaf22a8ff1a4a79277e2"
+    },
+    "liminal_engine.requirement.v1::acme-eu-residency-active": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "an active hard requirement — approved + activated, governs the Acme surfaces",
+      "input": {
+        "id": "req_acme_eu_residency",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "All Acme EU customer data must remain resident in EU data centers.",
+        "ownerRole": "Security",
+        "severity": "hard",
+        "scope": [
+          "deal-proposal",
+          "launch-plan",
+          "owner-assignment",
+          "customer-facing-status-update"
+        ],
+        "status": "active",
+        "createdBy": "operator",
+        "approvedBy": "VP Ops / Head of AI Transformation",
+        "evidenceRefs": [
+          "call_acme_kickoff",
+          "dpa_acme_v3"
+        ],
+        "createdAt": "2026-06-27T09:55:00.000Z",
+        "activatedAt": "2026-06-27T10:05:00.000Z"
+      },
+      "canonical_string": "{\"activated_at\":\"2026-06-27T10:05:00.000Z\",\"approved_by\":\"VP Ops / Head of AI Transformation\",\"created_at\":\"2026-06-27T09:55:00.000Z\",\"created_by\":\"operator\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[\"call_acme_kickoff\",\"dpa_acme_v3\"],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_eu_residency\",\"owner_role\":\"Security\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"deal-proposal\",\"launch-plan\",\"owner-assignment\",\"customer-facing-status-update\"],\"severity\":\"hard\",\"status\":\"active\",\"text\":\"All Acme EU customer data must remain resident in EU data centers.\"}",
+      "sha256": "e065e011639983d55824b873a36179bd2af6dda30ea4245d7b61801440ca606e"
+    },
+    "liminal_engine.requirement.v1::acme-dpa-proposed": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "a proposed candidate — surfaced by a proposal, awaiting operator approval",
+      "input": {
+        "id": "req_acme_dpa_countersign",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "Acme must counter-sign the Data Processing Agreement before EU launch.",
+        "ownerRole": "Legal",
+        "severity": "hard",
+        "scope": [
+          "launch-plan",
+          "owner-assignment"
+        ],
+        "status": "proposed",
+        "createdBy": "proposal",
+        "evidenceRefs": [
+          "dpa_acme_v3"
+        ],
+        "createdAt": "2026-06-27T10:06:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:06:00.000Z\",\"created_by\":\"proposal\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[\"dpa_acme_v3\"],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_dpa_countersign\",\"owner_role\":\"Legal\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"launch-plan\",\"owner-assignment\"],\"severity\":\"hard\",\"status\":\"proposed\",\"text\":\"Acme must counter-sign the Data Processing Agreement before EU launch.\"}",
+      "sha256": "4756ae83dedc656be426af532b6edb034284b734cc84952b7e1967cb8713dfa5"
+    },
+    "liminal_engine.requirement.v1::acme-comarketing-rejected": {
+      "schema": "liminal_engine.requirement.v1",
+      "purpose": "a rejected candidate — a soft proposal the operator declined as out of scope",
+      "input": {
+        "id": "req_acme_comarketing",
+        "goalId": "goal_acme_expansion",
+        "dealId": "deal_acme",
+        "text": "Acme expansion must ship with a joint co-marketing press release.",
+        "ownerRole": "Marketing",
+        "severity": "soft",
+        "scope": [
+          "launch-plan"
+        ],
+        "status": "rejected",
+        "createdBy": "proposal",
+        "evidenceRefs": [],
+        "createdAt": "2026-06-27T10:07:00.000Z"
+      },
+      "canonical_string": "{\"created_at\":\"2026-06-27T10:07:00.000Z\",\"created_by\":\"proposal\",\"deal_id\":\"deal_acme\",\"evidence_refs\":[],\"goal_id\":\"goal_acme_expansion\",\"id\":\"req_acme_comarketing\",\"owner_role\":\"Marketing\",\"schema\":\"liminal_engine.requirement.v1\",\"scope\":[\"launch-plan\"],\"severity\":\"soft\",\"status\":\"rejected\",\"text\":\"Acme expansion must ship with a joint co-marketing press release.\"}",
+      "sha256": "8b1cff804e95333e7713a5093ba43b87ed324fcf7174e650004ffaaff5a1f289"
+    },
+    "liminal_engine.requirement_evidence.v1::acme-eu-residency-call": {
+      "schema": "liminal_engine.requirement_evidence.v1",
+      "purpose": "evidence the EU data residency requirement was stated on the kickoff call",
+      "input": {
+        "sourceId": "call_acme_kickoff",
+        "sourceType": "call-transcript",
+        "span": "00:12:30-00:12:58",
+        "quote": "All customer data for EU subsidiaries must remain in EU data centers; this is a contractual obligation.",
+        "hash": "550d305ae8408bec196d3cae7d5a9a0bc63b17bacc7b68160add3f6b024e45ee",
+        "capturedAt": "2026-06-27T09:45:00.000Z"
+      },
+      "canonical_string": "{\"captured_at\":\"2026-06-27T09:45:00.000Z\",\"hash\":\"550d305ae8408bec196d3cae7d5a9a0bc63b17bacc7b68160add3f6b024e45ee\",\"quote\":\"All customer data for EU subsidiaries must remain in EU data centers; this is a contractual obligation.\",\"schema\":\"liminal_engine.requirement_evidence.v1\",\"source_id\":\"call_acme_kickoff\",\"source_type\":\"call-transcript\",\"span\":\"00:12:30-00:12:58\"}",
+      "sha256": "ec9c0bdf35436216eb78772e85a885ebd77827eedfdd291a6f772962c488d5dd"
+    },
+    "liminal_engine.requirement_evidence.v1::acme-eu-residency-dpa": {
+      "schema": "liminal_engine.requirement_evidence.v1",
+      "purpose": "evidence the same requirement is codified in the signed DPA clause",
+      "input": {
+        "sourceId": "dpa_acme_v3",
+        "sourceType": "signed-contract",
+        "span": "Section 7.2",
+        "quote": "Processing of EU Personal Data shall occur solely within the European Economic Area.",
+        "hash": "2fbdb6b3ac952fb5b28317eba8114760b88f30c1237e4bf3542dd21b0c7d9023",
+        "capturedAt": "2026-06-27T09:50:00.000Z"
+      },
+      "canonical_string": "{\"captured_at\":\"2026-06-27T09:50:00.000Z\",\"hash\":\"2fbdb6b3ac952fb5b28317eba8114760b88f30c1237e4bf3542dd21b0c7d9023\",\"quote\":\"Processing of EU Personal Data shall occur solely within the European Economic Area.\",\"schema\":\"liminal_engine.requirement_evidence.v1\",\"source_id\":\"dpa_acme_v3\",\"source_type\":\"signed-contract\",\"span\":\"Section 7.2\"}",
+      "sha256": "c70ead2aae9e03042c52938ff017ad00537c8fa22692afa05e61161b32cbed04"
     }
   }
 }

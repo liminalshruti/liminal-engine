@@ -59,9 +59,40 @@ interface SourceDocument {
   detail: string;
 }
 
-export function ContextTray() {
+/**
+ * ContextTray screen content — renders context sources with null checks.
+ * Throws if required fields are missing (caught by parent ErrorBoundary).
+ */
+function ContextTrayContent() {
   // Load-bearing facts come ONLY from the locked Acme fixtures.
-  const { businessGoal, agentOutputPass1, governanceCase, auditEvent } = useDemo();
+  const demo = useDemo();
+  const { businessGoal, agentOutputPass1, governanceCase, auditEvent } = demo;
+
+  // Null checks for required fields
+  if (!agentOutputPass1 || !governanceCase || !auditEvent) {
+    throw new Error(
+      `ContextTray requires agentOutputPass1, governanceCase, auditEvent; got ${[
+        !agentOutputPass1 ? "missing agentOutputPass1" : "",
+        !governanceCase ? "missing governanceCase" : "",
+        !auditEvent ? "missing auditEvent" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
+  if (!governanceCase.missedRequirement || !agentOutputPass1.dealName || !businessGoal) {
+    throw new Error(
+      `ContextTray requires missedRequirement, dealName, businessGoal; got ${[
+        !governanceCase.missedRequirement ? "missing missedRequirement" : "",
+        !agentOutputPass1.dealName ? "missing dealName" : "",
+        !businessGoal ? "missing businessGoal" : "",
+      ]
+        .filter(Boolean)
+        .join(", ")}`,
+    );
+  }
+
   const copy = SCREEN_COPY.contextTray;
   const missedRequirement = governanceCase.missedRequirement;
   const trace = falseGreenBanner(agentOutputPass1);
@@ -198,5 +229,8 @@ export function ContextTray() {
   );
 }
 
+export function ContextTray() {
+  return <ContextTrayContent />;
+}
 
 export default ContextTray;
