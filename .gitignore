@@ -28,3 +28,6 @@ __pycache__/
 # Large demo media — keep curated assets, ignore raw captures
 demos/recordings/*.mov
 demos/recordings/*.mp4.raw
+
+# raw screenshot captures (Session B cleanup — keep on disk, not in git)
+.shots/
