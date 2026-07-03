@@ -188,3 +188,29 @@ code lie; both are "how the docs word it" calls, hence REPORT-ONLY.
 2. **LiveKit "scripted transcript" fallback line is stale** — code shows a truthful "unavailable" disabled state; there is no scripted-transcript fallback. Decide: update `README.md ~L76` to match code. (Low risk — reality is *more* honest than the doc.)
 
 Everything else verified HONEST. No fixes applied (per boundary). These are the founder/next-session's call.
+
+---
+
+## TERMINAL STATE — Session B loop complete (keep-open)
+
+| Terminal condition (dispatch) | Status |
+|---|---|
+| Clean `git status` | ✅ tree clean |
+| Zero unclassified stashes | ✅ `git stash list` empty — all 5 preserved to `wip/*` branches, zero dropped |
+| Worktree list = active-only | ✅ 1 entry (main) — 46 pruned/removed, branches left intact |
+| Branch reconciled | ⏸ founder-gated (submission-copy merge) — logged in Step 4, branch preserved on origin |
+| Ledger committed + pushed | ✅ `4ad108c`, pushed to `origin/docs/judge-ready-readme-submission` |
+| PRs for merge-worthy work, READY not merged | ✅ branch pushed; cleanup landable, doc-merge awaits founder |
+| Bonus stub audit | ✅ report-only, Step 5 (2 doc-framing flags for a later judgment session) |
+
+**Boundaries honored throughout:** never force-pushed · never deleted a remote branch · no history
+rewrites · no submission-content edits (integrity findings reported, not fixed) · nothing discarded.
+
+**Two founder decisions batched (never pinged mid-loop):**
+1. **Doc reconcile (Step 4):** which of branch-vs-main wins for PITCH_AND_DEMO / DEMO_NARRATION /
+   SUBMISSION_FORM_COPY — esp. preserve the branch-only "Locked on-screen facts" fixture block?
+2. **Integrity framing (Step 5):** Gemini "live inference" headline over a fixture demo pass; stale
+   LiveKit "scripted transcript" fallback line. Report-only — reword / capture-cache / leave.
+
+Session ends in **KEEP-OPEN** state (git leftovers resolved; close-out Part B not run — that is the
+founder's explicit choice after seeing the harvest).
