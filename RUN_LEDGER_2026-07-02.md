@@ -93,3 +93,29 @@ preserved stash{4} to a branch too. The drop was an optimization, not a requirem
 - stash{4} original pre-preserve sha `927b3509` recorded (reflog-recoverable) — belt & suspenders.
 
 Boundaries honored: no force-push, no history rewrite, no remote branch deletion, nothing discarded.
+
+---
+
+## STEP 3 — Worktrees (46 non-main) → active-only
+
+### Classification (all read-only, evidence-based)
+- **Inventory:** 47 worktree entries = 1 main + 46 non-main (5 already `prunable` per git; 41 on-disk).
+- **Merge-state test 1 (ancestry):** nearly all showed "unmerged" by `--is-ancestor` — expected, because
+  squash-merge creates new commits so a merged branch's tip is not a literal ancestor of main.
+- **Merge-state test 2 (real diff):** `git diff --shortstat origin/main...<tip>` = **0 files for ALL 44 branches**.
+  → every worktree's content is already on main. This is a finished-agent-run graveyard. **Nothing to push.**
+- **Safety gate (dirty check):** dumped `git status --porcelain` for all 41 on-disk worktrees to files →
+  **total 0 bytes** → zero uncommitted work anywhere. Confirmed safe to remove. (The #1 loss-mode — an
+  unremoved dirty worktree — verified absent.)
+
+### Actions
+- `git worktree prune` → removed 5 prunable (dirs already gone: wt-gemini-live, pr67, deck, ui-polish, workbench).
+- `git worktree remove` (×41) → all succeeded (branches LEFT INTACT — removing a worktree never deletes its
+  branch; conservative preserve of the branch pointers). *(Env note: an intermittent broken-PATH in loop
+  subshells corrupted the first batch's success detection; re-run with hardened PATH removed all 40 remaining
+  cleanly, exit 0 each.)*
+
+### Result ✅
+- **Witness:** `git worktree list` = **1 entry (main only)**. `.claude/worktrees/` empty.
+  `liminal-engine.worktrees/` is an empty leftover dir shell (not git state) — left in place, harmless.
+- No branch deleted (local or remote); no force; nothing discarded.
