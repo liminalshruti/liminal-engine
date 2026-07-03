@@ -119,3 +119,45 @@ Boundaries honored: no force-push, no history rewrite, no remote branch deletion
 - **Witness:** `git worktree list` = **1 entry (main only)**. `.claude/worktrees/` empty.
   `liminal-engine.worktrees/` is an empty leftover dir shell (not git state) — left in place, harmless.
 - No branch deleted (local or remote); no force; nothing discarded.
+
+---
+
+## STEP 4 — Branch reconcile → attempted, blocked on a FOUNDER DECISION (logged, skipped per contract)
+
+Branch `docs/judge-ready-readme-submission`: 7-behind / 6-ahead of `origin/main` (my 2 original
+docs commits + 4 cleanup commits from Steps 1–3).
+
+### Merge attempt (evidence)
+`git merge --no-ff --no-commit origin/main` → **31 files auto-merged clean** (main's #131/#133/#138
+feature work + README.md/SUBMISSION.md/package.json/pnpm-lock, which merged cleanly because their content
+was byte-identical or non-overlapping). **4 conflicts:**
+- `.gitignore` — MECHANICAL (both added lines; trivial union). Resolvable by me.
+- `specs/DEMO_NARRATION.md`, `specs/SUBMISSION_FORM_COPY.md`, `specs/PITCH_AND_DEMO.md` — **`add/add`
+  conflicts: genuinely divergent editorial rewrites of SUBMISSION COPY.** Both sides tell the same Acme
+  EU-residency story, different phrasing/structure/emphasis. Notably my committed `PITCH_AND_DEMO.md` still
+  carries the **"Locked on-screen facts" block** (exact demo fixtures: `gc_acme_eu`, `ae_acme_1`,
+  `ec_acme_eu`, status flips, blocked action) — verified **NOT present anywhere on `origin/main`**.
+
+### ⚠ FOUNDER DECISION REQUIRED (why I did not complete the merge)
+Resolving the 3 doc conflicts = **choosing which phrasing of the pitch / narration / submission copy wins**,
+or hand-blending them. Both are **submission-content edits — explicitly OUT OF SCOPE** for this session
+(dispatch boundary: "submission content edits are OUT of scope; integrity findings reported, not fixed").
+Per the walk-away contract ("if a fix needs a founder/Sean decision, LOG IT, skip, continue"), I **aborted
+the merge** (`git merge --abort` → tree clean, position unchanged) rather than bake in an editorial choice
+I'm not authorized to make.
+
+**The decision the founder must make (then a follow-up session executes):**
+> For `PITCH_AND_DEMO.md` / `DEMO_NARRATION.md` / `SUBMISSION_FORM_COPY.md`, does the branch's version, main's
+> version, or a blend win? **Specifically: preserve the branch's "Locked on-screen facts" fixture block?**
+> (main's copy dropped it — it's demo-accuracy scaffolding that exists nowhere else.)
+
+### Preservation (nothing evaporates)
+- Branch **pushed to origin** `docs/judge-ready-readme-submission` @ `13d2a96` (upstream had been deleted by
+  the start-of-session prune; recreated with `-u`, **no force**). All 6 commits — including the unique PITCH
+  block and the full cleanup ledger — are now durably on the remote, awaiting the founder's editorial call.
+- The **cleanup work (Steps 1–3) IS landable independently** — only the doc reconcile is gated. A future
+  session, given the founder's choice, resolves `.gitignore` (mechanical) + the 3 docs (per the choice) and
+  completes the merge to main.
+
+### Result ⏸ (founder-gated, preserved — not a failure state)
+Merge aborted cleanly; branch clean + pushed; the reconcile decision logged above; nothing discarded.
