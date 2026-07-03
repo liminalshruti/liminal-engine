@@ -1,0 +1,25 @@
+Acme Corp — Enterprise Expansion Kickoff Call (sample transcript)
+Participants: Acme VP Engineering (Dana), Acme Security Lead (Raj), our AE (Sam), our SE (Priya)
+
+Sam: Thanks for making time. We're excited about expanding the pilot to the full enterprise tier — the $1.2M annual scope we discussed.
+
+Dana: We're aligned on the value. The team's been happy with the pilot.
+
+Raj: Before we go further, I need to be clear about one hard requirement. Our data governance policy mandates EU data residency for all customer and employee data in this deployment. Anything that touches PII has to stay in EU-region infrastructure. This is non-negotiable — it's a gating requirement for us to sign. If data leaves the EU region, legal will block the whole expansion.
+
+Priya: Understood. So EU data residency for all PII-bearing workloads, EU-region storage and processing.
+
+Raj: Correct. And we'll need it reflected in the contract and the rollout plan, with a named owner on your side who's accountable for it. Our auditors will ask.
+
+Dana: Right. Timeline-wise we're targeting close by end of quarter, but the residency piece has to be locked first.
+
+Sam: Got it. We'll get the proposal and launch plan updated and circle back.
+
+Dana: Sounds good. Looking forward to it.
+
+--- End of call ---
+
+Follow-up artifacts produced after the call:
+- Proposal draft: covers pricing, seat count, SLA, support tier. (Does NOT mention EU data residency.)
+- Launch plan: onboarding milestones, training, go-live date. (Does NOT mention EU data residency or assign a residency owner.)
+- Product scope doc: feature list for the enterprise tier. (Does NOT reference data-residency constraints.)

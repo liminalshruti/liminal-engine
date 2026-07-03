@@ -1,0 +1,22 @@
+{
+  "id": "acme_expansion_assessment_v1",
+  "dealId": "acme_expansion",
+  "dealName": "Acme expansion",
+  "passNumber": 1,
+  "reportedStatus": "on-track",
+  "summary": "The pilot expansion to the full enterprise tier is moving forward with positive feedback from the client. However, critical EU data residency and accountability requirements established as non-negotiable gating items during the kickoff call have not been captured in the follow-up proposal, launch plan, or product scope documentation.",
+  "droppedRequirements": [
+    "EU data residency for all customer and employee PII-bearing workloads, storage, and processing",
+    "A named owner accountable for EU data residency compliance in the rollout plan and contract"
+  ],
+  "agentMetadata": {
+    "agent": "Gemini",
+    "model": "gemini-flash-latest",
+    "artifacts": [
+      "customer-call",
+      "proposal",
+      "launch-plan",
+      "product-scope"
+    ]
+  }
+}

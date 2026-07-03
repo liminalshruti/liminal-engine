@@ -1,0 +1,23 @@
+{
+  "id": "acme_expansion_pass_2",
+  "dealId": "acme_expansion",
+  "dealName": "Acme expansion",
+  "passNumber": 2,
+  "reportedStatus": "at-risk",
+  "summary": "The deal is classified as at-risk because the customer's non-negotiable, gating requirement for EU data residency—which must be reflected in the contract/rollout plan with a named owner—is entirely absent from all generated follow-up artifacts (proposal, launch plan, and product scope). Under the strict evaluation criteria, this represents an unowned, unaddressed revenue-critical blocker.",
+  "droppedRequirements": [
+    "EU data residency for all PII-bearing workloads in EU-region infrastructure",
+    "Named owner accountable for EU data residency on the vendor side",
+    "Data residency reflected in the contract and rollout/launch plan"
+  ],
+  "agentMetadata": {
+    "agent": "Gemini",
+    "model": "gemini-flash-latest",
+    "artifacts": [
+      "customer-call",
+      "proposal",
+      "launch-plan",
+      "product-scope"
+    ]
+  }
+}
