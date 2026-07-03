@@ -1,0 +1,74 @@
+/* EnforceActionPanel (LIM-1169) — the operator's Approve + Enforce surface.
+ * References the vendored canonical design tokens only (never redefines a token).
+ * Layout/button styling here; status + gate visuals come from the shared
+ * StatusBadge / BlockedActionBanner component classes. */
+
+.enforce-panel__status-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 12px);
+  margin-bottom: var(--space-4, 16px);
+}
+.enforce-panel__status-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint, #8a8780);
+  font-weight: 600;
+}
+
+.enforce-panel__case {
+  color: var(--text-soft, #b8b5ae);
+  line-height: 1.5;
+  margin: 0 0 var(--space-5, 20px);
+}
+.enforce-panel__case code,
+.enforce-panel__audit code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.85em;
+  color: var(--text, #e8e6e1);
+}
+
+.enforce-panel__cta {
+  padding: var(--space-3, 12px) var(--space-6, 32px);
+  border: none;
+  border-radius: var(--radius-2, 6px);
+  background: var(--judgment, #c9a961);
+  color: var(--ink, #0f0f10);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.enforce-panel__cta:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.enforce-panel__cta:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.enforce-panel__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+}
+.enforce-panel__flip {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text, #e8e6e1);
+}
+.enforce-panel__flip strong {
+  color: var(--outreach, #d54d44);
+}
+.enforce-panel__audit {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft, #b8b5ae);
+}
+.enforce-panel__enforced-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-faint, #8a8780);
+  font-style: italic;
+}

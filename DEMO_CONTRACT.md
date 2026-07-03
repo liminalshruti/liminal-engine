@@ -63,6 +63,40 @@ These are the spine. If any of these is missing, the demo does not prove the the
 
 ---
 
+## Per-beat detail (enrichment — does NOT change the locked path above)
+
+> Source: Demo Spine PRD (2026-06-28). This section adds on-screen detail to the
+> 14 locked beats; it does **not** renumber them or add steps. The PRD's extra
+> framing steps ("add streams", "pin substrate") render as **fixture context
+> cards within beat 1**, not as new beats — Streams/Substrate stay fixtures per
+> `specs/SPEC.md`, not new P0 contracts.
+
+- **Beat 1 — Initialize.** Workspace: `Acme Expansion`; goal `Close Acme expansion by Friday — $1.2M ARR`; agent team GTM + Product + Security + Launch; AI spend `$50k/month`. Context cards (sales call, proposal, launch plan, product scope, agent trace, Linear project) appear here as **fixtures**.
+- **Beat 3 — False green.** Agent team output `Acme expansion appears on track`, while the customer call stated `EU data residency is a hard requirement for pilot approval`.
+- **Beat 5 — GovernanceCase.** Title `False Green Detected`; severity `Critical`; business impact `$1.2M expansion at risk`; lost requirement `EU data residency`; missing from `proposal, launch plan, owner assignment`.
+- **Beat 6–7 — Approve + Enforce → status flip.** Operator approves the correction; recommended `EnforcementAction`s apply (status change, workstream, required owners, blocked update, approval gate, eval generation, audit record). Status flips `On Track → At Risk`.
+- **Beat 10 — Blocked action.** A future agent attempt to send `We are on track for Friday` is blocked with reason + required-before-send list (Security owner assigned, product scope updated, launch plan updated, eval gate passed).
+- **Beat 11 — AuditEvent.** Records actor (executive owner / VP Ops), before/after state, reason, evidence (sales call, proposal, launch plan, agent trace), and linked action/eval IDs.
+- **Beat 12 — EvalCase.** Name `enterprise_gating_requirement_propagation`; expected behavior: detect requirement, link to business goal, classify as revenue risk, ensure it appears in proposal + launch plan, require owner assignment, prevent false on-track.
+- **Beat 13 — Second pass (after correction).** Output changes to: `Acme expansion is at risk. EU data residency is a customer-stated gating requirement, missing from proposal and launch plan, with no owner assigned. Assign Product, Security, and Engineering owners before marking Acme on track.`
+- **Beat 14 — Eval table (Fail → Pass), ≥5 checks visibly flipping:**
+
+  | Check | Before | After |
+  | --- | ---: | ---: |
+  | Detected customer requirement | Fail | Pass |
+  | Linked requirement to revenue goal | Fail | Pass |
+  | Classified as revenue risk | Fail | Pass |
+  | Found missing owner / workstream | Fail | Pass |
+  | Blocked false "on track" action | Fail | Pass |
+  | Recorded audit evidence | Fail | Pass |
+
+> **Enforcement-detail objects** (PolicyRule, ApprovalGate, before/after-state,
+> `actionType` enum, businessImpact, missingFrom) are tracked in **LIM-1227
+> «contracts» v2** (`foundation-blocked` + `needs-decision`) — they extend the
+> existing 7 contracts, they are not new P0 surfaces. Do not build them ad hoc.
+
+---
+
 ## Cut-if-risky list
 
 Drop these before touching the must-not-cut spine if time/stability is at risk:
@@ -121,3 +155,23 @@ The demo is accepted when **all** of the following hold:
 - [ ] The whole walkthrough completes in **under 3 minutes**.
 - [ ] Deterministic: re-running produces the same result (no live-call flakiness
       on the spine).
+
+### Demo succeeds if a judge understands (Demo Spine PRD §15)
+
+1. What business goal the agents were supposed to move.
+2. What false-green status the agents produced.
+3. What critical context was lost (EU data residency).
+4. What Liminal detected.
+5. What the human corrected.
+6. What enforcement changed (status, workstream, owners, blocked action, gate).
+7. What audit evidence was recorded.
+8. What eval was generated.
+9. How the next pass improved.
+
+### Demo FAILS if (Demo Spine PRD §16 — watch these)
+
+- It looks like a dashboard, or like basic RAG.
+- **Enforcement is not visible** (the product then reads as alerting, not governance).
+- The second pass does not clearly improve, or the user can't see what changed after correction.
+- Too many integrations distract from the spine; sponsor integrations destabilize P0.
+- Invented persona details conflict with `liminal-prototype`.

@@ -6,6 +6,33 @@ All notable changes to scope, contract, and structure. Newest first.
 
 ## [Unreleased]
 
+### Fixed — SCOPE_SPEC.md: deferred ≠ cut (2026-06-28)
+- **Reframed `SCOPE_SPEC.md`'s flat "Out of scope" list into two correct tiers**
+  matching `specs/SPEC.md` cut-lines: **"Deferred to a later wave"** (real Gemini /
+  LiveKit / Linear, PolicyRule/ApprovalGate, extra scenarios — simulated for the
+  demo, real afterward, NOT abandoned) vs **"Out by design / never add"**
+  (dashboard-hero, swarm, graph DB, RBAC, new repos, prod-hardening/CI-CD).
+- Rationale: the old single heading "Out of scope (this hackathon)" wrongly read
+  the real integrations as cancelled; they are next-wave (cut-first-if-slipping),
+  not cut. A future agent would otherwise treat deferred work as abandoned.
+
+### Enriched — DEMO_CONTRACT from Demo Spine PRD (2026-06-28)
+- **Folded the Demo Spine PRD into `DEMO_CONTRACT.md` as enrichment, NOT
+  replacement.** Decision: keep the locked 14-beat numbering + 7-contract kernel;
+  do not renumber beats or un-cut scope. Rationale: goldens assert beats 2–4
+  verbatim and ~20 issues reference `beat #N`/`MNC #N`; with the demo near, a
+  renumber/scope re-open risks the spine (PRD §16's own failure mode).
+- **Added:** a "Per-beat detail" section (richer GovernanceCase / AuditEvent /
+  EvalCase content, the explicit 6-check Fail→Pass table) under the existing 14
+  beats; PRD §15 success metrics + §16 failure modes appended to acceptance.
+- **Kept cut (per `specs/SPEC.md`):** Workspace/Stream/SubstrateArtifact/AgentRun/
+  Signal stay fixtures, not P0 contracts. The PRD's "add streams"/"pin substrate"
+  steps render as fixture context cards within beat 1 — not new beats.
+- **Routed:** PolicyRule, ApprovalGate, before/after-state, `actionType` enum,
+  businessImpact/missingFrom → **LIM-1227 «contracts» v2** (`foundation-blocked`
+  + `needs-decision`), which extends the 7 contracts. Not built ad hoc.
+- Per the contract's own rule, this is the logged decision for the change.
+
 ### Decided — demo-spine UI stack (2026-06-27)
 - **Demo-spine stack locked: React + Vite (SPA), styled against `liminal-prototype`
   CSS cuts.** Chosen over Solid/liminal-desktop continuity. Rationale: a throwaway
