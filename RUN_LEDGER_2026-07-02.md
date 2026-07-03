@@ -161,3 +161,30 @@ I'm not authorized to make.
 
 ### Result ⏸ (founder-gated, preserved — not a failure state)
 Merge aborted cleanly; branch clean + pushed; the reconcile decision logged above; nothing discarded.
+
+---
+
+## STEP 5 (BONUS) — real-vs-simulated stub audit → REPORT ONLY (no fixes; judgment for a later session)
+
+Audited the **submission surface = `origin/main`** (not this branch): for each integration, does the CODE
+honestly self-label, and do the JUDGE-FACING docs (README.md / SUBMISSION.md / specs) present a simulated
+path as if it were live? Method: 3 parallel read-only Explore audits (Gemini · Linear · LiveKit+substrate)
++ my own independent spot-checks of each adapter header and the README "honest disclosure" section.
+
+**Overall: the CODE is honest across all four integrations** (real, live-capable adapters behind ports,
+quarantined from the demo spine by dependency-cruiser; deterministic fixture defaults that fail-loud rather
+than fabricate). **Two doc-vs-reality framing nuances** are worth a founder's editorial eye — neither is a
+code lie; both are "how the docs word it" calls, hence REPORT-ONLY.
+
+| Integration | Code reality (self-label) | Doc framing verdict |
+|---|---|---|
+| **Linear** | `LinearRemediationAdapter` real `issueCreate` GraphQL, **dry-run by default**, live only on `LINEAR_LIVE=1 + LINEAR_API_KEY`; `SimulatedLinearPanel` is a labeled read-only fixture (`index.ts:1-20,174-249`). Quarantined from spine. | ✅ **HONEST across the board.** UI panel labeled "Simulated"; docs accurately say dry-run-default / opt-in-live. No simulated-as-live. |
+| **Substrate ingest** | `ingestFolder()` walks real files → type loaders (email/slack/linear/transcript/document) **parse real content**, no fixtures; `SubstrateAgentOutputSource` **computes** output via `detectLostContext()` (`substrate-source.ts:1-57`, `tools/requirements/src/…`). | ✅ **HONEST.** "Real arbitrary-data ingest" / "runs on arbitrary streams, not a fixture" all verified. No simulated-as-live. |
+| **LiveKit** | `mintLiveKitToken()` **always** real `livekit-server-sdk` + `LIVEKIT_API_SECRET`; **no scripted-transcript fallback** — creds absent → HTTP 503 → UI shows truthful "Live voice unavailable" (`livekit/src/index.ts:96-138`, `apps/api/.../livekit.ts:75-78`, `VoiceCorrection.tsx`). Self-label: "GENUINELY LIVE browser mic publish." | ⚠️ **FLAG (stale doc, NOT an overclaim of liveness):** README ~L76 says it "degrades to a **scripted transcript** only when creds/mic absent." The code degrades to a **disabled** state, not a scripted transcript. The live path itself is HONEST (real token + real mic publish). *(This refutes the older stash{1} CLAIM_SCAN worry that #88 returned a fixture with creds present — that path was replaced by the #138 rewrite.)* |
+| **Gemini** | 3 sources: `FixtureAgentOutputSource` (labeled stub), `GeminiAgentOutputSource` (cache→live→fail-loud, `live-cache-source.ts:1-50`, "never fabricate"), `GeminiRestAgentOutputSource` (direct REST, real `apiKey`). **Cache dir on main is EMPTY** (only README — no captured responses committed). | ⚠️ **FLAG (headline/emphasis, NOT a code lie):** README ~L70 / SUBMISSION L24 lead with **"Live Gemini inference."** The adapter is live-*capable* and fails-loud (honest), but the 14-beat DEMO runs **fixture data whose `agentMetadata` is labeled `agent: "Gemini", model: "gemini-2.0-flash"`** (`contracts/src/fixtures/acme.ts`) — so the demo *attributes* output to Gemini that Gemini did not produce. Immediately-following "cache-replayed / fails-loud" qualifiers mitigate it for a careful reader. Highest-value integrity item. |
+
+### ⚠ Findings for a later JUDGMENT session (report-only; I made NO edits — submission content is out of scope)
+1. **Gemini "Live inference" framing** — the demo presents Gemini-attributed *fixture* output as if produced live. Decide: soften the "live inference" headline, capture a real response into the (empty) cache so the attribution is true, or add a one-line "demo runs a captured/fixture pass" note. `README.md ~L70`, `SUBMISSION.md L24/L38`, `contracts/src/fixtures/acme.ts`.
+2. **LiveKit "scripted transcript" fallback line is stale** — code shows a truthful "unavailable" disabled state; there is no scripted-transcript fallback. Decide: update `README.md ~L76` to match code. (Low risk — reality is *more* honest than the doc.)
+
+Everything else verified HONEST. No fixes applied (per boundary). These are the founder/next-session's call.
