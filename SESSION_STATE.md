@@ -1,5 +1,7 @@
 # SESSION_STATE.md
 
+> **⚠️ STALE — last real update 2026-06-28 (this repo's active tracking moved off this file).** liminal-engine has been in warm/reference status since the pivot to the desktop product spine. The clean-room eval-harness this repo pioneered was RE-IMPLEMENTED in desktop (not merged) via fable5 S04 (#180, EvalCase/D30 — on desktop main `717f8d0`). For current company-wide work state, see founder-brain `ops/fable5/` (the live control layer) and `REPOS.md` (repo status). This file reflects engine-local state as of 2026-06-28 only; do not read it as current company truth.
+
 Current state of the build, right now. Keep this short and true. Reflects git/PR
 merge-state (the truth), not Linear status (a lagging cache — multiple sessions
 write the board concurrently, so it flaps).
