@@ -156,6 +156,13 @@ and checks they are committed and current.
 - Partner tech: **Google Gemini** (live inference), **LiveKit** (live room + mic publish),
   **DigitalOcean** (model access).
 
+## Technical deep dives
+
+- [The hash-chained audit ledger](./docs/technical/hash-chained-audit-ledger.md): how the
+  append-only ledger makes the governance trail tamper-evident, the canonical JSON hashing
+  that keeps digests reproducible across TypeScript and Rust implementations, the failure
+  model, the test evidence, and the honest limitations (hash-chained, not signed).
+
 ## License
 
 MIT — © 2026 Shruti Rajagopal and contributors. See [`LICENSE`](./LICENSE).
