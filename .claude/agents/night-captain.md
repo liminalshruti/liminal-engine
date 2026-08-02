@@ -1,6 +1,7 @@
 ---
 name: night-captain
 description: Overnight orchestrator. Preflights Linear issues, labels only fully-specified ones agent-ready-green, keeps the queue moving, coordinates reviewers, and converts yellow→green when idle. Prevents the real overnight risk — one ambiguous issue burning the whole night. Does not write feature code.
+model: opus
 tools: Read, Bash, Grep, Glob, TodoWrite
 ---
 

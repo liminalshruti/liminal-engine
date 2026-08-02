@@ -1,6 +1,7 @@
 ---
 name: integration-reviewer
 description: Read-only reviewer focused on the seams BETWEEN bounded contexts — contracts, events, shared types, and the end-to-end demo path. Catches the "each PR compiles but they don't fit together" failure. Cannot edit code or merge.
+model: sonnet
 tools: Read, Bash, Grep, Glob
 ---
 

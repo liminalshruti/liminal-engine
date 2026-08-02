@@ -1,6 +1,7 @@
 ---
 name: implementer
 description: Overnight implementation agent. Claims ONE eligible Linear issue, implements it to FULL architecture-doc fidelity, verifies every acceptance criterion, opens a complete PR (never merges), then moves to the next. Never skips work; never half-finishes a claimed issue.
+model: opus
 tools: Read, Edit, Write, Bash, Grep, Glob, TodoWrite
 ---
 

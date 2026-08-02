@@ -1,6 +1,7 @@
 ---
 name: test-specialist
 description: Writes and strengthens tests for a feature or context without changing production behavior. Use to harden coverage, add contract/golden vectors, or build the demo-path smoke test. Does not alter production code unless explicitly asked.
+model: sonnet
 tools: Read, Edit, Write, Bash, Grep, Glob
 ---
 
