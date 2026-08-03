@@ -201,9 +201,11 @@ the point of the artifact:
 
 1. **Tamper-evident, not tamper-proof, and not attributable.** SHA-256 chaining
    proves the log you are reading is the log that was written, link by link. It does
-   not prove who wrote it. There is no key-based signing (no ed25519, no HMAC)
-   anywhere in the system today, so a party controlling the whole store could rewrite
-   the entire chain self-consistently. Attributable signatures are the next
+   not prove who wrote it. There is no attributable key-based signing in the system
+   today: no ed25519 anywhere, and the only HMAC in the wider codebase is a
+   development placeholder in an experimental edge daemon whose own comment labels it
+   "not the ratified device signature." A party controlling the whole store could
+   therefore rewrite the entire chain self-consistently. Attributable signatures are the next
    experiment, not a shipped feature.
 2. **In-memory chain, storage-agnostic by design.** `AuditLedger` holds the chain in
    memory and can be rehydrated with `fromEvents`; durable storage is an adapter
