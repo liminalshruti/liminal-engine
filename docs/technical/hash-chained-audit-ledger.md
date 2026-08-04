@@ -201,12 +201,14 @@ the point of the artifact:
 
 1. **Tamper-evident, not tamper-proof, and not attributable.** SHA-256 chaining
    proves the log you are reading is the log that was written, link by link. It does
-   not prove who wrote it. There is no attributable key-based signing in the system
-   today: no ed25519 anywhere, and the only HMAC in the wider codebase is a
-   development placeholder in an experimental edge daemon whose own comment labels it
-   "not the ratified device signature." A party controlling the whole store could
-   therefore rewrite the entire chain self-consistently. Attributable signatures are the next
-   experiment, not a shipped feature.
+   not prove who wrote it. This ledger carries no attributable key-based signing:
+   a party controlling the whole store could rewrite the entire chain
+   self-consistently. Elsewhere in the product, Ed25519 device signatures are
+   implemented for decision packets in the desktop application (device key held in
+   the macOS Keychain); binding that signing into this ledger's receipts is the next
+   experiment, not a shipped feature of this library. (An earlier revision of this
+   section claimed no signing existed anywhere in the codebase; that was incorrect
+   and is corrected here.)
 2. **In-memory chain, storage-agnostic by design.** `AuditLedger` holds the chain in
    memory and can be rehydrated with `fromEvents`; durable storage is an adapter
    concern behind ports. Durability guarantees are therefore the adapter's, not the
