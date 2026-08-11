@@ -80,3 +80,28 @@ Use `Shruti Rajagopal and contributors` for MIT copyright unless instructed othe
 - Smoke test + checklist: `scripts/smoke.sh`
 - IP provenance: `IP_RECEIPT.md`
 - Linear ops: `ops/linear/`
+
+## Subagent model tiers (set 2026-08-01)
+
+The five agents in `.claude/agents/` each declare an explicit `model:`. **Do not remove it.**
+
+| Agent | Model | Why |
+|---|---|---|
+| `architect-reviewer` | `opus` | Adversarial fidelity review against DEMO_CONTRACT / SCOPE_SPEC. Judgment work — the whole job is catching drift a cheaper model rationalizes past. |
+| `night-captain` | `opus` | Orchestration: decides which issues are green, coordinates reviewers, owns the overnight queue. One bad call burns the night. |
+| `implementer` | `opus` | Multi-file builds to full architecture-doc fidelity across the `packages/*` monorepo. |
+| `integration-reviewer` | `sonnet` | Seam/contract validation — pattern-matching against a known contract, not open-ended judgment. |
+| `test-specialist` | `sonnet` | Test generation against stated acceptance criteria. Structured, mechanical. |
+
+**Why this is here at all.** `~/.claude/settings.json` sets
+`CLAUDE_CODE_SUBAGENT_MODEL: "haiku"` globally. That default is *correct* for the common case —
+most subagent work is search and fan-out, where cheap and parallel wins. But with no per-agent
+override, it also silently applied to adversarial review and overnight orchestration, i.e. the two
+places where weak judgment is most expensive. The global default stays; these five opt out.
+
+This is Anthropic's own delegation guidance applied literally: route by the
+accuracy/speed/cost tradeoff, cheap model for volume, capable model for judgment. Adding a
+new agent here? Pick its tier deliberately and write the reason in this table.
+
+**Verify, don't assume:** frontmatter silently no-ops if the key is misspelled. After changing a
+tier, invoke the agent and confirm from the run metadata which model actually ran.
